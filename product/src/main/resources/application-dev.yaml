@@ -1,0 +1,10 @@
+spring:
+  data:
+    #MongoDB configuration
+    mongodb:
+      host: mongo1
+      port: 27017
+      database: oomall
+      username: demouser
+      password: '123456'
+      authentication-database: oomall
