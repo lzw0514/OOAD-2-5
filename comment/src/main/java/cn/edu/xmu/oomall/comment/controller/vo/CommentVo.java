@@ -24,7 +24,7 @@ public class CommentVo {
     private Long PId; //首评的PId为NULL,追评的PId为首评ID，回复的PId为所回复的评论Id
     private Byte status; // 0-待审核 1-通过审核 2-审核驳回
     private boolean Replyable; // 首评和追评只能回复一次，回复不能回复
-    private LocalDateTime createtime; // 审核通过时间
+    private LocalDateTime GmtPublish; // 审核通过时间
 
     public CommentVo(Comment comment) {
         super();
@@ -112,12 +112,12 @@ public class CommentVo {
         this.Replyable= Replyable;
     }
 
-    public LocalDateTime getcreatetime() {
-        return createtime;
+    public LocalDateTime getGmtPublish() {
+        return GmtPublish;
     }
 
-    public void setGmtPublish(LocalDateTime createtime) {
-        this.createtime = createtime;
+    public void setGmtPublish(LocalDateTime GmtPublish) {
+        this.GmtPublish = GmtPublish;
     }
 
 }
