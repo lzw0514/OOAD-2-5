@@ -6,13 +6,13 @@ import cn.edu.xmu.javaee.core.model.ReturnNo;
 import cn.edu.xmu.javaee.core.model.dto.UserDto;
 import cn.edu.xmu.javaee.core.model.vo.PageVo;
 import cn.edu.xmu.oomall.comment.dao.bo.*;
+import cn.edu.xmu.oomall.comment.dao.openfeign.OrderItemDao;
 import cn.edu.xmu.oomall.comment.dao.openfeign.ShopDao;
 import cn.edu.xmu.oomall.comment.mapper.CommentPoMapper;
 import cn.edu.xmu.oomall.comment.mapper.po.CommentPo;
 import cn.edu.xmu.javaee.core.util.CloneFactory;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,90 +24,158 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static cn.edu.xmu.javaee.core.model.Constants.IDNOTEXIST;
+
 /**
- * CommentDao 父类
- * @author Shuyang Xing
+ * @author Liuzhiwen
  */
+
 @Repository
 @RefreshScope
 @RequiredArgsConstructor
+@Slf4j
 public class CommentDao {
 
-    private final static Logger logger = LoggerFactory.getLogger(CommentDao.class);
+    private final static String KEY = "C%d";
     private final CommentPoMapper commentPoMapper;
     private final ShopDao shopDao;
+    private final OrderItemDao orderitemDao;
 
-    // 根据Id找评论
-    public Comment findCommentById(Long commentId) {
+
+    /**
+     * 通过commentId查询特定评论
+     * @param commentId
+     */
+    public Comment findById(Long commentId) {
+        log.debug("findcommentById: id = {}",commentId);
         Optional<CommentPo> ret = this.commentPoMapper.findById(commentId);
         if (ret.isPresent()) {
             CommentPo po = ret.get();
-            // 使用工厂返回不同子类的对象
-            return CommentFactory.build(po);
+            return this.build(po);
         } else {
             throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "评论", commentId));
         }
     }
 
-    // 根据商品Id找评论
-    public List<Comment> retrieveCommentByProduct(Long productId, Integer page, Integer pageSize) throws RuntimeException {
-        List<Comment> commentList = new ArrayList<>();
-        Pageable pageable = PageRequest.of(page, pageSize);
-        Page<CommentPo> poPage = commentPoMapper.findCommentByProductId(productId, pageable);
-        if (!poPage.isEmpty()) {
-            commentList = poPage.stream()
-                    .map(po -> CommentFactory.build(po))  // 工厂方法转换为Comment对象
-                    .collect(Collectors.toList());
+    /**
+     * 通过orderItemId查询特定评论
+     * @param orderItemId
+     */
+    public  Optional<CommentPo> findByOrderItemId(Long orderItemId) {
+
+        Optional<CommentPo> ret = this.commentPoMapper.findByOrderItemId(orderItemId);
+        return ret;
+    }
+    /**
+     * 获得bo对象
+     * @author Liuzhiwen
+     * @param po
+     * @return
+     */
+    private Comment build(CommentPo po){
+        Comment ret;
+        switch (po.getType())
+        {
+            case 0:
+                ret = CloneFactory.copy(new FirstComment(), po);
+                break;
+            case 1:
+                ret = CloneFactory.copy(new AddComment(), po);
+                break;
+            case 2:
+                ret = CloneFactory.copy(new ReplyComment(), po);
+                break;
+            default:
+                throw new IllegalArgumentException("Undefined comment type");
         }
-        logger.debug("retrieveCommentByProduct: commentList size = {}", commentList.size());
-        return commentList;
+        this.build(ret);
+        return ret;
     }
 
 
-    public static class CommentFactory {
-        public static Comment build(CommentPo po) {
-            switch (po.getType()) {
-                case 1:
-                    return CloneFactory.copy(new FirstComment(), po);
-                case 2:
-                    return CloneFactory.copy(new ReplyComment(), po);
-                default:
-                    throw new IllegalArgumentException("Unknown comment type");
-            }
-        }
+    /**
+     * 把bo中设置dao
+     * @author Liuzhiwen
+     * @param bo
+     */
+    private Comment build(Comment bo){
+        bo.setCommentDao(this);
+        bo.setOrderItemDao(orderitemDao);
+        bo.setShopDao(shopDao);
+        return bo;
     }
 
-    public String save(Comment comment, UserDto userDto) {
+
+    /**
+     * 通过productId查询商品的全部评论
+     */
+    public List<Comment> retrieveProductComments(Long productId, Integer page, Integer pageSize) throws RuntimeException {
+        log.debug("retrieveProductComments: productId={}",productId);
+        Pageable pageable = PageRequest.of(page-1, pageSize);
+        List<CommentPo> pos = commentPoMapper.findCommentByProductId(productId, pageable);
+        return pos.stream().map(po -> this.build(po)).collect(Collectors.toList());
+
+    }
+
+
+    /**
+     * 修改评论信息
+     * @param bo   评论bo
+     * @param user 登录用户
+     * @return
+     */
+    public String save(Comment bo, UserDto user) {
+        bo.setModifier(user);
+        bo.setGmtModified(LocalDateTime.now());
         CommentPo po = null;
-        if (comment instanceof FirstComment) {
-            FirstComment obj = (FirstComment) comment;
+        if (bo instanceof FirstComment) {
+            FirstComment obj = (FirstComment) bo;
             po = CloneFactory.copy(new CommentPo(), obj);
-        } else if (comment instanceof ReplyComment) {
-            ReplyComment obj = (ReplyComment) comment;
-            po = CloneFactory.copy(new CommentPo(), obj);
-        } else{
-            throw new IllegalArgumentException("Unknown comment type");
         }
-        CommentPo save = commentPoMapper.save(po);
-        return "OK";
+        else if (bo instanceof AddComment) {
+            AddComment obj = (AddComment) bo;
+            po = CloneFactory.copy(new CommentPo(), obj);
+        }
+        else if (bo instanceof ReplyComment) {
+            ReplyComment obj = (ReplyComment) bo;
+            po = CloneFactory.copy(new CommentPo(), obj);
+        }
+        CommentPo updatePosave = commentPoMapper.save(po);
+        if(IDNOTEXIST.equals(updatePosave.getId())) {
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "评论", bo.getId()));
+        }
+
+        return String.format(KEY, bo.getId());
     }
 
-    public Comment insert(Comment comment, UserDto user) {
-        CommentPo commentPo = null;
-        if (comment instanceof FirstComment) {
-            FirstComment obj = (FirstComment) comment;
-            commentPo = CloneFactory.copy(new CommentPo(), obj);
-        } else if (comment instanceof ReplyComment) {
-            ReplyComment obj = (ReplyComment) comment;
-            commentPo = CloneFactory.copy(new CommentPo(), obj);
+    /**
+     * 创建评论
+     * @param bo   地区bo
+     * @param user 登录用户
+     */
+    public Comment insert(Comment bo, UserDto user) {
+        bo.setId(null);
+        bo.setCreator(user);
+        bo.setGmtCreate(LocalDateTime.now());
+        CommentPo po = null;
+
+        if (bo instanceof FirstComment) {
+            FirstComment obj = (FirstComment) bo;
+            po = CloneFactory.copy(new CommentPo(), obj);
+        }
+        else if (bo instanceof FirstComment) {
+            FirstComment obj = (FirstComment) bo;
+            po = CloneFactory.copy(new CommentPo(), obj);
+        }
+        else if (bo instanceof ReplyComment) {
+            ReplyComment obj = (ReplyComment) bo;
+            po = CloneFactory.copy(new CommentPo(), obj);
         } else{
             throw new IllegalArgumentException("Unknown comment type");
         }
-        comment.setGmtCreate(LocalDateTime.now());
-        comment.setCreator(user);
-        commentPo.setId(null);
-        CommentPo save = this.commentPoMapper.save(commentPo);
-        comment.setId(save.getId());
-        return comment;
+        log.debug("save: po = {}", po);
+        po = this.commentPoMapper.save(po);
+        bo.setId(po.getId());
+        return bo;
     }
 }

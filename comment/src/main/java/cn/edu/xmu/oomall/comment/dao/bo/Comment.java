@@ -15,10 +15,7 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.*;
 
-/**
- * 评论bo对象
- * @author Shuyang Xing
- */
+
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(callSuper = true, doNotUseGetters = true)
@@ -32,7 +29,7 @@ public abstract class Comment extends OOMallObject implements Serializable {
 
     protected String rejectReason;
 
-    protected Byte type; // 1-首评 2-商家回复
+    protected Byte type; // 1-首评 2-追评 3-商家回复
 
     protected Long creatorId;
 
@@ -44,17 +41,24 @@ public abstract class Comment extends OOMallObject implements Serializable {
 
     protected Long shopId;
 
-    protected Long replyCommentId;// 如果是首评，此属性为回复评论Id，如果是回复，此属性为首评Id
+    protected Long replyCommentId;
+
+    protected Long addCommentId;
+
+    protected Long PId;//首评的PId为NULL,追评的PId为首评ID，回复的PId为所回复的评论Id
 
     protected LocalDateTime gmtPublish; // 发布时间，即审核通过时间
 
     protected Byte status = 0; // 0-待审核 1-通过审核 2-审核驳回
 
-    protected boolean canReply = false; // 首评只能回复一次，回复不能回复
+    protected boolean Replyable = false; // 首评和追评只能回复一次
+
+
 
     @JsonIgnore
     @ToString.Exclude
-    protected Comment ReplyComment; // 导航向回复评论或首评
+    protected Comment ReplyComment;
+
 
     @JsonIgnore
     @ToString.Exclude
@@ -74,7 +78,7 @@ public abstract class Comment extends OOMallObject implements Serializable {
 
     @JsonIgnore
     @ToString.Exclude
-    protected OrderDao orderDao;
+    protected OrderItemDao orderitemDao ;
 
     // 无回复评论
     @JsonIgnore
@@ -112,7 +116,7 @@ public abstract class Comment extends OOMallObject implements Serializable {
     @JsonIgnore
     public Comment getReplyComment(){
         if (ReplyComment == null && commentDao != null)
-            ReplyComment = commentDao.findCommentById(replyCommentId);
+            ReplyComment = commentDao.findById(replyCommentId);
         return ReplyComment;
     }
 
@@ -133,15 +137,18 @@ public abstract class Comment extends OOMallObject implements Serializable {
         if (orderItemId == null)
             throw new BusinessException(ReturnNo.INCONSISTENT_DATA, String.format(ReturnNo.INCONSISTENT_DATA.getMessage(), "评论", id, "orderItemId为空"));
 
-        if (orderItem == null && orderDao != null)
-            orderItem = orderDao.findOrderItemById(orderItemId);
+        if (orderItem == null && orderitemDao != null)
+            orderItem = orderitemDao.findById(orderItemId);
         return orderItem;
     }
 
     // 抽象方法 审核评论
     public abstract String auditComment(boolean approve, Optional<String> rejectReason, UserDto user);
+    // 抽象方法 提交回复
+    public abstract ReplyComment createReply(Long shopId, ReplyComment newReplyComment, UserDto user);
 
     // Getter and Setter methods
+    public boolean getReplyable () { return Replyable ; } public void setReplyable (boolean Replyable ) { this.Replyable  = Replyable ; }
     public Long getId() { return id; } public void setId(Long id) { this.id = id; }
     public String getContent() { return content; } public void setContent(String content) { this.content = content; }
     public String getRejectReason() { return rejectReason; } public void setRejectReason(String rejectReason) { this.rejectReason = rejectReason; }
@@ -154,11 +161,15 @@ public abstract class Comment extends OOMallObject implements Serializable {
     public Long getReplyCommentId() { return replyCommentId; } public void setReplyCommentId(Long replyCommentId) { this.replyCommentId = replyCommentId; }
     public LocalDateTime getGmtPublish() { return gmtPublish; } public void setGmtPublish(LocalDateTime gmtPublish) { this.gmtPublish = gmtPublish; }
     public Byte getStatus() { return status; } public void setStatus(Byte status) { this.status = status; }
-    public boolean getCanReply() { return canReply; } public void setCanReply(boolean canReply) { this.canReply = canReply; }
     public void setReplyComment(Comment replyComment) { ReplyComment = replyComment; }
     public void setShop(Shop shop) { this.shop = shop; }
     public void setOrderItem(OrderItem orderItem) { this.orderItem = orderItem; }
     public void setCommentDao(CommentDao commentDao) { this.commentDao = commentDao; }
     public void setShopDao(ShopDao shopDao) { this.shopDao = shopDao; }
-    public void setOrderDao(OrderDao orderDao) { this.orderDao = orderDao; }
+    public void setOrderItemDao(OrderItemDao orderItemDao) { this.orderitemDao = orderItemDao; }
+    public Long getPId() {return PId;}public void setPId(Long addPId) {this.PId = addPId;}
+    public Long getAddCommentId() {return addCommentId;}
+    public void setAddCommentId(Long addCommentId) {this.addCommentId = addCommentId;}
+
+
 }

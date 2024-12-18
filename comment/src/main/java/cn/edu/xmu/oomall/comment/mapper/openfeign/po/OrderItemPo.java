@@ -23,6 +23,10 @@ public class OrderItemPo {
 
     private Long productId;
 
+    private Long shopId;
+
+    private Integer quantity;
+
     public Long getId() {
         return id;
     }
@@ -55,7 +59,4 @@ public class OrderItemPo {
         this.quantity = quantity;
     }
 
-    private Long shopId;
-
-    private Integer quantity;
 }

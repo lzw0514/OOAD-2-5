@@ -8,9 +8,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CommentPoMapper extends JpaRepository<CommentPo, Long> {
 
-    Page<CommentPo> findCommentByProductId(Long productId, Pageable pageable);
+    List<CommentPo> findCommentByProductId(Long productId, Pageable pageable);
+    Optional<CommentPo> findByOrderItemId(Long orderItemId);
 }

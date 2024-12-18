@@ -32,7 +32,7 @@
 
     <modules>
         <module>core</module>
-<!--        <module>comment</module>
+        <module>comment</module>
         <module>payment</module>
         <module>shop</module>
         <module>product</module>
@@ -44,7 +44,7 @@
         <module>freight</module>
         <module>sfexpress</module>
         <module>jtexpress</module>
-        <module>ztoexpress</module>-->
+        <module>ztoexpress</module>
     </modules>
 
     <dependencyManagement>

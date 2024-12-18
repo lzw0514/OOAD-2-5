@@ -1,3 +1,4 @@
+
 package cn.edu.xmu.oomall.comment.dao.bo;
 
 import cn.edu.xmu.javaee.core.aop.CopyFrom;
@@ -17,12 +18,14 @@ import java.util.*;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @CopyFrom({CommentPo.class, CommentDto.class})
-public class ReplyComment extends Comment {
+public class AddComment extends Comment {
+
 
 
 
     /**
-     * 审核回复
+     * 审核评论
+     * 追评被驳回时，要修改被追评的Addtionable状态；追评可以被举报，举报驳回时要同时驳回该追评下的回复
      * @param approve 审核结果
      * @param rejectReason 驳回原因，通过为NULL
      * @return
@@ -32,34 +35,69 @@ public class ReplyComment extends Comment {
     {
         if(approve) {
             setStatus(PUBLISHED);
-            Comment originComment = commentDao.findById(PId);      // 找到回复评论对应的首评或者追评
-            originComment.setReplyable (false);
-            originComment.setReplyCommentId(id);
-            originComment.commentDao.save(originComment, user);
+            setReplyable (true);// 审核通过的评论设为可回复
+            FirstComment newFirstComment=(FirstComment)commentDao.findById(PId);
+            newFirstComment.setAddCommentId(id); //将审核通过后的追评Id记录到首评中
+            newFirstComment.setAddtionable(false);
+            commentDao.save(newFirstComment,user);
         }
         else {
             setStatus(REJECTED);
+            setReplyable (false);
             setRejectReason(rejectReason.orElse(""));
+            // 同时将回复驳回
+            if(!Objects.isNull(replyCommentId))
+            {
+                ReplyComment newReplyComment = (ReplyComment) commentDao.findById(replyCommentId);
+                newReplyComment.RelatedReject(newReplyComment, user);
+            }
         }
-        setReplyable(false); // 回复评论始终不可回复
-
         return commentDao.save(this, user);
     }
 
 
     /**
-     * 关联驳回
-     * 当评论或追评被驳回时，其下面关联的回复也要被驳回
+     * 回复评论
+     * 业务需要判断当前评论状态，且商家只能回复自己店铺的评论，一个评论只能回复一次
+     * @param shopId
      * @param newReplyComment
+     * @return
+     */
+    public ReplyComment createReply(Long shopId, ReplyComment newReplyComment, UserDto user)
+    {
+        if(!Objects.equals(shopId, this.shopId))
+            throw new BusinessException(ReturnNo.AUTH_NO_RIGHT, String.format(ReturnNo.AUTH_NO_RIGHT.getMessage()));
+        if(Objects.equals(status, PUBLISHED) && Replyable )
+        {
+            newReplyComment.setPId(id); // 该回复的PId为首评id
+            setReplyable(false);
+            commentDao.save(this,user);
+            return (ReplyComment) commentDao.insert(newReplyComment, user);
+        }
+        else {
+            throw new BusinessException(ReturnNo.FIELD_NOTVALID,"回复数已超过最大值");
+        }
+    }
+
+    /**
+     * 关联驳回
+     * 当评论驳回时，关联的追评及追评下的回复也要被驳回
+     * @param newAddComment
      * @param user
      * @return
      */
-   public void RelatedReject(ReplyComment newReplyComment, UserDto user)
-   {
-       newReplyComment.setStatus(REJECTED);
-       newReplyComment.setRejectReason("原评论被驳回");
-       commentDao.save(newReplyComment, user);
-   }
+    public void RelatedReject(AddComment newAddComment, UserDto user)
+    {
+        newAddComment.setStatus(REJECTED);
+        setReplyable(false);
+        newAddComment.setRejectReason("原评论被驳回");
+        commentDao.save(newAddComment, user);
+        if(!Objects.isNull(replyCommentId))
+        {
+            ReplyComment newReplyComment = (ReplyComment) commentDao.findById(replyCommentId);
+            newReplyComment.RelatedReject(newReplyComment, user);
+        }
+    }
 
 
     @Override
@@ -67,14 +105,8 @@ public class ReplyComment extends Comment {
 
     @Override
     public void setGmtModified(LocalDateTime gmtModified) {}
-    @Override
-    public ReplyComment createReply(Long shopId, ReplyComment newReplyComment, UserDto user)
-    {
-        throw new BusinessException(ReturnNo.FIELD_NOTVALID,"商家回复评论不能被回复");
 
-    }
 
-    public boolean getReplyable () { return Replyable ; } public void setReplyable (boolean Replyable ) { this.Replyable  = Replyable ; }
     public Long getId() { return id; } public void setId(Long id) { this.id = id; }
     public String getContent() { return content; } public void setContent(String content) { this.content = content; }
     public String getRejectReason() { return rejectReason; } public void setRejectReason(String rejectReason) { this.rejectReason = rejectReason; }
@@ -87,6 +119,7 @@ public class ReplyComment extends Comment {
     public Long getReplyCommentId() { return replyCommentId; } public void setReplyCommentId(Long replyCommentId) { this.replyCommentId = replyCommentId; }
     public LocalDateTime getGmtPublish() { return gmtPublish; } public void setGmtPublish(LocalDateTime gmtPublish) { this.gmtPublish = gmtPublish; }
     public Byte getStatus() { return status; } public void setStatus(Byte status) { this.status = status; }
+    public boolean getReplyable () { return Replyable ; } public void setReplyable (boolean Replyable ) { this.Replyable  = Replyable ; }
     public void setReplyComment(Comment replyComment) { ReplyComment = replyComment; }
     public void setShop(Shop shop) { this.shop = shop; }
     public void setOrderItem(OrderItem orderItem) { this.orderItem = orderItem; }

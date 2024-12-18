@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * 评论DTO对象
- * @author Shuyang Xing
+ * @author Liuzhiwen
  **/
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)

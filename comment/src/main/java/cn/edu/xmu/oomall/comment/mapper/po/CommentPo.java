@@ -7,13 +7,12 @@ import lombok.*;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
+
 @Entity
 @Table(name = "comment")
 @AllArgsConstructor
 @NoArgsConstructor
-@CopyFrom({FirstComment.class, ReplyComment.class})
+@CopyFrom({FirstComment.class,AddComment.class, ReplyComment.class})
 public class CommentPo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,11 +22,7 @@ public class CommentPo {
 
     protected String rejectReason;
 
-    protected Byte type; // 1-首评 2-商家回复
-
-    private Byte rating;
-
-    private Integer likes;
+    protected Byte type; // 1-首评 2-追评 3-商家回复
 
     protected Long creatorId;
 
@@ -39,11 +34,147 @@ public class CommentPo {
 
     protected Long shopId;
 
-    protected Long replyCommentId;// 如果是首评，此属性为回复评论Id，如果是回复，此属性为首评Id
+    protected Long replyCommentId;
+
+    protected Long addCommentId;
+
+    protected Long PId;  //首评的PId为NULL,追评的PId为首评ID，回复的PId为所回复的评论Id
 
     protected LocalDateTime gmtPublish; // 发布时间，即审核通过时间
 
     protected Byte status = 0; // 0-待审核 1-通过审核 2-审核驳回
 
-    protected boolean canReply = false;
+    protected boolean Replyable = false;
+
+    protected boolean Addtionable = false;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getRejectReason() {
+        return rejectReason;
+    }
+
+    public void setRejectReason(String rejectReason) {
+        this.rejectReason = rejectReason;
+    }
+
+    public Byte getType() {
+        return type;
+    }
+
+    public void setType(Byte type) {
+        this.type = type;
+    }
+
+    public Long getCreatorId() {
+        return creatorId;
+    }
+
+    public void setCreatorId(Long creatorId) {
+        this.creatorId = creatorId;
+    }
+
+    public Long getOrderItemId() {
+        return orderItemId;
+    }
+
+    public void setOrderItemId(Long orderItemId) {
+        this.orderItemId = orderItemId;
+    }
+
+    public Long getReviewerId() {
+        return reviewerId;
+    }
+
+    public void setReviewerId(Long reviewerId) {
+        this.reviewerId = reviewerId;
+    }
+
+    public Long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
+    }
+
+    public Long getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(Long shopId) {
+        this.shopId = shopId;
+    }
+
+    public Long getReplyCommentId() {
+        return replyCommentId;
+    }
+
+    public void setReplyCommentId(Long replyCommentId) {
+        this.replyCommentId = replyCommentId;
+    }
+
+    public Long getAddCommentId() {
+        return addCommentId;
+    }
+
+    public void setAddCommentId(Long addCommentId) {
+        this.addCommentId = addCommentId;
+    }
+
+    public Long getPId() {
+        return PId;
+    }
+
+    public void setPId(Long PId) {
+        this.PId = PId;
+    }
+
+    public LocalDateTime getGmtPublish() {
+        return gmtPublish;
+    }
+
+    public void setGmtPublish(LocalDateTime gmtPublish) {
+        this.gmtPublish = gmtPublish;
+    }
+
+    public Byte getStatus() {
+        return status;
+    }
+
+    public void setStatus(Byte status) {
+        this.status = status;
+    }
+
+    public boolean isReplyable() {
+        return Replyable;
+    }
+
+    public void setReplyable(boolean replyable) {
+        Replyable = replyable;
+    }
+
+    public boolean isAddtionable() {
+        return Addtionable;
+    }
+
+    public void setAddtionable(boolean addtionable) {
+        Addtionable = addtionable;
+    }
+
+
 }
