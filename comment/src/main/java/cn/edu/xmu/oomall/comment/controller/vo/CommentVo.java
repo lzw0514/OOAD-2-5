@@ -100,8 +100,6 @@ public class CommentVo {
         this.shopId = shopId;
     }
 
-
-
     public Byte getStatus() {
         return status;
     }

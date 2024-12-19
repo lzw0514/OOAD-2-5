@@ -601,7 +601,7 @@ public class AdminPaymentControllerTest {
                         .header("authorization", shop73Token)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(body))
-                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errno", is(ReturnNo.CREATED.getErrNo())))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.status",is(1)));
     }

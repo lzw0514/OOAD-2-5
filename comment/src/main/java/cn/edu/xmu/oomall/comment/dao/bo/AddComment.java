@@ -81,7 +81,7 @@ public class AddComment extends Comment {
 
         }
         else {
-            throw new BusinessException(ReturnNo.STATENOTALLOW, String.format(ReturnNo.COMMENT_NOT_PUBLISHED.getMessage()));
+            throw new BusinessException(ReturnNo.COMMENT_NOT_PUBLISHED,String.format(ReturnNo.COMMENT_NOT_PUBLISHED.getMessage()));
         }
     }
 

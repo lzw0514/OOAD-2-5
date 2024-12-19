@@ -71,8 +71,6 @@ public class CommentService {
 
     public FirstComment createComment(Long orderItemId, FirstComment firstComment, UserDto user) {
         OrderItem orderItem = orderitemDao.findById(orderItemId);
-        log.debug("createFirstComment:user={}",user);
-        log.debug("createFirstComment:orderitem={}",orderItem);
         if(!Objects.equals(user.getId(),orderItem.getCustomerId()))
         {
             throw new BusinessException(ReturnNo.AUTH_NO_RIGHT, String.format(ReturnNo.AUTH_NO_RIGHT.getMessage()));

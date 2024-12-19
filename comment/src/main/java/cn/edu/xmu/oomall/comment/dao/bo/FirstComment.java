@@ -102,6 +102,7 @@ public class FirstComment extends Comment {
                         this.setReplyable(false);
                         newReplyComment.setProductId(productId);
                         newReplyComment.setShopId(shopId);
+                        newReplyComment.setCreatorId(user.getId());
                         commentDao.save(this,user);
                         return (ReplyComment) commentDao.insert(newReplyComment, user);
                     }
@@ -136,6 +137,7 @@ public class FirstComment extends Comment {
                 newAddComment.setProductId(productId);
                 newAddComment.setShopId(shopId);
                 newAddComment.setType((byte)1);
+                newAddComment.setCreatorId(user.getId());
                 setAddtionable(false);
                 commentDao.save(this,user);
                 return (AddComment) commentDao.insert(newAddComment, user);

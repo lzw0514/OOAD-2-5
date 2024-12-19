@@ -55,6 +55,7 @@ public class OrderItem extends OOMallObject implements Serializable {
         firstComment.setOrderitemId(id);
         firstComment.setShopId(shopId);
         firstComment.setProductId(productId);
+        firstComment.setCreatorId(user.getId());
 
         return (FirstComment) commentDao.insert(firstComment,user);
     }
