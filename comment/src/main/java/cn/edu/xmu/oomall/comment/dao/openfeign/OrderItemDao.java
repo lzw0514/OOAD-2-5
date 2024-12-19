@@ -36,7 +36,7 @@ public class OrderItemDao {
         Optional<OrderItemPo> ret = orderItemPoMapper.findById(orderItemId);
         if (ret.isPresent()) {
             OrderItemPo po = ret.get();
-            OrderItem orderitem = new OrderItem(po.getId(), po.getProductId(), po.getShopId(), po.getQuantity());
+            OrderItem orderitem = new OrderItem(po.getId(), po.getProductId(), po.getShopId(), po.getQuantity(),po.getCustomerId());
             return this.build(orderitem);
         } else {
             throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "订单项", orderItemId));

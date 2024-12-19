@@ -8,7 +8,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 /**
- * @author 2-4
+ * @author 2-5
  */
 @SpringBootApplication(scanBasePackages = {"cn.edu.xmu.javaee.core",
         "cn.edu.xmu.oomall.comment"})

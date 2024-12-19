@@ -32,59 +32,70 @@ public class ReplyComment extends Comment {
     {
         if(approve) {
             setStatus(PUBLISHED);
-            Comment originComment = commentDao.findById(PId);      // 找到回复评论对应的首评或者追评
+            setGmtPublish(LocalDateTime.now());
+            Comment originComment = commentDao.findById(parentId);      // 找到回复评论对应的首评或者追评
             originComment.setReplyable (false);
-            originComment.setReplyCommentId(id);
+            originComment.setReplyId(id);
             originComment.commentDao.save(originComment, user);
         }
         else {
             setStatus(REJECTED);
             setRejectReason(rejectReason.orElse(""));
         }
-        setReplyable(false); // 回复评论始终不可回复
+        this.setReplyable(false); // 回复评论始终不可回复
 
         return commentDao.save(this, user);
     }
 
-
     /**
-     * 关联驳回
-     * 当评论或追评被驳回时，其下面关联的回复也要被驳回
+     * 审核被举报的回复
+     * 商家回复可以被举报，审核通过，将该回复设为INVISIBLE状态；审核不通过，将该回复设为PUBLISHED状态
+     * @param approve 审核状态
+     * @return
+     */
+    @Override
+    public String auditReport(boolean approve, UserDto user)
+    {
+        if(approve) {
+            setStatus(INVISIBLE);
+        }
+        else{
+            setStatus(PUBLISHED);
+        }
+        return commentDao.save(this, user);
+    }
+    /**
+     * 关联屏蔽
+     * 当评论或追评被成功举报时，其下面关联的回复也要被屏蔽，设为INVISIBLE状态
      * @param newReplyComment
      * @param user
      * @return
      */
-   public void RelatedReject(ReplyComment newReplyComment, UserDto user)
+   public void RelatedMask(ReplyComment newReplyComment, UserDto user)
    {
-       newReplyComment.setStatus(REJECTED);
-       newReplyComment.setRejectReason("原评论被驳回");
+       newReplyComment.setStatus(INVISIBLE);
        commentDao.save(newReplyComment, user);
    }
 
 
     @Override
-    public void setGmtCreate(LocalDateTime gmtCreate) {}
-
-    @Override
-    public void setGmtModified(LocalDateTime gmtModified) {}
-    @Override
     public ReplyComment createReply(Long shopId, ReplyComment newReplyComment, UserDto user)
     {
-        throw new BusinessException(ReturnNo.FIELD_NOTVALID,"商家回复评论不能被回复");
+        throw new BusinessException(ReturnNo.COMMENT_NOT_RETURNABLE , String.format(ReturnNo.COMMENT_NOT_RETURNABLE .getMessage()));
 
     }
 
-    public boolean getReplyable () { return Replyable ; } public void setReplyable (boolean Replyable ) { this.Replyable  = Replyable ; }
+    public boolean getReplyable () { return replyable; } public void setReplyable (boolean Replyable ) { this.replyable = Replyable ; }
     public Long getId() { return id; } public void setId(Long id) { this.id = id; }
     public String getContent() { return content; } public void setContent(String content) { this.content = content; }
     public String getRejectReason() { return rejectReason; } public void setRejectReason(String rejectReason) { this.rejectReason = rejectReason; }
     public Byte getType() { return type; } public void setType(Byte type) { this.type = type; }
     public Long getCreatorId() { return creatorId; } public void setCreatorId(Long creatorId) { this.creatorId = creatorId; }
-    public Long getOrderItemId() { return orderItemId; } public void setOrderItemId(Long orderItemId) { this.orderItemId = orderItemId; }
+    public Long getOrderitemId() { return orderitemId; } public void setOrderitemId(Long orderitemId) { this.orderitemId = orderitemId; }
     public Long getReviewerId() { return reviewerId; } public void setReviewerId(Long reviewerId) { this.reviewerId = reviewerId; }
     public Long getProductId() { return productId; } public void setProductId(Long productId) { this.productId = productId; }
     public Long getShopId() { return shopId; } public void setShopId(Long shopId) { this.shopId = shopId; }
-    public Long getReplyCommentId() { return replyCommentId; } public void setReplyCommentId(Long replyCommentId) { this.replyCommentId = replyCommentId; }
+    public Long getReplyId() { return replyId; } public void setReplyId(Long replyId) { this.replyId = replyId; }
     public LocalDateTime getGmtPublish() { return gmtPublish; } public void setGmtPublish(LocalDateTime gmtPublish) { this.gmtPublish = gmtPublish; }
     public Byte getStatus() { return status; } public void setStatus(Byte status) { this.status = status; }
     public void setReplyComment(Comment replyComment) { ReplyComment = replyComment; }
@@ -93,7 +104,21 @@ public class ReplyComment extends Comment {
     public void setCommentDao(CommentDao commentDao) { this.commentDao = commentDao; }
     public void setShopDao(ShopDao shopDao) { this.shopDao = shopDao; }
     public void setOrderItemDao(OrderItemDao orderItemDao) { this.orderitemDao = orderItemDao; }
-    public Long getPId() {return PId;}public void setPId(Long addPId) {this.PId = addPId;}
-    public Long getAddCommentId() {return addCommentId;}
-    public void setAddCommentId(Long addCommentId) {this.addCommentId = addCommentId;}
+    public Long getParentId() {return parentId;}public void setParentId(Long addPId) {this.parentId = addPId;}
+    public Long getAddId() {return addId;}
+    public void setAddId(Long addId) {this.addId = addId;}
+    public LocalDateTime getGmtCreate() {
+        return gmtCreate;
+    }
+    public void setGmtCreate(LocalDateTime gmtCreate) {
+        this.gmtCreate = gmtCreate;
+    }
+    public LocalDateTime getGmtModified() {
+        return gmtModified;
+    }
+    public void setGmtModified(LocalDateTime gmtModified) {
+        this.gmtModified = gmtModified;
+    }
+    public String getCreatorName() { return creatorName; } public void setCreatorName(String CreatorName) { this.creatorName=CreatorName; }
+
 }

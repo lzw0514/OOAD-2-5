@@ -27,8 +27,8 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
         })
 @SpringBootConfiguration
 @EnableAutoConfiguration
-@EnableJpaRepositories(value = "cn.edu.xmu.javaee.core.jpa", repositoryBaseClass = SelectiveUpdateJpaRepositoryImpl.class, basePackages = "cn.edu.xmu.oomall.comment.mapper.jpa")
-@EnableMongoRepositories(basePackages = "cn.edu.xmu.oomall.comment.mapper.mongo")
+@EnableJpaRepositories(value = "cn.edu.xmu.javaee.core.jpa", repositoryBaseClass = SelectiveUpdateJpaRepositoryImpl.class, basePackages = "cn.edu.xmu.oomall.comment.mapper")
+@EnableMongoRepositories(basePackages = "cn.edu.xmu.oomall.comment.mapper")
 @EnableFeignClients
 @EnableDiscoveryClient
 public class CommentTestApplication {

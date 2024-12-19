@@ -10,7 +10,6 @@ import cn.edu.xmu.oomall.comment.mapper.po.CommentPo;
 import lombok.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @Setter
@@ -22,16 +21,18 @@ public class OrderItem extends OOMallObject implements Serializable {
     private Long id;
     private Long productId;
     private Long shopId;
+    private Long customerId;
     private Integer quantity;
 
     private CommentDao commentDao;
     private OrderItemDao OrderitemDao;
 
-    public OrderItem(Long id, Long productId, Long shopId, Integer quantity) {
+    public OrderItem(Long id, Long productId, Long shopId, Integer quantity,Long customerId) {
         this.id = id;
         this.productId = productId;
         this.shopId = shopId;
         this.quantity = quantity;
+        this.customerId=customerId;
     }
 
     @Override
@@ -48,12 +49,14 @@ public class OrderItem extends OOMallObject implements Serializable {
 
         if (comment.isPresent() && comment.get().getStatus() !=2)
         {
-            throw new BusinessException(ReturnNo.FIELD_NOTVALID,"评论数已超过最大值");
+            throw new BusinessException(ReturnNo.COMMENT_UPPER_LIMIT, String.format(ReturnNo.COMMENT_UPPER_LIMIT.getMessage()));
         }
-        firstComment.setOrderItemId(id);
+        firstComment.setType((byte) 0);
+        firstComment.setOrderitemId(id);
         firstComment.setShopId(shopId);
         firstComment.setProductId(productId);
 
         return (FirstComment) commentDao.insert(firstComment,user);
     }
+
 }

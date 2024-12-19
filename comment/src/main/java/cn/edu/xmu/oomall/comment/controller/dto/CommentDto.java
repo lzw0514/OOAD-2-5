@@ -6,11 +6,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotBlank;
 import lombok.NoArgsConstructor;
 
-import jakarta.validation.constraints.Min;
-
 /**
  * 评论DTO对象
- * @author Shuyang Xing
+ * @author Liuzhiwem
  **/
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -21,17 +19,17 @@ public class CommentDto {
 
     protected String rejectReason;
 
-    protected Byte type; // 1-首评 2-追评 3-商家回复
+    protected Byte type; // 0-首评 1-追评 2-商家回复
 
-    protected Long replyCommentId;
+    protected Long replyId;
 
-    protected Long addCommentId;
+    protected Long addId;    //追评Id
 
-    protected Long PId;   //首评的PId为NULL,追评的PId为首评ID，回复的PId为所回复的评论Id
+    protected Long parentId;   //首评的parentId为NULL,追评的parentId为首评ID，回复的parentId为所回复的评论Id
 
     protected Long creatorId;
 
-    protected Long orderItemId;
+    protected Long orderitemId;
 
     protected Long productId;
 
@@ -61,28 +59,28 @@ public class CommentDto {
         this.type = type;
     }
 
-    public Long getReplyCommentId() {
-        return replyCommentId;
+    public Long getReplyId() {
+        return replyId;
     }
 
-    public void setReplyCommentId(Long replyCommentId) {
-        this.replyCommentId = replyCommentId;
+    public void setReplyId(Long replyId) {
+        this.replyId = replyId;
     }
 
-    public Long getAddCommentId() {
-        return addCommentId;
+    public Long getAddId() {
+        return addId;
     }
 
-    public void setAddCommentId(Long addCommentId) {
-        this.addCommentId = addCommentId;
+    public void setAddId(Long addId) {
+        this.addId = addId;
     }
 
-    public Long getPId() {
-        return PId;
+    public Long getParentId() {
+        return parentId;
     }
 
-    public void setPId(Long PId) {
-        this.PId = PId;
+    public void setParentId(Long parentId) {
+        this.parentId = parentId;
     }
 
     public Long getCreatorId() {
@@ -93,12 +91,12 @@ public class CommentDto {
         this.creatorId = creatorId;
     }
 
-    public Long getOrderItemId() {
-        return orderItemId;
+    public Long getOrderitemId() {
+        return orderitemId;
     }
 
-    public void setOrderItemId(Long orderItemId) {
-        this.orderItemId = orderItemId;
+    public void setOrderitemId(Long orderitemId) {
+        this.orderitemId = orderitemId;
     }
 
     public Long getProductId() {

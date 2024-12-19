@@ -22,11 +22,13 @@ public class CommentPo {
 
     protected String rejectReason;
 
-    protected Byte type; // 1-首评 2-追评 3-商家回复
+    protected Byte type; // 0-首评 1-追评 2-商家回复
 
     protected Long creatorId;
 
-    protected Long orderItemId;
+    protected String creatorName;
+
+    protected Long orderitemId;
 
     protected Long reviewerId;
 
@@ -34,19 +36,23 @@ public class CommentPo {
 
     protected Long shopId;
 
-    protected Long replyCommentId;
+    protected Long replyId;
 
-    protected Long addCommentId;
+    protected Long addId;
 
-    protected Long PId;  //首评的PId为NULL,追评的PId为首评ID，回复的PId为所回复的评论Id
+    protected Long parentId;  //首评的parentId为NULL,追评的parentId为首评ID，回复的parentId为所回复的评论Id
 
     protected LocalDateTime gmtPublish; // 发布时间，即审核通过时间
 
-    protected Byte status = 0; // 0-待审核 1-通过审核 2-审核驳回
+    protected Byte status = 0;  // 共4种状态 0-待审核 1-通过审核 2-驳回 3-评论不可见 4-被举报待审核
 
-    protected boolean Replyable = false;
+    private LocalDateTime gmtCreate;
 
-    protected boolean Addtionable = false;
+    private LocalDateTime gmtModified;
+
+    protected boolean replyable = false;
+
+    protected boolean addtionable = false;
 
     public Long getId() {
         return id;
@@ -88,12 +94,36 @@ public class CommentPo {
         this.creatorId = creatorId;
     }
 
-    public Long getOrderItemId() {
-        return orderItemId;
+    public String getCreatorName() {
+        return creatorName;
     }
 
-    public void setOrderItemId(Long orderItemId) {
-        this.orderItemId = orderItemId;
+
+    public LocalDateTime getGmtCreate() {
+        return gmtCreate;
+    }
+
+    public void setGmtCreate(LocalDateTime gmtCreate) {
+        this.gmtCreate = gmtCreate;
+    }
+
+    public LocalDateTime getGmtModified() {
+        return gmtModified;
+    }
+
+    public void setGmtModified(LocalDateTime gmtModified) {
+        this.gmtModified = gmtModified;
+    }
+
+    public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
+    }
+    public Long getOrderitemId() {
+        return orderitemId;
+    }
+
+    public void setOrderitemId(Long orderItemId) {
+        this.orderitemId = orderItemId;
     }
 
     public Long getReviewerId() {
@@ -120,28 +150,28 @@ public class CommentPo {
         this.shopId = shopId;
     }
 
-    public Long getReplyCommentId() {
-        return replyCommentId;
+    public Long getReplyId() {
+        return replyId;
     }
 
-    public void setReplyCommentId(Long replyCommentId) {
-        this.replyCommentId = replyCommentId;
+    public void setReplyId(Long replyCommentId) {
+        this.replyId = replyCommentId;
     }
 
-    public Long getAddCommentId() {
-        return addCommentId;
+    public Long getAddId() {
+        return addId;
     }
 
-    public void setAddCommentId(Long addCommentId) {
-        this.addCommentId = addCommentId;
+    public void setAddId(Long addCommentId) {
+        this.addId = addCommentId;
     }
 
-    public Long getPId() {
-        return PId;
+    public Long getParentId() {
+        return parentId;
     }
 
-    public void setPId(Long PId) {
-        this.PId = PId;
+    public void setParentId(Long PId) {
+        this.parentId = PId;
     }
 
     public LocalDateTime getGmtPublish() {
@@ -160,20 +190,20 @@ public class CommentPo {
         this.status = status;
     }
 
-    public boolean isReplyable() {
-        return Replyable;
+    public boolean getReplyable() {
+        return replyable;
     }
 
-    public void setReplyable(boolean replyable) {
-        Replyable = replyable;
+    public void setReplyable(boolean Replyable) {
+        replyable = Replyable;
     }
 
-    public boolean isAddtionable() {
-        return Addtionable;
+    public boolean getAddtionable() {
+        return addtionable;
     }
 
-    public void setAddtionable(boolean addtionable) {
-        Addtionable = addtionable;
+    public void setAddtionable(boolean Addtionable) {
+        addtionable = Addtionable;
     }
 
 

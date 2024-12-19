@@ -90,10 +90,12 @@ public enum ReturnNo {
     /***************************************************
      *    评论模块错误码
      **************************************************/
-    COMMENT_NOT_RETURNABLE(301, "评论不可回复"),
-    COMMENT_NOT_LIKEABLE(302, "评论不可点赞"),
+    COMMENT_NOT_RETURNABLE(301, "商家回复不可被回复"),
+    COMMENT_NOT_ADDTIONAL(302, "评论不可追评"),
     COMMENT_NOT_PUBLISHED(303, "评论未发布"),
     COMMENT_NOT_FIND(304, "评论未找到"),
+    COMMENT_NOT_TYPE(305,"评论对象类型错误"),
+    COMMENT_UPPER_LIMIT(306,"评论数达到上限"),
 
 
     /***************************************************

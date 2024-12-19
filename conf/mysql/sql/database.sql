@@ -62,4 +62,8 @@ CREATE DATABASE IF NOT EXISTS ztoexpress;
 GRANT ALL ON ztoexpress.* TO 'demouser'@'localhost';
 GRANT ALL ON ztoexpress.* TO 'demouser'@'%';
 
+CREATE DATABASE IF NOT EXISTS comment;
+GRANT ALL ON comment.* TO 'demouser'@'localhost';
+GRANT ALL ON comment.* TO 'demouser'@'%';
+
 FLUSH PRIVILEGES;

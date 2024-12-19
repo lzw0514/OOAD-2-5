@@ -4,7 +4,6 @@ package cn.edu.xmu.oomall.comment.dao;
 import cn.edu.xmu.javaee.core.exception.BusinessException;
 import cn.edu.xmu.javaee.core.model.ReturnNo;
 import cn.edu.xmu.javaee.core.model.dto.UserDto;
-import cn.edu.xmu.javaee.core.model.vo.PageVo;
 import cn.edu.xmu.oomall.comment.dao.bo.*;
 import cn.edu.xmu.oomall.comment.dao.openfeign.OrderItemDao;
 import cn.edu.xmu.oomall.comment.dao.openfeign.ShopDao;
@@ -14,12 +13,10 @@ import cn.edu.xmu.javaee.core.util.CloneFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -56,6 +53,21 @@ public class CommentDao {
             throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "评论", commentId));
         }
     }
+    /**
+     * 通过commentId查询特定评论
+     * @param commentId
+     */
+    public Comment  findValidCommenntById(Long commentId) {
+        log.debug("findvalidcommentById: id = {}",commentId);
+        Optional<CommentPo> ret = this.commentPoMapper.findValidCommentById(commentId);
+        if (ret.isPresent()) {
+            CommentPo po = ret.get();
+            return this.build(po);
+        } else {
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "评论", commentId));
+        }
+    }
+
 
     /**
      * 通过orderItemId查询特定评论
@@ -63,7 +75,7 @@ public class CommentDao {
      */
     public  Optional<CommentPo> findByOrderItemId(Long orderItemId) {
 
-        Optional<CommentPo> ret = this.commentPoMapper.findByOrderItemId(orderItemId);
+        Optional<CommentPo> ret = this.commentPoMapper.findByOrderitemId(orderItemId);
         return ret;
     }
     /**
@@ -86,7 +98,7 @@ public class CommentDao {
                 ret = CloneFactory.copy(new ReplyComment(), po);
                 break;
             default:
-                throw new IllegalArgumentException("Undefined comment type");
+                throw new BusinessException(ReturnNo.COMMENT_NOT_TYPE, String.format(ReturnNo.COMMENT_NOT_TYPE.getMessage()));
         }
         this.build(ret);
         return ret;
@@ -163,15 +175,15 @@ public class CommentDao {
             FirstComment obj = (FirstComment) bo;
             po = CloneFactory.copy(new CommentPo(), obj);
         }
-        else if (bo instanceof FirstComment) {
-            FirstComment obj = (FirstComment) bo;
+        else if (bo instanceof AddComment) {
+            AddComment obj = (AddComment) bo;
             po = CloneFactory.copy(new CommentPo(), obj);
         }
         else if (bo instanceof ReplyComment) {
             ReplyComment obj = (ReplyComment) bo;
             po = CloneFactory.copy(new CommentPo(), obj);
         } else{
-            throw new IllegalArgumentException("Unknown comment type");
+            throw new BusinessException(ReturnNo.COMMENT_NOT_TYPE, String.format(ReturnNo.COMMENT_NOT_TYPE.getMessage()));
         }
         log.debug("save: po = {}", po);
         po = this.commentPoMapper.save(po);

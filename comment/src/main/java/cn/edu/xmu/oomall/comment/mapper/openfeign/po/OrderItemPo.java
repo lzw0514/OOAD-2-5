@@ -27,6 +27,8 @@ public class OrderItemPo {
 
     private Integer quantity;
 
+    private Long customerId;
+
     public Long getId() {
         return id;
     }
@@ -58,5 +60,8 @@ public class OrderItemPo {
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
+    public Long getCustomerId() {return customerId;}
+
+    public void setCustomerId(Long customerId) {this.customerId = customerId;}
 
 }

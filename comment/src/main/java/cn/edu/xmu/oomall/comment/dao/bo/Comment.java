@@ -29,11 +29,13 @@ public abstract class Comment extends OOMallObject implements Serializable {
 
     protected String rejectReason;
 
-    protected Byte type; // 1-首评 2-追评 3-商家回复
+    protected Byte type; // 0-首评 1-追评 2-商家回复
 
     protected Long creatorId;
 
-    protected Long orderItemId;
+    protected String creatorName;
+
+    protected Long orderitemId;
 
     protected Long reviewerId;
 
@@ -41,17 +43,17 @@ public abstract class Comment extends OOMallObject implements Serializable {
 
     protected Long shopId;
 
-    protected Long replyCommentId;
+    protected Long replyId;
 
-    protected Long addCommentId;
+    protected Long addId;
 
-    protected Long PId;//首评的PId为NULL,追评的PId为首评ID，回复的PId为所回复的评论Id
+    protected Long parentId;//首评的parentId为NULL,追评的parentId为首评ID，回复的parentId为所回复的评论Id
 
     protected LocalDateTime gmtPublish; // 发布时间，即审核通过时间
 
-    protected Byte status = 0; // 0-待审核 1-通过审核 2-审核驳回
+    protected Byte status = 0; // 0-待审核 1-通过审核 2-审核驳回 3-评论不可见
 
-    protected boolean Replyable = false; // 首评和追评只能回复一次
+    protected boolean replyable = false; // 首评和追评只能回复一次
 
 
 
@@ -84,7 +86,7 @@ public abstract class Comment extends OOMallObject implements Serializable {
     @JsonIgnore
     public static final Long NO_REPLY_COMMENT =0L;
 
-    // 共3种状态 0-待审核 1-通过审核 2-审核驳回
+    // 共5种状态 0-待审核 1-通过审核 2-驳回 4-评论不可见 5-被举报待审核
     // 待审核
     @JsonIgnore
     public static final  Byte PENDING = 0;
@@ -93,9 +95,17 @@ public abstract class Comment extends OOMallObject implements Serializable {
     @JsonIgnore
     public static final  Byte PUBLISHED = 1;
 
-    // 审核驳回
+    // 驳回
     @JsonIgnore
-    public static final  Byte REJECTED  = -1;
+    public static final  Byte REJECTED  = 2;
+
+    // 评论不可见
+    @JsonIgnore
+    public static final  Byte INVISIBLE   = 3;
+
+    // 评论被举报待审核
+    @JsonIgnore
+    public static final  Byte REPORTED_FOR_REVIEW   = 4;
 
     // 状态和名称的对应
     @JsonIgnore
@@ -104,6 +114,8 @@ public abstract class Comment extends OOMallObject implements Serializable {
             put(PUBLISHED, "已发布");
             put(PENDING, "待审核");
             put(REJECTED, "已驳回");
+            put(INVISIBLE,"不可见");
+            put(REPORTED_FOR_REVIEW,"被举报待审核");
         }
     };
 
@@ -116,7 +128,7 @@ public abstract class Comment extends OOMallObject implements Serializable {
     @JsonIgnore
     public Comment getReplyComment(){
         if (ReplyComment == null && commentDao != null)
-            ReplyComment = commentDao.findById(replyCommentId);
+            ReplyComment = commentDao.findById(replyId);
         return ReplyComment;
     }
 
@@ -134,42 +146,82 @@ public abstract class Comment extends OOMallObject implements Serializable {
     // 获取评论所属订单项
     @JsonIgnore
     public OrderItem getOrderItem(){
-        if (orderItemId == null)
+        if (orderitemId == null)
             throw new BusinessException(ReturnNo.INCONSISTENT_DATA, String.format(ReturnNo.INCONSISTENT_DATA.getMessage(), "评论", id, "orderItemId为空"));
 
         if (orderItem == null && orderitemDao != null)
-            orderItem = orderitemDao.findById(orderItemId);
+            orderItem = orderitemDao.findById(orderitemId);
         return orderItem;
     }
 
-    // 抽象方法 审核评论
+
     public abstract String auditComment(boolean approve, Optional<String> rejectReason, UserDto user);
-    // 抽象方法 提交回复
+
     public abstract ReplyComment createReply(Long shopId, ReplyComment newReplyComment, UserDto user);
 
-    // Getter and Setter methods
-    public boolean getReplyable () { return Replyable ; } public void setReplyable (boolean Replyable ) { this.Replyable  = Replyable ; }
-    public Long getId() { return id; } public void setId(Long id) { this.id = id; }
-    public String getContent() { return content; } public void setContent(String content) { this.content = content; }
-    public String getRejectReason() { return rejectReason; } public void setRejectReason(String rejectReason) { this.rejectReason = rejectReason; }
-    public Byte getType() { return type; } public void setType(Byte type) { this.type = type; }
-    public Long getCreatorId() { return creatorId; } public void setCreatorId(Long creatorId) { this.creatorId = creatorId; }
-    public Long getOrderItemId() { return orderItemId; } public void setOrderItemId(Long orderItemId) { this.orderItemId = orderItemId; }
-    public Long getReviewerId() { return reviewerId; } public void setReviewerId(Long reviewerId) { this.reviewerId = reviewerId; }
-    public Long getProductId() { return productId; } public void setProductId(Long productId) { this.productId = productId; }
-    public Long getShopId() { return shopId; } public void setShopId(Long shopId) { this.shopId = shopId; }
-    public Long getReplyCommentId() { return replyCommentId; } public void setReplyCommentId(Long replyCommentId) { this.replyCommentId = replyCommentId; }
-    public LocalDateTime getGmtPublish() { return gmtPublish; } public void setGmtPublish(LocalDateTime gmtPublish) { this.gmtPublish = gmtPublish; }
-    public Byte getStatus() { return status; } public void setStatus(Byte status) { this.status = status; }
-    public void setReplyComment(Comment replyComment) { ReplyComment = replyComment; }
-    public void setShop(Shop shop) { this.shop = shop; }
-    public void setOrderItem(OrderItem orderItem) { this.orderItem = orderItem; }
-    public void setCommentDao(CommentDao commentDao) { this.commentDao = commentDao; }
-    public void setShopDao(ShopDao shopDao) { this.shopDao = shopDao; }
-    public void setOrderItemDao(OrderItemDao orderItemDao) { this.orderitemDao = orderItemDao; }
-    public Long getPId() {return PId;}public void setPId(Long addPId) {this.PId = addPId;}
-    public Long getAddCommentId() {return addCommentId;}
-    public void setAddCommentId(Long addCommentId) {this.addCommentId = addCommentId;}
+    public abstract String auditReport(boolean approve, UserDto user);
+
+    public abstract Long getId();
+    public abstract void setId(Long id);
+
+    public abstract String getContent();
+    public abstract void setContent(String content);
+
+    public abstract String getRejectReason();
+    public abstract void setRejectReason(String rejectReason);
+
+    public abstract Byte getType();
+    public abstract void setType(Byte type);
+
+    public abstract Long getCreatorId();
+    public abstract void setCreatorId(Long creatorId);
+
+    public abstract String getCreatorName();
+    public abstract void setCreatorName(String CreatorName);
+
+    public abstract Long getOrderitemId();
+    public abstract void setOrderitemId(Long orderitemId);
+
+    public abstract Long getReviewerId();
+    public abstract void setReviewerId(Long reviewerId);
+
+    public abstract Long getProductId();
+    public abstract void setProductId(Long productId);
+
+    public abstract Long getShopId();
+    public abstract void setShopId(Long shopId);
+
+    public abstract Long getReplyId();
+    public abstract void setReplyId(Long replyId);
+
+    public abstract LocalDateTime getGmtPublish();
+    public abstract void setGmtPublish(LocalDateTime gmtPublish);
+
+    public abstract Byte getStatus();
+    public abstract void setStatus(Byte status);
+
+    public abstract Long getParentId();
+    public abstract void setParentId(Long parentId);
+
+    public abstract Long getAddId();
+    public abstract void setAddId(Long addId);
+
+    public abstract boolean getReplyable();
+    public abstract void setReplyable(boolean replyable);
+
+    public abstract void setReplyComment(Comment replyComment);
+    public abstract void setShop(Shop shop);
+    public abstract void setOrderItem(OrderItem orderItem);
+    public abstract void setCommentDao(CommentDao commentDao);
+    public abstract void setShopDao(ShopDao shopDao);
+    public abstract void setOrderItemDao(OrderItemDao orderItemDao);
+    public abstract void setGmtCreate(LocalDateTime gmtCreate);
+
+    public abstract LocalDateTime getGmtCreate();
+
+    public abstract void setGmtModified(LocalDateTime gmtModified);
+
+    public abstract LocalDateTime getGmtModified();
 
 
 }

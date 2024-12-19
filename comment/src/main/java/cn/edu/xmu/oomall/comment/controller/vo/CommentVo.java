@@ -2,6 +2,8 @@ package cn.edu.xmu.oomall.comment.controller.vo;
 
 
 import cn.edu.xmu.javaee.core.aop.CopyFrom;
+import cn.edu.xmu.javaee.core.exception.BusinessException;
+import cn.edu.xmu.javaee.core.model.ReturnNo;
 import cn.edu.xmu.javaee.core.util.CloneFactory;
 import cn.edu.xmu.oomall.comment.dao.bo.*;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -17,13 +19,12 @@ import java.time.LocalDateTime;
 public class CommentVo {
     private Long id;
     private String content;
-    private Byte type; // 1-首评 2-追评 3-商家回复
+    private Byte type; // 0-首评 1-追评 2-商家回复
     private Long creatorId;
     private Long productId;
     private Long shopId;
-    private Long PId; //首评的PId为NULL,追评的PId为首评ID，回复的PId为所回复的评论Id
-    private Byte status; // 0-待审核 1-通过审核 2-审核驳回
-    private boolean Replyable; // 首评和追评只能回复一次，回复不能回复
+    private Long parentId; //首评的parentId为NULL,追评的parentId为首评ID，回复的parentId为所回复的评论Id
+    private Byte status; //共4种状态 0-待审核 1-通过审核 2-驳回 3-评论不可见 4-被举报待审核
     private LocalDateTime GmtPublish; // 审核通过时间
 
     public CommentVo(Comment comment) {
@@ -31,12 +32,17 @@ public class CommentVo {
         if (comment instanceof FirstComment)
         {
             CloneFactory.copy(this, (FirstComment)comment);
-        }else if (comment instanceof ReplyComment)
+        }
+        else if (comment instanceof AddComment)
+        {
+            CloneFactory.copy(this, (AddComment)comment);
+        }
+        else if (comment instanceof ReplyComment)
         {
             CloneFactory.copy(this, (ReplyComment)comment);
-        }else {
-            throw new IllegalArgumentException("Unknown comment type");
         }
+        else
+         throw new BusinessException(ReturnNo.COMMENT_NOT_TYPE, String.format(ReturnNo.COMMENT_NOT_TYPE.getMessage()));
     }
     public Long getId() {
         return id;
@@ -62,12 +68,12 @@ public class CommentVo {
         this.type = type;
     }
 
-    public Long getPId() {
-        return PId;
+    public Long getParentId() {
+        return parentId;
     }
 
-    public void setPId(Long PId) {
-        this.PId = PId;
+    public void setParentId(Long parentId) {
+        this.parentId = parentId;
     }
 
     public Long getCreatorId() {
@@ -104,13 +110,6 @@ public class CommentVo {
         this.status = status;
     }
 
-    public boolean isReplyable() {
-        return Replyable;
-    }
-
-    public void setReplyable(boolean Replyable) {
-        this.Replyable= Replyable;
-    }
 
     public LocalDateTime getGmtPublish() {
         return GmtPublish;

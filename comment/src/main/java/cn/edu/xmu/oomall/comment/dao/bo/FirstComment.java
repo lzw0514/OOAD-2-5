@@ -10,6 +10,8 @@ import cn.edu.xmu.oomall.comment.dao.openfeign.OrderItemDao;
 import cn.edu.xmu.oomall.comment.dao.openfeign.ShopDao;
 import cn.edu.xmu.oomall.comment.mapper.po.CommentPo;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
+
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -22,10 +24,11 @@ import java.util.*;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @CopyFrom({CommentPo.class, CommentDto.class})
+@Slf4j
 public class FirstComment extends Comment {
 
 
-    protected boolean Addtionable = false;
+    protected boolean addtionable;
 
 
     /**
@@ -40,30 +43,46 @@ public class FirstComment extends Comment {
     {
         if(approve) {
             setStatus(PUBLISHED);
-            setReplyable(true);// 审核通过的评论设为可回复
+            setGmtPublish(LocalDateTime.now());
+            this.setReplyable(true);// 审核通过的评论设为可回复
             setAddtionable(true);// 审核通过的评论设为可追评
         }
         else {
             setStatus(REJECTED);
-            setReplyable(false);
+            this.setReplyable(false);
             setAddtionable(false);
             setRejectReason(rejectReason.orElse(""));
-            // 同时将回复驳回
-            if(!Objects.isNull(replyCommentId))
-            {
-                ReplyComment newReplyComment = (ReplyComment) commentDao.findById(replyCommentId);
-                newReplyComment.RelatedReject(newReplyComment, user);
-            }
-            //同时将追评驳回
-            if(!Objects.isNull(addCommentId))
-            {
-                AddComment newaddComment=(AddComment) commentDao.findById(addCommentId);
-                newaddComment.RelatedReject(newaddComment,user);
-            }
         }
         return commentDao.save(this, user);
     }
 
+    /**
+     * 审核被举报的评论
+     * 评论可以被举报，审核通过，将该评论及其下的追评和回复都设为INVISIBLE状态；审核不通过，将该评论设为PUBLISHED状态
+     * @param approve 审核状态
+     * @return
+     */
+    @Override
+    public String auditReport(boolean approve, UserDto user)
+    {
+        if(approve) {
+            setStatus(INVISIBLE);
+            // 同时将回复设为不可见
+            if(!Objects.isNull(replyId)){
+                ReplyComment newReplyComment = (ReplyComment) commentDao.findById(replyId);
+                newReplyComment.RelatedMask(newReplyComment, user);
+            }
+            //同时将追评设为不可见
+            if(!Objects.isNull(addId)){
+                AddComment newaddComment=(AddComment) commentDao.findById(addId);
+                newaddComment.RelatedMask(newaddComment,user);
+            }
+        }
+        else{
+            setStatus(PUBLISHED);
+        }
+        return commentDao.save(this, user);
+    }
 
     /**
      * 回复评论
@@ -74,19 +93,29 @@ public class FirstComment extends Comment {
      */
     public ReplyComment createReply(Long shopId, ReplyComment newReplyComment, UserDto user)
     {
-        if(!Objects.equals(shopId, this.shopId))
-            throw new BusinessException(ReturnNo.AUTH_NO_RIGHT, String.format(ReturnNo.AUTH_NO_RIGHT.getMessage()));
-        if(Objects.equals(status, PUBLISHED) && Replyable )
+        if(Objects.equals(status, PUBLISHED))
         {
-            newReplyComment.setPId(id); // 该回复的PId为追评id
-            setReplyable(false);
-            commentDao.save(this,user);
-            return (ReplyComment) commentDao.insert(newReplyComment, user);
+            if (replyable)
+                    {
+                        newReplyComment.setParentId(id); // 该回复的parentId为首评id
+                        newReplyComment.setType((byte) 2);
+                        this.setReplyable(false);
+                        newReplyComment.setProductId(productId);
+                        newReplyComment.setShopId(shopId);
+                        commentDao.save(this,user);
+                        return (ReplyComment) commentDao.insert(newReplyComment, user);
+                    }
+            else
+            {
+                throw new BusinessException(ReturnNo.COMMENT_UPPER_LIMIT, String.format(ReturnNo.COMMENT_UPPER_LIMIT.getMessage()));
+            }
+
         }
         else {
-            throw new BusinessException(ReturnNo.FIELD_NOTVALID,"回复数已超过最大值");
+            throw new BusinessException(ReturnNo.COMMENT_NOT_PUBLISHED, String.format(ReturnNo.COMMENT_NOT_PUBLISHED.getMessage()));
         }
     }
+
 
 
     /**
@@ -99,24 +128,28 @@ public class FirstComment extends Comment {
     public AddComment createAddComment(Long Id, AddComment newAddComment, UserDto user)
     {
 
-        if(Objects.equals(status, PUBLISHED) && Addtionable )
+        if(Objects.equals(status, PUBLISHED) )
         {
-            newAddComment.setPId(id);
-            setAddtionable(false);
-            commentDao.save(this,user);
-            return (AddComment) commentDao.insert(newAddComment, user);
+            if(addtionable)
+            {
+                newAddComment.setParentId(id);
+                newAddComment.setProductId(productId);
+                newAddComment.setShopId(shopId);
+                newAddComment.setType((byte)1);
+                setAddtionable(false);
+                commentDao.save(this,user);
+                return (AddComment) commentDao.insert(newAddComment, user);
+            }
+           else
+            {
+                throw new BusinessException(ReturnNo.COMMENT_UPPER_LIMIT, String.format(ReturnNo.COMMENT_UPPER_LIMIT.getMessage()));
+            }
 
         }
         else {
-            throw new BusinessException(ReturnNo.FIELD_NOTVALID,"追评数已超过最大值");
+            throw new BusinessException(ReturnNo.COMMENT_NOT_PUBLISHED, String.format(ReturnNo.COMMENT_NOT_PUBLISHED.getMessage()));
         }
     }
-
-    @Override
-    public void setGmtCreate(LocalDateTime gmtCreate) {}
-
-    @Override
-    public void setGmtModified(LocalDateTime gmtModified) {}
 
 
     public Long getId() { return id; } public void setId(Long id) { this.id = id; }
@@ -124,21 +157,26 @@ public class FirstComment extends Comment {
     public String getRejectReason() { return rejectReason; } public void setRejectReason(String rejectReason) { this.rejectReason = rejectReason; }
     public Byte getType() { return type; } public void setType(Byte type) { this.type = type; }
     public Long getCreatorId() { return creatorId; } public void setCreatorId(Long creatorId) { this.creatorId = creatorId; }
-    public Long getOrderItemId() { return orderItemId; } public void setOrderItemId(Long orderItemId) { this.orderItemId = orderItemId; }
+    public Long getOrderitemId() { return orderitemId; } public void setOrderitemId(Long orderitemId) { this.orderitemId = orderitemId; }
     public Long getReviewerId() { return reviewerId; } public void setReviewerId(Long reviewerId) { this.reviewerId = reviewerId; }
     public Long getProductId() { return productId; } public void setProductId(Long productId) { this.productId = productId; }
     public Long getShopId() { return shopId; } public void setShopId(Long shopId) { this.shopId = shopId; }
-    public Long getReplyCommentId() { return replyCommentId; } public void setReplyCommentId(Long replyCommentId) { this.replyCommentId = replyCommentId; }
+    public Long getReplyId() { return replyId; } public void setReplyId(Long replyId) { this.replyId = replyId; }
     public LocalDateTime getGmtPublish() { return gmtPublish; } public void setGmtPublish(LocalDateTime gmtPublish) { this.gmtPublish = gmtPublish; }
     public Byte getStatus() { return status; } public void setStatus(Byte status) { this.status = status; }
-    public boolean getReplyable () { return Replyable ; } public void setReplyable (boolean Replyable ) { this.Replyable  = Replyable ; }
-    public boolean getAddtionable () { return Addtionable ; } public void setAddtionable (boolean Addtionable ) { this.Addtionable  = Addtionable ; }
+    public boolean getReplyable () { return replyable; } public void setReplyable (boolean Replyable ) { this.replyable = Replyable ; }
+    public boolean getAddtionable() { return addtionable; } public void setAddtionable(boolean Addtionable ) { this.addtionable = Addtionable ; }
     public void setReplyComment(Comment replyComment) { ReplyComment = replyComment; }
     public void setShop(Shop shop) { this.shop = shop; }
     public void setOrderItem(OrderItem orderItem) { this.orderItem = orderItem; }
     public void setCommentDao(CommentDao commentDao) { this.commentDao = commentDao; }
     public void setShopDao(ShopDao shopDao) { this.shopDao = shopDao; }
     public void setOrderItemDao(OrderItemDao orderItemDao) { this.orderitemDao = orderItemDao; }
-    public Long getPId() {return PId;}public void setPId(Long addPId) {this.PId = addPId;}
-    public Long getAddCommentId() {return addCommentId;}public void setAddCommentId(Long addCommentId) {this.addCommentId = addCommentId;}
+    public Long getParentId() {return parentId;}public void setParentId(Long addPId) {this.parentId = addPId;}
+    public Long getAddId() {return addId;}public void setAddId(Long addId) {this.addId = addId;}
+    public LocalDateTime getGmtCreate() {return gmtCreate;}
+    public void setGmtCreate(LocalDateTime gmtCreate) {this.gmtCreate = gmtCreate;}
+    public LocalDateTime getGmtModified() {return gmtModified;}
+    public void setGmtModified(LocalDateTime gmtModified) {this.gmtModified = gmtModified;}
+    public String getCreatorName() { return creatorName; } public void setCreatorName(String CreatorName) { this.creatorName=CreatorName; }
 }
