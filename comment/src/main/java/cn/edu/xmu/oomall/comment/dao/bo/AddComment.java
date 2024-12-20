@@ -45,12 +45,6 @@ public class AddComment extends Comment {
             setStatus(REJECTED);
             this.setReplyable(false);
             setRejectReason(rejectReason.orElse(""));
-            // 同时将回复驳回
-            if(!Objects.isNull(replyId))
-            {
-                ReplyComment newReplyComment = (ReplyComment) commentDao.findById(replyId);
-                newReplyComment.RelatedMask(newReplyComment, user);
-            }
         }
         return commentDao.save(this, user);
     }

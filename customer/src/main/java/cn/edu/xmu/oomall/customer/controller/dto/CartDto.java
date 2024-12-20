@@ -7,17 +7,17 @@ import lombok.AllArgsConstructor;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CartDto {
 
-    private int productId;
-    private int quantity;
+    private Long productId;
+    private Long quantity;
 
-    public int getProductId() {
+    public Long getProductId() {
         return productId;
-    }public void setProductId(int productId) {
+    }public void setProductId(Long productId) {
         this.productId = productId;
     }
-    public int getQuantity() {
+    public Long getQuantity() {
         return quantity;
-    }public void setQuantity(int quantity) {
+    }public void setQuantity(Long quantity) {
         this.quantity = quantity;
     }
 }

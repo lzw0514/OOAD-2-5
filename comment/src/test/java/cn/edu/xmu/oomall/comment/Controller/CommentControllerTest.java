@@ -94,6 +94,20 @@ public class CommentControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errno", is(ReturnNo.RESOURCE_ID_NOTEXIST.getErrNo())));
     }
+
+    //创建首评失败，非本用户订单
+    @Test
+    public void testCreateFirstCommentWhenOrderItemGivenNotUser() throws Exception {
+        CommentDto dto = new CommentDto();
+        dto.setContent("商品质量很好，我很喜欢");
+        dto.setCreatorId(514l);
+        mvc.perform(MockMvcRequestBuilders.post("/orderItem/{orderitemId}/comment", 12344)
+                        .header("authorization",  customerToken)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(Objects.requireNonNull(JacksonUtil.toJson(dto))))
+                .andExpect(MockMvcResultMatchers.status().isForbidden())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errno").value(ReturnNo.AUTH_NO_RIGHT.getErrNo()));
+    }
     //成功创建追评
     @Test
     public void testCreateAddCommentWhenSuccess() throws Exception {
@@ -156,6 +170,20 @@ public class CommentControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errno", is(ReturnNo.RESOURCE_ID_NOTEXIST.getErrNo())));
     }
 
+    //创建追评失败，非本用户首评
+    @Test
+    public void testCreateFirstCommentWhenFirstCommentGivenNotUser() throws Exception {
+        CommentDto dto = new CommentDto();
+        dto.setContent("商品质量很好，我很喜欢");
+        dto.setCreatorId(514l);
+        mvc.perform(MockMvcRequestBuilders.post("/comment/{commentId}/Addcomment",18 )
+                        .header("authorization",  customerToken)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(Objects.requireNonNull(JacksonUtil.toJson(dto))))
+                .andExpect(MockMvcResultMatchers.status().isForbidden())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errno").value(ReturnNo.AUTH_NO_RIGHT.getErrNo()));
+    }
+
     //成功创建回复（首评的回复）
     @Test
     public void testCreateReplyCommentWhenSuccessByFirstComment() throws Exception {
@@ -182,7 +210,7 @@ public class CommentControllerTest {
         CommentDto dto = new CommentDto();
         dto.setContent("商品质量很好，我很喜欢");
         dto.setCreatorId(514l);
-        mvc.perform(MockMvcRequestBuilders.post("/shops/{shopId}/comments/{commentId}/replies", 12,5)
+        mvc.perform(MockMvcRequestBuilders.post("/shops/{shopId}/comments/{commentId}/replies", 11,5)
                         .header("authorization",  shopToken)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(Objects.requireNonNull(JacksonUtil.toJson(dto))))

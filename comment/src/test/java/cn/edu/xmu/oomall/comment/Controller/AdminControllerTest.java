@@ -33,8 +33,8 @@ public class AdminControllerTest {
     private MockMvc mvc;
     JwtHelper jwtHelper = new JwtHelper();
     private static String adminToken;
+    private final String ADMIN_COMMENT_ID ="/platforms/{did}/comment/{commentId}";
     private final String ADMIN_COMMENT_REVIEW_ID ="/platforms/{did}/comments/{commentId}/reviews";
-    private final String ADMIN_COMMENT_ID ="/platforms/{did}/comments/{commentId}";
 
     @BeforeAll
     public static void setup(){
@@ -52,7 +52,7 @@ public class AdminControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errno", is(ReturnNo.OK.getErrNo())))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.id", is(1)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.content", is("这款商品很好，质量不错！")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.content", is("东西很好")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.type", is(0)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.creatorId", is(514)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.productId", is(1559)))
@@ -71,18 +71,109 @@ public class AdminControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
+    //非平台管理人员查询
+    @Test
+    void testFindValidCommentDetailsByIdGivenNotPlatform () throws Exception {
+        this.mvc.perform(MockMvcRequestBuilders.get(ADMIN_COMMENT_ID, 1,1)
+                        .header("authorization",  adminToken)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isForbidden())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errno", is(ReturnNo.RESOURCE_ID_OUTSCOPE.getErrNo())));
+
+    }
 
 
-    //
+    //非平台管理人员审核评论
     @Test
     void auditCommentGivenNotPlatform() throws Exception {
         AuditCommentDto dto = new AuditCommentDto();
         dto.setIsApproved(true);
-        mvc.perform(MockMvcRequestBuilders.put(ADMIN_COMMENT_ID, 1,11)
+        mvc.perform(MockMvcRequestBuilders.put(ADMIN_COMMENT_REVIEW_ID, 1,11)
                 .header("authorization",  adminToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(Objects.requireNonNull(JacksonUtil.toJson(dto))))
                 .andExpect(MockMvcResultMatchers.status().isForbidden())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errno", is(ReturnNo.RESOURCE_ID_OUTSCOPE.getErrNo())));
+    }
+
+    //非平台管理人员审核首评为通过状态
+    @Test
+    void auditCommentWhenFirstCommentApproved() throws Exception {
+        AuditCommentDto dto = new AuditCommentDto();
+        dto.setIsApproved(true);
+        mvc.perform(MockMvcRequestBuilders.put(ADMIN_COMMENT_REVIEW_ID, 0,12)
+                        .header("authorization",  adminToken)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(Objects.requireNonNull(JacksonUtil.toJson(dto))))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errno", is(ReturnNo.OK.getErrNo())));
+    }
+
+    //非平台管理人员审核首评为驳回状态
+    @Test
+    void auditCommentWhenFirstCommentRejected() throws Exception {
+        AuditCommentDto dto = new AuditCommentDto();
+        dto.setIsApproved(false);
+        dto.setRejectReason("内容含广告信息");
+        mvc.perform(MockMvcRequestBuilders.put(ADMIN_COMMENT_REVIEW_ID, 0,11)
+                        .header("authorization",  adminToken)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(Objects.requireNonNull(JacksonUtil.toJson(dto))))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errno", is(ReturnNo.OK.getErrNo())));
+    }
+
+
+    //非平台管理人员审核追评为通过状态
+    @Test
+    void auditCommentWhenAddCommentApproved() throws Exception {
+        AuditCommentDto dto = new AuditCommentDto();
+        dto.setIsApproved(true);
+        mvc.perform(MockMvcRequestBuilders.put(ADMIN_COMMENT_REVIEW_ID, 0,13)
+                        .header("authorization",  adminToken)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(Objects.requireNonNull(JacksonUtil.toJson(dto))))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errno", is(ReturnNo.OK.getErrNo())));
+    }
+    //非平台管理人员审核追评为驳回状态
+    @Test
+    void auditCommentWhenAddCommentRejected() throws Exception {
+        AuditCommentDto dto = new AuditCommentDto();
+        dto.setIsApproved(false);
+        dto.setRejectReason("内容含广告信息");
+        mvc.perform(MockMvcRequestBuilders.put(ADMIN_COMMENT_REVIEW_ID, 0,13)
+                        .header("authorization",  adminToken)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(Objects.requireNonNull(JacksonUtil.toJson(dto))))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errno", is(ReturnNo.OK.getErrNo())));
+    }
+
+
+    //非平台管理人员审核回复为通过状态
+    @Test
+    void auditCommentWhenReplyApproved() throws Exception {
+        AuditCommentDto dto = new AuditCommentDto();
+        dto.setIsApproved(true);
+        mvc.perform(MockMvcRequestBuilders.put(ADMIN_COMMENT_REVIEW_ID, 0,14)
+                        .header("authorization",  adminToken)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(Objects.requireNonNull(JacksonUtil.toJson(dto))))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errno", is(ReturnNo.OK.getErrNo())));
+    }
+    //非平台管理人员审核回复为驳回状态
+    @Test
+    void auditCommentWhenReplyRejected() throws Exception {
+        AuditCommentDto dto = new AuditCommentDto();
+        dto.setIsApproved(false);
+        dto.setRejectReason("内容含广告信息");
+        mvc.perform(MockMvcRequestBuilders.put(ADMIN_COMMENT_REVIEW_ID, 0,14)
+                        .header("authorization",  adminToken)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(Objects.requireNonNull(JacksonUtil.toJson(dto))))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errno", is(ReturnNo.OK.getErrNo())));
     }
 }

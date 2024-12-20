@@ -5,6 +5,7 @@ import cn.edu.xmu.javaee.core.model.ReturnNo;
 import cn.edu.xmu.javaee.core.model.ReturnObject;
 import cn.edu.xmu.javaee.core.model.dto.UserDto;
 import cn.edu.xmu.javaee.core.util.CloneFactory;
+import cn.edu.xmu.oomall.customer.controller.dto.CartDto;
 import cn.edu.xmu.oomall.customer.controller.vo.*;
 import cn.edu.xmu.javaee.core.model.vo.PageVo;
 import cn.edu.xmu.oomall.customer.dao.bo.*;
@@ -36,11 +37,10 @@ public class CartController {
     }
 
     // 顾客将商品加入购物车
-    @PostMapping("/carts/product/{productId}")
-    public ReturnObject addCartItem(@PathVariable Long productId,
-                                    @LoginUser UserDto user,
-                                    @RequestParam(defaultValue = "1") Long quantity) {
-        CartItem newCartItem = cartService.addCartItem(productId, quantity, user);
+    @PostMapping("/carts")
+    public ReturnObject addCartItem(@LoginUser UserDto user,
+                                    @RequestBody CartDto cartDto) {
+        CartItem newCartItem = cartService.addCartItem(cartDto.getProductId(), cartDto.getQuantity(), user);
         return new ReturnObject(new CartItemVo(newCartItem));
     }
 
@@ -48,8 +48,8 @@ public class CartController {
     @PutMapping("/cartItems/{cartItemId}")
     public ReturnObject updateCartItem(@PathVariable Long cartItemId,
                                        @LoginUser UserDto user,
-                                       @RequestParam(defaultValue = "1") Long quantity) {
-        cartService.updateCartItem(cartItemId, quantity, user);
+                                       @RequestBody CartDto cartDto) {
+        cartService.updateCartItem(cartItemId, cartDto.getQuantity(), user);
         return new ReturnObject(ReturnNo.OK);
     }
 

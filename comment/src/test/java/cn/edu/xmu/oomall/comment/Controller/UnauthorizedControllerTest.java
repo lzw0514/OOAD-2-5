@@ -34,7 +34,7 @@ public class UnauthorizedControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errno", is(ReturnNo.OK.getErrNo())))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.list.length()", is(4)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[?(@.id == '1')].content", hasItem("这款商品很好，质量不错！")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[?(@.id == '1')].content", hasItem("东西很好")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[?(@.id == '3')].content", hasItem("客服态度很好，但商品质量差。")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[?(@.id == '6')].content", hasItem("感谢您的支持。")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[?(@.id == '7')].content", hasItem("抱歉给您带来不好的体验。")));
@@ -48,7 +48,7 @@ public class UnauthorizedControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errno", is(ReturnNo.OK.getErrNo())))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.id", is(1)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.content", is("这款商品很好，质量不错！")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.content", is("东西很好")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.type", is(0)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.creatorId", is(514)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.productId", is(1559)))

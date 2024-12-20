@@ -27,7 +27,12 @@ public class AddressController {
 
     private final AddressService addressService;
 
-    // 查看顾客地址列表
+
+    /**
+     * 查看顾客地址列表
+     * author Liuzhiwen
+     * @return
+     */
     @GetMapping("/address")
     @Transactional(propagation = Propagation.REQUIRED)
     public ReturnObject getAddressByCustomer(@LoginUser UserDto user,

@@ -18,7 +18,7 @@ import java.util.*;
 /**
  * 购物车项bo对象，每个顾客加入一个购物车项就增加一条记录
  *
- * @author Shuyang Xing
+ * @author Liuzhiwen
  */
 @NoArgsConstructor
 @AllArgsConstructor

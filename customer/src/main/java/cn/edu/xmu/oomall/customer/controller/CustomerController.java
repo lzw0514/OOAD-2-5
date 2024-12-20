@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 /**
  * 顾客控制器
- * @author Shuyang Xing
+ * @author Liuzhiwen
  */
 @RestController
 @RequestMapping(produces = "application/json;charset=UTF-8")

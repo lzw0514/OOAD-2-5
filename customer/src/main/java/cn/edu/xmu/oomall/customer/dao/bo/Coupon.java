@@ -15,7 +15,7 @@ import java.util.*;
 
 /**
  * 优惠券bo对象，每发放一张优惠券数据库就写入一条新记录
- * @author Shuyang Xing
+ * @author Liuzhiwen
  */
 @NoArgsConstructor
 @AllArgsConstructor

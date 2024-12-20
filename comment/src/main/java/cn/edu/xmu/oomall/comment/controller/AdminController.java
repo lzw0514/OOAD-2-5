@@ -24,7 +24,7 @@ import static cn.edu.xmu.javaee.core.model.Constants.PLATFORM;
 @Slf4j
 public class AdminController {
 
-
+    private final CommentService commentService;
     /**
      * 查询评论详情，所有状态的评论都可查询
      * @param commentId
@@ -41,7 +41,7 @@ public class AdminController {
         Comment comment = this.commentService.findCommentById(commentId);
         return new ReturnObject(new CommentVo(comment));
     }
-    private final CommentService commentService;
+
 
     /**
      * 管理员审核评论

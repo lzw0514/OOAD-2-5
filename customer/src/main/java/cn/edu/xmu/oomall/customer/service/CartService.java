@@ -1,5 +1,6 @@
 package cn.edu.xmu.oomall.customer.service;
 
+import cn.edu.xmu.javaee.core.exception.BusinessException;
 import cn.edu.xmu.javaee.core.model.dto.UserDto;
 import cn.edu.xmu.oomall.customer.dao.*;
 import cn.edu.xmu.oomall.customer.dao.bo.*;
@@ -33,15 +34,15 @@ public class CartService {
 
     // 顾客向购物车加入一定数量某种商品
     public CartItem addCartItem(Long productId, Long quantity, UserDto user) {
-        CartItem cartItem = cartDao.findCartItemByProductAndCustomer(productId, user.getId());
-        logger.debug("addCartItem: productId = {}", productId);
-        if(cartItem != null){
-            return cartItem.updateItemQuantity(quantity, user);
-        }else {
-            cartItem = new CartItem();
-            cartItem.setCartDao(cartDao);
-            return cartItem.addItem(productId, quantity, user);
-        }
+        CartItem cartItem;
+        try {
+            cartItem = cartDao.findCartItemByProductAndCustomer(productId, user.getId());
+        } catch(BusinessException e) {
+           cartItem = new CartItem();
+           cartItem.setCartDao(cartDao);
+           return cartItem.addItem(productId, quantity, user);
+       }
+        return cartItem.updateItemQuantity(quantity, user);
     }
 
     // 顾客修改购物车商品数量
