@@ -33,6 +33,7 @@
     <modules>
         <module>core</module>
         <module>comment</module>
+        <module>customer</module>
         <module>payment</module>
         <module>shop</module>
         <module>product</module>
