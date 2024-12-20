@@ -1,8 +1,8 @@
 package cn.edu.xmu.oomall.customer.service;
 
-
 import cn.edu.xmu.javaee.core.exception.BusinessException;
 import cn.edu.xmu.javaee.core.model.ReturnNo;
+import cn.edu.xmu.javaee.core.model.dto.UserDto;
 import cn.edu.xmu.oomall.customer.dao.bo.Customer;
 import cn.edu.xmu.oomall.customer.dao.CustomerDao;
 import lombok.RequiredArgsConstructor;
@@ -14,62 +14,70 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-
-
 @Service
 @Transactional(propagation = Propagation.REQUIRED)
 @RequiredArgsConstructor
 public class CustomerService {
+
     private final static Logger logger = LoggerFactory.getLogger(CustomerService.class);
-    private final CustomerDao CustomerDao;
-    /**
-     * 创建顾客
-     * @param customer     所创建对象的信息
-     */
-    public Customer createCustomer(Customer customer) {
-        if (CustomerDao.isPresentUserName(customer.getUserName())) {
-            throw new BusinessException(ReturnNo.CUSTOMER_USERNAMEEXISTS, String.format(ReturnNo.CUSTOMER_USERNAMEEXISTS.getMessage()));
+    private final CustomerDao customerDao;
+
+    // 根据Id查看顾客信息
+    public Customer findCustomerById(Long customerId) {
+        logger.debug("findCustomerById: id = {}", customerId);
+        return customerDao.findCustomerById(customerId);
+    }
+
+    // 顾客注册
+    public Customer Register(Customer customer) {
+        logger.debug("Register customer: {}", customer);
+        return customerDao.insert(customer);
+    }
+
+    // 顾客修改密码
+    public String updatePwd(String newPwd, UserDto user) {
+        Customer customer = customerDao.findCustomerById(user.getId());
+        logger.debug("UpdatePwd customer: {}", customer.getId());
+        return customer.updatePwd(newPwd, user);
+    }
+
+    // 顾客修改电话号码
+    public String updateMobile(String newMobile, UserDto user) {
+        Customer customer = customerDao.findCustomerById(user.getId());
+        logger.debug("UpdateMobile customer: {}", customer.getId());
+        return customer.updateMobile(newMobile, user);
+    }
+
+    // 封禁顾客
+    public void banCustomer(Long customerId, UserDto user) {
+        Customer customer = customerDao.findCustomerById(customerId);
+        logger.debug("Ban customer: {}", customer.getId());
+        if(customer.getStatus() != 1){
+            throw new BusinessException(ReturnNo.STATENOTALLOW, String.format(ReturnNo.STATENOTALLOW.getMessage(), "顾客", customerId, "账户无效"));
         }
-        if (CustomerDao.isPresentMobile(customer.getMobile())) {
-            throw new BusinessException(ReturnNo.CUSTOMER_MOBILEEXISTS, String.format(ReturnNo.CUSTOMER_MOBILEEXISTS.getMessage()));
+        customer.setStatus((byte) 0);
+        customerDao.save(customer, user);
+    }
+
+    // 解封顾客
+    public void releaseCustomer(Long customerId, UserDto user) {
+        Customer customer = customerDao.findCustomerById(customerId);
+        logger.debug("Release customer: {}", customer.getId());
+        if(customer.getStatus() != 0){
+            throw new BusinessException(ReturnNo.STATENOTALLOW, String.format(ReturnNo.STATENOTALLOW.getMessage(), "顾客", customerId, "账户无效"));
         }
-        return CustomerDao.insert(customer);
+        customer.setStatus((byte) 1);
+        customerDao.save(customer, user);
     }
 
-    /**
-     * 查找顾客信息
-     * @param id
-     * @return
-     */
-    public Customer findCustomerById(Long id) {
-        return CustomerDao.findById(id);
-    }
-
-    /**
-     * 查找所有顾客
-     * @return
-     */
-    public List<Customer> findAllCustomers() {
-        return CustomerDao.findAllCustomers();
-    }
-
-    /**
-     * 解封
-     * @param id
-     */
-    public void release(Long id) {
-        CustomerDao.release(id);
-    }
-
-    /**
-     * 封禁
-     * @param id
-     */
-    public void ban(Long id) {
-        CustomerDao.ban(id);
-    }
-
-    public void delete(Long id) {
-        CustomerDao.delete(id);
+    // 注销顾客
+    public void deleteCustomer(Long customerId, UserDto user) {
+        Customer customer = customerDao.findCustomerById(customerId);
+        logger.debug("Delete customer: {}", customer.getId());
+        if(customer.getStatus() == -1){
+            throw new BusinessException(ReturnNo.STATENOTALLOW, String.format(ReturnNo.STATENOTALLOW.getMessage(), "顾客", customerId, "账户无效"));
+        }
+        customer.setStatus((byte) -1);
+        customerDao.save(customer, user);
     }
 }

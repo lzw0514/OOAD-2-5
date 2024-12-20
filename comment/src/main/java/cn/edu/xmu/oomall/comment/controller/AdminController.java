@@ -1,5 +1,6 @@
 package cn.edu.xmu.oomall.comment.controller;
 
+import cn.edu.xmu.javaee.core.aop.Audit;
 import cn.edu.xmu.javaee.core.aop.LoginUser;
 import cn.edu.xmu.javaee.core.exception.BusinessException;
 import cn.edu.xmu.javaee.core.model.ReturnNo;
@@ -32,6 +33,7 @@ public class AdminController {
      */
     @GetMapping("/comment/{commentId}")
     @Transactional(propagation = Propagation.REQUIRED)
+    @Audit(departName = "shops")
     public ReturnObject getCommentById(@PathVariable Long did,@PathVariable("commentId") Long commentId) {
         if (!PLATFORM.equals(did)) {
             throw new BusinessException(ReturnNo.RESOURCE_ID_OUTSCOPE, String.format(ReturnNo.RESOURCE_ID_OUTSCOPE.getMessage(), "评论", commentId, did));
@@ -48,6 +50,7 @@ public class AdminController {
      * @return
      */
     @PutMapping("/comments/{commentId}/reviews")
+    @Audit(departName = "shops")
     public ReturnObject auditComment(@PathVariable Long did,@PathVariable("commentId") Long commentId,
                                      @LoginUser UserDto user,
                                      @RequestBody AuditCommentDto auditCommentDto) {
@@ -67,6 +70,7 @@ public class AdminController {
      * @return
      */
     @PutMapping("/comments/{commentId}/reports")
+    @Audit(departName = "shops")
     public ReturnObject auditReport(@PathVariable Long did,@PathVariable("commentId") Long commentId,
                                      @LoginUser UserDto user,
                                      @RequestBody AuditCommentDto auditCommentDto) {

@@ -11,7 +11,7 @@
     <artifactId>customer</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>customer</name>
-    <description>customer module for OOMALL</description>
+    <description>customer catelog module for OOMALL</description>
 
     <dependencies>
 
