@@ -50,14 +50,14 @@ public class UnauthorizedController {
 
 
     /**
-     * 查询评论详情
+     * 查询有效状态的评论详情
      * @param commentId
      * author Wuyuzhu
      * @return
      */
     @GetMapping("/comment/{commentId}")
     @Transactional(propagation = Propagation.REQUIRED)
-    public ReturnObject getCommentById(@PathVariable("commentId") Long commentId) {
+    public ReturnObject getValidCommentDetailsById(@PathVariable("commentId") Long commentId) {
         Comment comment = this.commentService.findValidCommentById(commentId);
         return new ReturnObject(new CommentVo(comment));
     }

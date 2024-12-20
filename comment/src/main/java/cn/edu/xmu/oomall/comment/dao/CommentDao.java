@@ -40,7 +40,7 @@ public class CommentDao {
 
 
     /**
-     * 通过commentId查询特定评论
+     * 平台管理人员通过commentId查询特定评论，
      * @param commentId
      */
     public Comment findById(Long commentId) {
@@ -54,7 +54,7 @@ public class CommentDao {
         }
     }
     /**
-     * 通过commentId查询特定评论
+     * 不用登录，通过commentId查询特定评论,只有PUBLISHED状态和REPORTED_FOR_REVIEW状态的评论可以被查询到
      * @param commentId
      */
     public Comment  findValidCommenntById(Long commentId) {
