@@ -2,6 +2,8 @@
 
 package cn.edu.xmu.oomall.order.controller.vo;
 
+import cn.edu.xmu.javaee.core.aop.CopyFrom;
+import cn.edu.xmu.oomall.order.dao.bo.Order;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +13,7 @@ import java.util.List;
 
 @Data
 @NoArgsConstructor
+@CopyFrom(Order.class)
 public class OrderVo {
 
     private List<OrderItemVo> items;

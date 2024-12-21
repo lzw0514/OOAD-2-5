@@ -5,7 +5,7 @@ package cn.edu.xmu.oomall.order.service;
 import cn.edu.xmu.javaee.core.model.dto.UserDto;
 import cn.edu.xmu.javaee.core.util.JacksonUtil;
 import cn.edu.xmu.oomall.order.dao.bo.OrderItem;
-import cn.edu.xmu.oomall.order.service.dto.ConsigneeDto;
+import cn.edu.xmu.oomall.order.controller.dto.ConsigneeDto;
 import org.apache.rocketmq.spring.annotation.RocketMQTransactionListener;
 import org.apache.rocketmq.spring.core.RocketMQLocalTransactionListener;
 import org.apache.rocketmq.spring.core.RocketMQLocalTransactionState;
