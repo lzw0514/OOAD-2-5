@@ -2,7 +2,9 @@
 
 package cn.edu.xmu.oomall.order.dao.bo;
 
+import cn.edu.xmu.javaee.core.aop.CopyFrom;
 import cn.edu.xmu.javaee.core.model.bo.OOMallObject;
+import cn.edu.xmu.oomall.order.controller.dto.OrderItemDto;
 import lombok.*;
 
 import java.io.Serializable;
@@ -10,6 +12,7 @@ import java.time.LocalDateTime;
 
 @ToString(callSuper = true)
 @NoArgsConstructor
+@CopyFrom(OrderItemDto.class)
 public class OrderItem extends OOMallObject implements Serializable {
 
     @Builder
