@@ -22,6 +22,8 @@ public class CommentPo {
 
     protected String rejectReason;
 
+    protected String reportReason;
+
     protected Byte type; // 0-首评 1-追评 2-商家回复
 
     protected Long creatorId;
@@ -78,6 +80,12 @@ public class CommentPo {
         this.rejectReason = rejectReason;
     }
 
+    public String getReportReason() {
+        return reportReason;
+    }
+    public void setReportReason(String reportReason) {
+        this.reportReason = reportReason;
+    }
     public Byte getType() {
         return type;
     }

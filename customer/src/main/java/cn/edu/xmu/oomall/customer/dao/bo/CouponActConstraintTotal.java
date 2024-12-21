@@ -19,7 +19,7 @@ import java.util.Objects;
 
 /**
  * 优惠券活动-限制总数
- * @author Liuzhiwen
+ * @author Shuyang Xing
  */
 @NoArgsConstructor
 @AllArgsConstructor

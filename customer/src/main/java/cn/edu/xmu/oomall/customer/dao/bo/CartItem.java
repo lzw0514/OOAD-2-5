@@ -18,7 +18,7 @@ import java.util.*;
 /**
  * 购物车项bo对象，每个顾客加入一个购物车项就增加一条记录
  *
- * @author Liuzhiwen
+ * @author Shuyang Xing
  */
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,17 +37,6 @@ public class CartItem extends OOMallObject implements Serializable {
     private Long quantity;
 
     private CartDao cartDao;
-
-    // 新增购物车项
-    public CartItem addItem(Long productId, Long quantity, UserDto user) {
-        if (quantity <= 0) {
-            throw new BusinessException(ReturnNo.FIELD_NOTVALID, "商品数量需>0");
-        }
-        setProductId(productId);
-        setQuantity(quantity);
-        setCustomerId(user.getId());
-        return cartDao.insert(this, user);
-    }
 
     // 变更购物车项数量
     public CartItem updateItemQuantity(Long updateQuantity, UserDto user) {

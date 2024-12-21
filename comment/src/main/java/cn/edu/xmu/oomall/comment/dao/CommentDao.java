@@ -80,7 +80,6 @@ public class CommentDao {
     }
     /**
      * 获得bo对象
-     * @author Liuzhiwen
      * @param po
      * @return
      */
@@ -107,7 +106,6 @@ public class CommentDao {
 
     /**
      * 把bo中设置dao
-     * @author Liuzhiwen
      * @param bo
      */
     private Comment build(Comment bo){
@@ -120,6 +118,7 @@ public class CommentDao {
 
     /**
      * 通过productId查询商品的全部评论
+     * @param productId
      */
     public List<Comment> retrieveProductComments(Long productId, Integer page, Integer pageSize) throws RuntimeException {
         log.debug("retrieveProductComments: productId={}",productId);

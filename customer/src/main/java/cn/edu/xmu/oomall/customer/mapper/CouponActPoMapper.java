@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CouponActPoMapper extends JpaRepository<CouponActPo, Long> {
 
-    Page<CouponActPo> findOnlineCouponAct(Pageable pageable);
+    Page<CouponActPo> findByStatus(Byte status, Pageable pageable);
 }

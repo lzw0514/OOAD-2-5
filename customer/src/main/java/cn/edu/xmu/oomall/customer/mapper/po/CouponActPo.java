@@ -2,7 +2,6 @@
 package cn.edu.xmu.oomall.customer.mapper.po;
 
 import cn.edu.xmu.javaee.core.aop.CopyFrom;
-import cn.edu.xmu.oomall.customer.dao.bo.Coupon;
 import cn.edu.xmu.oomall.customer.dao.bo.CouponActConstraintTotal;
 import cn.edu.xmu.oomall.customer.dao.bo.CouponActConstraintUser;
 import jakarta.persistence.*;
@@ -33,7 +32,7 @@ public class CouponActPo {
 
     protected Byte status; // 0-活动失效 1-活动有效
 
-    private Long maxPerUser; // 优惠券每人领取最大数量
+    private Long maxUser; // 优惠券每人领取最大数量
 
     private Long maxCount; // 优惠券最大数量
 
@@ -54,7 +53,7 @@ public class CouponActPo {
     public LocalDateTime getGmtBegin() { return gmtBegin; } public void setGmtBegin(LocalDateTime gmtBegin) { this.gmtBegin = gmtBegin; }
     public LocalDateTime getGmtEnd() { return gmtEnd; } public void setGmtEnd(LocalDateTime gmtEnd) { this.gmtEnd = gmtEnd; }
     public Byte getStatus() { return status; } public void setStatus(Byte status) { this.status = status; }
-    public Long getMaxPerUser() {return maxPerUser;}public void setMaxPerUser(Long maxPerUser) {this.maxPerUser = maxPerUser;}
+    public Long getMaxUser() {return maxUser;}public void setMaxUser(Long maxPerUser) {this.maxUser = maxPerUser;}
     public Long getMaxCount() {return maxCount;}public void setMaxCount(Long maxCount) {this.maxCount = maxCount;}
     public String getCreatorName() {return creatorName;}public void setCreatorName(String creatorName) {this.creatorName = creatorName;}
     public Long getModifierId() {return modifierId;}public void setModifierId(Long modifierId) {this.modifierId = modifierId;}

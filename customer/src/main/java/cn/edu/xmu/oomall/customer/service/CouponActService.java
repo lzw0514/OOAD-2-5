@@ -33,7 +33,7 @@ public class CouponActService {
 
     // 查找可用的优惠券活动
     public List<CouponAct> findOnlineCouponAct(Integer page, Integer pageSize) {
-        logger.debug("findOnlineCouponAct");
+        logger.debug("findCouponAct");
         return couponActDao.retrieveOnlineCouponAct(page, pageSize);
     }
 }

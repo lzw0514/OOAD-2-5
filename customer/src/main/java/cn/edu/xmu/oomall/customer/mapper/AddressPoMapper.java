@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface AddressPoMapper extends JpaRepository<AddressPo, Long> {
     Page<AddressPo> findAddressListByCustomerId(Long customerId, Pageable pageable);
 
-    Optional<AddressPo> findByisDefaultAndCustomerId(Boolean isDefault, Long customerId);
+    Optional<AddressPo> findByCustomerIdAndBeDefault(Long customerId, boolean beDefault);
 
     Long countByCustomerId(Long customerId);
 }

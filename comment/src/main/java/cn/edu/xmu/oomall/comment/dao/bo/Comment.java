@@ -29,6 +29,8 @@ public abstract class Comment extends OOMallObject implements Serializable {
 
     protected String rejectReason;
 
+    protected String reportReason;
+
     protected Byte type; // 0-首评 1-追评 2-商家回复
 
     protected Long creatorId;
@@ -135,6 +137,9 @@ public abstract class Comment extends OOMallObject implements Serializable {
     public abstract String getRejectReason();
     public abstract void setRejectReason(String rejectReason);
 
+
+    public abstract String getReportReason();
+    public abstract void setReportReason(String reportReason);
     public abstract Byte getType();
     public abstract void setType(Byte type);
 

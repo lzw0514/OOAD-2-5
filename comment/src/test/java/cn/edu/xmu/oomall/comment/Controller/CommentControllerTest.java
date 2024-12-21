@@ -6,6 +6,7 @@ import cn.edu.xmu.javaee.core.util.JacksonUtil;
 import cn.edu.xmu.javaee.core.util.JwtHelper;
 import cn.edu.xmu.oomall.comment.CommentTestApplication;
 import cn.edu.xmu.oomall.comment.controller.dto.CommentDto;
+import cn.edu.xmu.oomall.comment.controller.dto.ReportCommentDto;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
@@ -37,6 +38,7 @@ public class CommentControllerTest {
     private MockMvc mvc;
     JwtHelper jwtHelper = new JwtHelper();
     private static String customerToken;
+    private static String customerToken1;
     private static String shopToken;
 
 
@@ -44,6 +46,7 @@ public class CommentControllerTest {
     public static void setup(){
         JwtHelper jwtHelper = new JwtHelper();
         customerToken = jwtHelper.createToken(514L, "张三", 0L, 1, 3600);
+        customerToken1 = jwtHelper.createToken(515L, "李四", 0L, 1, 3600);
         shopToken = jwtHelper.createToken(11L, "MAYDAY商铺", 0L, 1, 3600);
 
     }
@@ -292,5 +295,19 @@ public class CommentControllerTest {
                         .content(Objects.requireNonNull(JacksonUtil.toJson(dto))))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errno",  is(ReturnNo.COMMENT_UPPER_LIMIT.getErrNo())));
+    }
+
+    //成功提交举报
+    @Test
+    public void testCreateCommentReportWhenSuccess() throws Exception {
+        ReportCommentDto dto = new ReportCommentDto();
+        dto.setReportReason("评论传播不实信息，可能误导他人");
+        mvc.perform(MockMvcRequestBuilders.put("/comment/{commentId}/report", 1)
+                        .header("authorization",  customerToken1)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(Objects.requireNonNull(JacksonUtil.toJson(dto))))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errno", is(ReturnNo.OK.getErrNo())));
+
     }
 }

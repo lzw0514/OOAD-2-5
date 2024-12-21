@@ -4,7 +4,6 @@ import cn.edu.xmu.javaee.core.exception.BusinessException;
 import cn.edu.xmu.javaee.core.model.ReturnNo;
 import cn.edu.xmu.javaee.core.model.dto.UserDto;
 import cn.edu.xmu.javaee.core.util.CloneFactory;
-import cn.edu.xmu.oomall.customer.dao.bo.Coupon;
 import cn.edu.xmu.oomall.customer.dao.bo.*;
 import cn.edu.xmu.oomall.customer.mapper.CouponActPoMapper;
 import cn.edu.xmu.oomall.customer.mapper.po.*;
@@ -48,10 +47,10 @@ public class CouponActDao {
     public List<CouponAct> retrieveOnlineCouponAct(Integer page, Integer pageSize) {
         List<CouponAct> couponActList;
         Pageable pageable = PageRequest.of(page, pageSize);
-        Page<CouponActPo> poPage = couponActPoMapper.findOnlineCouponAct(pageable);
+        Page<CouponActPo> poPage = couponActPoMapper.findByStatus((byte) 1, pageable);
         if (!poPage.isEmpty()) {
             couponActList = poPage.stream()
-                    .map(po -> CouponActFactory.build(po))  // 工厂方法转换为Comment对象
+                    .map(po -> CouponActFactory.build(po))
                     .collect(Collectors.toList());
         }
         else {

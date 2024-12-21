@@ -35,13 +35,16 @@ public class CartService {
     // 顾客向购物车加入一定数量某种商品
     public CartItem addCartItem(Long productId, Long quantity, UserDto user) {
         CartItem cartItem;
+        logger.debug("addCartItem: productId = {}", productId);
         try {
             cartItem = cartDao.findCartItemByProductAndCustomer(productId, user.getId());
-        } catch(BusinessException e) {
-           cartItem = new CartItem();
-           cartItem.setCartDao(cartDao);
-           return cartItem.addItem(productId, quantity, user);
-       }
+        }catch (BusinessException e) {
+            cartItem = new CartItem();
+            cartItem.setProductId(productId);
+            cartItem.setQuantity(quantity);
+            cartItem.setCustomerId(user.getId());
+            return cartDao.insert(cartItem, user);
+        }
         return cartItem.updateItemQuantity(quantity, user);
     }
 

@@ -13,7 +13,7 @@ import java.util.*;
 
 /**
  * 优惠券活动bo对象
- * @author Liuzhiwen
+ * @author Shuyang Xing
  */
 @NoArgsConstructor
 @AllArgsConstructor

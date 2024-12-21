@@ -1,5 +1,6 @@
 package cn.edu.xmu.oomall.customer.controller;
 
+import cn.edu.xmu.javaee.core.aop.Audit;
 import cn.edu.xmu.javaee.core.aop.LoginUser;
 import cn.edu.xmu.javaee.core.model.ReturnNo;
 import cn.edu.xmu.javaee.core.model.ReturnObject;
@@ -21,7 +22,7 @@ import java.util.stream.Collectors;
 
 /**
  * 优惠券控制器
- * @author Liuzhiwen
+ * @author Shuyang Xing
  */
 @RestController
 @RequestMapping(produces = "application/json;charset=UTF-8")
@@ -34,6 +35,7 @@ public class CouponController {
     // 查看顾客优惠券列表
     @GetMapping("/customers/{customerId}/coupons")
     @Transactional(propagation = Propagation.REQUIRED)
+    @Audit(departName = "customers")
     public ReturnObject getCouponsByCustomer(@PathVariable Long customerId,
                                              @RequestParam(defaultValue = "1") Integer page,
                                              @RequestParam(defaultValue = "5") Integer pageSize) {
@@ -43,6 +45,7 @@ public class CouponController {
 
     // 查看某一优惠券详情
     @GetMapping("/coupons/{couponId}")
+    @Audit(departName = "customers")
     public ReturnObject getCouponDetail(@PathVariable Long couponId) {
         Coupon coupon = this.couponService.findCouponById(couponId);
         return new ReturnObject(new CouponVo(coupon));
@@ -50,6 +53,7 @@ public class CouponController {
 
     // 顾客领取某活动的一张优惠券
     @PostMapping("/couponActs/{actId}/coupon")
+    @Audit(departName = "customers")
     public ReturnObject issueCouponToCustomer(@PathVariable Long actId,
                                               @LoginUser UserDto user) {
         Coupon res = this.couponService.receiveCoupon(actId, user);

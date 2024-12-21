@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "address")
+@Table(name = "customer_address")
 @AllArgsConstructor
 @NoArgsConstructor
 @CopyFrom({Address.class})
@@ -29,7 +29,7 @@ public class AddressPo {
 
     private String detailAddress;
 
-    private boolean isDefault;
+    private boolean beDefault;
 
     private Long creatorId;
     private String creatorName;
@@ -45,7 +45,8 @@ public class AddressPo {
     public Long getCustomerId() {return customerId;}public void setCustomerId(Long customerId) {this.customerId = customerId;}
     public String getMobile() {return mobile;}public void setMobile(String cityCode) {this.mobile = cityCode;}
     public String getDetailAddress() {return detailAddress;}public void setDetailAddress(String detailAddress) {this.detailAddress = detailAddress;}
-    public boolean isDefault() {return isDefault;}public void setDefault(boolean aDefault) {isDefault = aDefault;}
+    public boolean isBeDefault() {return beDefault;}public void setBeDefault(boolean beDefault) {
+        this.beDefault = beDefault;}
     public String getCreatorName() {return creatorName;}public void setCreatorName(String creatorName) {this.creatorName = creatorName;}
     public Long getModifierId() {return modifierId;}public void setModifierId(Long modifierId) {this.modifierId = modifierId;}
     public String getModifierName() {return modifierName;}public void setModifierName(String modifierName) {this.modifierName = modifierName;}

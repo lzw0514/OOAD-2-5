@@ -8,6 +8,7 @@ import cn.edu.xmu.javaee.core.model.ReturnObject;
 import cn.edu.xmu.javaee.core.model.dto.UserDto;
 import cn.edu.xmu.javaee.core.util.CloneFactory;
 import cn.edu.xmu.oomall.comment.controller.dto.CommentDto;
+import cn.edu.xmu.oomall.comment.controller.dto.ReportCommentDto;
 import cn.edu.xmu.oomall.comment.controller.vo.*;
 import cn.edu.xmu.oomall.comment.dao.CommentDao;
 import cn.edu.xmu.oomall.comment.dao.bo.*;
@@ -84,6 +85,23 @@ public class CommentController{
         return new ReturnObject(ReturnNo.CREATED,new CommentVo(newComment));
     }
 
+
+    /**
+     * 顾客提交举报
+     * author Liuzhiwen
+     * @param commentId
+     * @return
+     */
+    @PutMapping("/comment/{commentId}/report")
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Audit(departName = "customers")
+    public ReturnObject createReport(@PathVariable Long commentId,
+                                      @LoginUser UserDto user,
+                                      @RequestBody ReportCommentDto reportcommentDto) {
+        String reportReason=reportcommentDto.getReportReason();
+        commentService.reportComment(commentId, reportReason, user);
+        return new ReturnObject(ReturnNo.OK);
+    }
 
 
 }

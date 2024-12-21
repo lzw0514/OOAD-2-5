@@ -19,7 +19,7 @@ import java.util.Objects;
 
 /**
  * 优惠券活动-限制每人领取数
- * @author Liuzhiwen
+ * @author Shuyang Xing
  */
 @NoArgsConstructor
 @AllArgsConstructor
@@ -31,7 +31,7 @@ public class CouponActConstraintUser extends CouponAct {
 
     private static final Logger logger = LoggerFactory.getLogger(CouponActConstraintUser.class);
 
-    private Long maxPerUser; // 优惠券每人领取最大数量
+    private Long maxUser; // 优惠券每人领取最大数量
 
     @Override
     // 判断优惠券是否可领
@@ -41,7 +41,7 @@ public class CouponActConstraintUser extends CouponAct {
             throw new BusinessException(ReturnNo.STATENOTALLOW, String.format(ReturnNo.STATENOTALLOW.getMessage(), "活动不可用", STATUS_NAMES.get(this.status)));
         }
         Long curCnt = couponDao.countCouponByActAndCustomer(id, user.getId());
-        if(curCnt >= maxPerUser) {
+        if(curCnt >= maxUser) {
             throw new BusinessException(ReturnNo.FIELD_NOTVALID, "请求超过限制");
         }else {
             return issueCoupon(user);
@@ -58,7 +58,7 @@ public class CouponActConstraintUser extends CouponAct {
     public LocalDateTime getGmtEnd() { return gmtEnd; } public void setGmtEnd(LocalDateTime gmtEnd) { this.gmtEnd = gmtEnd; }
     public Byte getStatus() { return status; } public void setStatus(Byte status) { this.status = status; }
     public CouponDao getCouponDao() {return couponDao;}public void setCouponDao(CouponDao couponDao) {this.couponDao = couponDao;}
-    public Long getMaxPerUser() {return maxPerUser;}public void setMaxPerUser(Long maxPerUser) {this.maxPerUser = maxPerUser;}
+    public Long getMaxUser() {return maxUser;}public void setMaxUser(Long maxUser) {this.maxUser = maxUser;}
     public String getCreatorName() {return creatorName;}public void setCreatorName(String creatorName) {this.creatorName = creatorName;}
     public Long getModifierId() {return modifierId;}public void setModifierId(Long modifierId) {this.modifierId = modifierId;}
     public String getModifierName() {return modifierName;}public void setModifierName(String modifierName) {this.modifierName = modifierName;}

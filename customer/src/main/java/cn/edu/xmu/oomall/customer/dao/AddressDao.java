@@ -60,7 +60,7 @@ public class AddressDao {
 
     // 查找顾客默认地址
     public Address findDefaultAddressByCustomer(Long customerId) {
-        Optional<AddressPo> ret = addressPoMapper.findByisDefaultAndCustomerId(true, customerId);
+        Optional<AddressPo> ret = addressPoMapper.findByCustomerIdAndBeDefault(customerId, true);
         if (ret.isPresent()) {
             AddressPo po = ret.get();
             Address res = CloneFactory.copy(new Address(), po);
@@ -83,7 +83,7 @@ public class AddressDao {
     // 插入地址
     public Address insert(Address address, UserDto user) throws RuntimeException {
         Long cnt = addressPoMapper.countByCustomerId(user.getId());
-        if (cnt > 20) {
+        if (cnt >= 20) {
             throw new BusinessException(ReturnNo.ADDRESS_OUTLIMIT, String.format(ReturnNo.ADDRESS_OUTLIMIT.getMessage()));
         }
         address.setCustomerId(user.getId());

@@ -5,7 +5,7 @@ import cn.edu.xmu.javaee.core.model.ReturnNo;
 import cn.edu.xmu.javaee.core.model.dto.UserDto;
 import cn.edu.xmu.oomall.customer.dao.bo.*;
 import cn.edu.xmu.javaee.core.util.CloneFactory;
-import cn.edu.xmu.oomall.customer.mapper.CartPoMapper;
+import cn.edu.xmu.oomall.customer.mapper.CartItemPoMapper;
 import cn.edu.xmu.oomall.customer.mapper.po.*;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -25,12 +25,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CartDao {
     private final static Logger logger = LoggerFactory.getLogger(CartDao.class);
-    private final CartPoMapper cartPoMapper;
+    private final CartItemPoMapper cartItemPoMapper;
     private final static String KEY = "CI%d";
 
     // 根据Id找购物车项
     public CartItem findCartItemById(Long cartItemId) throws RuntimeException {
-        Optional<CartItemPo> ret = this.cartPoMapper.findById(cartItemId);
+        Optional<CartItemPo> ret = this.cartItemPoMapper.findById(cartItemId);
         if (ret.isPresent()) {
             CartItemPo po = ret.get();
             CartItem res = CloneFactory.copy(new CartItem(), po);
@@ -45,22 +45,22 @@ public class CartDao {
     public List<CartItem> retrieveCartItemByCustomer(Long customerId, Integer page, Integer pageSize) throws RuntimeException {
         List<CartItem> cartItemList;
         Pageable pageable = PageRequest.of(page, pageSize);
-        Page<CartItemPo> poPage = cartPoMapper.findCartListByCustomerId(customerId, pageable);
+        Page<CartItemPo> poPage = cartItemPoMapper.findByCustomerId(customerId, pageable);
         if (!poPage.isEmpty()) {
             cartItemList = poPage.stream()
-                    .map(po -> CloneFactory.copy(new CartItem(), po))  // 工厂方法转换为Comment对象
+                    .map(po -> CloneFactory.copy(new CartItem(), po))
                     .collect(Collectors.toList());
         }
         else {
             throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, "顾客购物车为空");
         }
-        logger.debug("retrieveCommentByProduct: cartItemList size = {}", cartItemList.size());
+        logger.debug("retrieveCartItemsByProduct: cartItemList size = {}", cartItemList.size());
         return cartItemList;
     }
 
     // 查找顾客购物车中某商品的购物车项
     public CartItem findCartItemByProductAndCustomer(Long productId, Long customerId) {
-        Optional<CartItemPo> ret = cartPoMapper.findItemByProductIdAndCustomerId(productId, customerId);
+        Optional<CartItemPo> ret = cartItemPoMapper.findByProductIdAndCustomerId(productId, customerId);
         if (ret.isPresent()) {
             CartItemPo po = ret.get();
             CartItem res = CloneFactory.copy(new CartItem(), po);
@@ -76,7 +76,7 @@ public class CartDao {
         cartItem.setGmtModified(LocalDateTime.now());
         cartItem.setModifier(user);
         CartItemPo po = CloneFactory.copy(new CartItemPo(), cartItem);
-        cartPoMapper.save(po);
+        cartItemPoMapper.save(po);
         return String.format(KEY, cartItem.getId());
     }
 
@@ -87,14 +87,14 @@ public class CartDao {
         cartItem.setCreator(user);
         CartItemPo CartItemPo = CloneFactory.copy(new CartItemPo(), cartItem);
         CartItemPo.setId(null);
-        CartItemPo save = this.cartPoMapper.save(CartItemPo);
+        CartItemPo save = this.cartItemPoMapper.save(CartItemPo);
         cartItem.setId(save.getId());
         return cartItem;
     }
 
     // 根据Id物理删除
     public String delete(Long id) {
-        this.cartPoMapper.deleteById(id);
+        this.cartItemPoMapper.deleteById(id);
         return String.format(KEY, id);
     }
 }

@@ -123,6 +123,7 @@ public class AddComment extends Comment {
     public Long getId() { return id; } public void setId(Long id) { this.id = id; }
     public String getContent() { return content; } public void setContent(String content) { this.content = content; }
     public String getRejectReason() { return rejectReason; } public void setRejectReason(String rejectReason) { this.rejectReason = rejectReason; }
+    public String getReportReason() { return reportReason; } public void setReportReason(String reportReason) { this.reportReason = reportReason; }
     public Byte getType() { return type; } public void setType(Byte type) { this.type = type; }
     public Long getCreatorId() { return creatorId; } public void setCreatorId(Long creatorId) { this.creatorId = creatorId; }
     public Long getOrderitemId() { return orderitemId; } public void setOrderitemId(Long orderitemId) { this.orderitemId = orderitemId; }
