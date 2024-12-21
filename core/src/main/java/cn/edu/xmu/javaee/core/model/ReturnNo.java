@@ -137,6 +137,9 @@ public enum ReturnNo {
     ORDER_CHANGENOTALLOW(801,"订单(id=%d)地址费用变化"),
     ITEM_OVERMAXQUANTITY(802,"销售对象(id=%d)的数量(%d)操过单次可购买数量(%d)"),
     ORDERITEM_NOT_FOUND(804,"订单项未找到"),
+    ORDER_NOT_FOUND(803,"订单未找到"),
+    ORDER_SHIPPED(805,"订单已发货"),
+    ORDER_NOT_IN_SHOP(806,"订单(id=%d)不属于本店铺"),
 
     /**************************************
      *  地区模块

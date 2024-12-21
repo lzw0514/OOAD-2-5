@@ -2,6 +2,8 @@
 
 package cn.edu.xmu.oomall.order.mapper.po;
 
+import cn.edu.xmu.javaee.core.aop.CopyFrom;
+import cn.edu.xmu.oomall.order.dao.bo.Order;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,6 +17,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @Builder
+@CopyFrom(Order.class)
 public class OrderPo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,6 +54,7 @@ public class OrderPo {
 
     private Long customerId;
 
+    @Column(name = "shop_id")
     private Long shopId;
 
     private String orderSn;
@@ -71,4 +75,10 @@ public class OrderPo {
 
     private Long packageId;
 
+    private Byte status;
+
+
+    public OrderPo() {
+
+    }
 }

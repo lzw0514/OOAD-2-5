@@ -2,7 +2,8 @@
 
 package cn.edu.xmu.oomall.order.controller.vo;
 
-import cn.edu.xmu.oomall.order.service.dto.OrderItemDto;
+import cn.edu.xmu.javaee.core.aop.CopyFrom;
+import cn.edu.xmu.oomall.order.dao.bo.OrderItem;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import jakarta.validation.constraints.NotNull;
 
 @Data
 @NoArgsConstructor
+@CopyFrom(OrderItem.class)
 public class OrderItemVo {
 
     @NotNull(message = "商品销售不能为空")

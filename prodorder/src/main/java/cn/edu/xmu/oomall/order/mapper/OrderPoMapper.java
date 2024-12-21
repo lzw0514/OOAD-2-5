@@ -6,7 +6,10 @@ import cn.edu.xmu.oomall.order.mapper.po.OrderPo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Optional;
+
 @Repository
 public interface OrderPoMapper extends JpaRepository<OrderPo, Long> {
-
+    List<OrderPo> findByShopId(Long shopId);
 }

@@ -1,6 +1,6 @@
 //School of Informatics Xiamen University, GPL-3.0 license
 
-package cn.edu.xmu.oomall.order.service.dto;
+package cn.edu.xmu.oomall.order.controller.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

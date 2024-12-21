@@ -2,6 +2,8 @@
 
 package cn.edu.xmu.oomall.order.mapper.po;
 
+import cn.edu.xmu.javaee.core.aop.CopyFrom;
+import cn.edu.xmu.oomall.order.dao.bo.OrderItem;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +18,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@CopyFrom(OrderItem.class)
 public class OrderItemPo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
