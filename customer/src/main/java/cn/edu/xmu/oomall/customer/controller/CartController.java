@@ -5,6 +5,7 @@ import cn.edu.xmu.javaee.core.aop.LoginUser;
 import cn.edu.xmu.javaee.core.model.ReturnNo;
 import cn.edu.xmu.javaee.core.model.ReturnObject;
 import cn.edu.xmu.javaee.core.model.dto.UserDto;
+import cn.edu.xmu.javaee.core.util.CloneFactory;
 import cn.edu.xmu.oomall.customer.controller.dto.CartDto;
 import cn.edu.xmu.oomall.customer.controller.vo.*;
 import cn.edu.xmu.javaee.core.model.vo.PageVo;
@@ -26,27 +27,60 @@ public class CartController {
 
     private final CartService cartService;
 
-    // 查看顾客购物车列表
+
+
+    /**
+     * 根据商品名称查找购物车项
+     * author Wangzening
+     * @param user
+     */
+    @GetMapping("/product/{productName}/carts/")
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Audit(departName = "customers")
+    public ReturnObject getCartItemByProdName(@PathVariable String productName,
+                                              @LoginUser UserDto user,
+                                              @RequestBody CartDto cartDto) {
+        CartItem cartitem = this.cartService.findCartItemByProdName(productName);
+        CartItemVo vos =CloneFactory.copy(new CartItemVo(), cartitem);
+        return new ReturnObject(vos);
+
+    }
+    /**
+     * 查看顾客购物车列表
+     * author Wangzening
+     * @param user
+     */
     @GetMapping("/carts")
     @Transactional(propagation = Propagation.REQUIRED)
     @Audit(departName = "customers")
     public ReturnObject getCartByCustomer(@LoginUser UserDto user,
                                           @RequestParam(defaultValue = "1") Integer page,
-                                          @RequestParam(defaultValue = "5") Integer pageSize) {
+                                          @RequestParam(defaultValue = "10") Integer pageSize) {
         List<CartItem> carts = this.cartService.retrieveCartItemByCustomer(user.getId(), page, pageSize);
-        return new ReturnObject(new PageVo<>(carts.stream().map(bo -> CartItemVo.builder().id(bo.getId()).productId(bo.getProductId()).quantity(bo.getQuantity()).build()).collect(Collectors.toList()), page, pageSize));
+        List<CartItemVo> vos = carts.stream().map(o -> CloneFactory.copy(new CartItemVo(), o)).collect(Collectors.toList());
+        return new ReturnObject(new PageVo<>(vos, page, pageSize));
+
     }
 
-    // 顾客将商品加入购物车
+    /**
+     * 顾客将商品加入购物车
+     * author Liuzhiwen
+     * @param user
+     */
     @PostMapping("/carts")
     @Audit(departName = "customers")
     public ReturnObject addCartItem(@RequestBody CartDto cartDto,
                                     @LoginUser UserDto user) {
-        CartItem newCartItem = cartService.addCartItem(cartDto.getProductId(), cartDto.getQuantity(), user);
+        CartItem cartItem=CloneFactory.copy(new CartItem(),cartDto);
+        CartItem newCartItem = cartService.addCartItem(cartItem, user);
         return new ReturnObject(new CartItemVo(newCartItem));
     }
 
-    // 顾客修改购物车内的商品数量
+    /**
+     * 顾客修改购物车内的商品数量
+     * author Wangzening
+     * @param user
+     */
     @PutMapping("/cartItems/{cartItemId}")
     @Audit(departName = "customers")
     public ReturnObject updateCartItem(@PathVariable Long cartItemId,
@@ -56,7 +90,12 @@ public class CartController {
         return new ReturnObject(ReturnNo.OK);
     }
 
-    // 顾客删除购物车项
+
+    /**
+     * 顾客删除购物车项
+     * author Wangzening
+     * @param user
+     */
     @DeleteMapping("/cartItems/{cartItemId}")
     @Audit(departName = "customers")
     public ReturnObject deleteAddress(@PathVariable Long cartItemId,

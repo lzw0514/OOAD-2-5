@@ -5,15 +5,17 @@ import cn.edu.xmu.javaee.core.util.CloneFactory;
 import cn.edu.xmu.oomall.customer.dao.bo.*;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 /**
- * @author Shuyang Xing
+ * @author Liuzhiwen
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @CopyFrom({Address.class})
+@Slf4j
 public class AddressVo {
 
     private Long id;
@@ -31,9 +33,9 @@ public class AddressVo {
     public AddressVo(Address address) {
         super();
         CloneFactory.copy(this, address);
+        log.debug("addressvo:addressvo:{}",this);
     }
 
-    // Getter and Setter methods
     public Long getId() {return id;}public void setId(Long id) {this.id = id;}
     public String getConsignee() {return consignee;}public void setConsignee(String consignee) {this.consignee = consignee;}
     public Long getRegionId() {return regionId;}public void setRegionId(Long regionId) {this.regionId = regionId;}

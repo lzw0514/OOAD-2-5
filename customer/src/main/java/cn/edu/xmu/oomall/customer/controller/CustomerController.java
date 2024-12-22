@@ -7,6 +7,7 @@ import cn.edu.xmu.javaee.core.model.ReturnObject;
 import cn.edu.xmu.javaee.core.model.dto.UserDto;
 import cn.edu.xmu.javaee.core.util.CloneFactory;
 import cn.edu.xmu.javaee.core.model.vo.PageVo;
+import cn.edu.xmu.oomall.customer.controller.dto.AddressDto;
 import cn.edu.xmu.oomall.customer.controller.dto.CustomerDto;
 import cn.edu.xmu.oomall.customer.controller.vo.CustomerVo;
 import cn.edu.xmu.oomall.customer.dao.bo.*;
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
 
 /**
  * 顾客控制器
- * @author Shuyang Xing
+ * @author Liuzhiwen
  */
 @RestController
 @RequestMapping(produces = "application/json;charset=UTF-8")
@@ -32,7 +33,12 @@ public class CustomerController {
 
     private final CustomerService customerService;
 
-    // 顾客查看自己信息
+    /**
+     * 顾客查看自己信息
+     * @param user
+     * @return
+     */
+
     @GetMapping("/customer")
     @Audit(departName = "customers")
     public ReturnObject getCustomerInfo(@LoginUser UserDto user) {
@@ -40,7 +46,12 @@ public class CustomerController {
         return new ReturnObject(new CustomerVo(customer));
     }
 
-    // 顾客修改密码
+    /**
+     * 顾客修改密码
+     * @param newPwd
+     * @param user
+     * @return
+     */
     @PutMapping("/customer/password")
     @Audit(departName = "customers")
     public ReturnObject updatePwd(@RequestParam String newPwd,
@@ -49,12 +60,17 @@ public class CustomerController {
         return new ReturnObject(ReturnNo.OK);
     }
 
-    // 顾客修改电话号码
-    @PutMapping("/customer/mobile")
+    /**
+     * 顾客修改个人信息
+     * @param user
+     * @return
+     */
+    @PutMapping("/customer")
     @Audit(departName = "customers")
-    public ReturnObject updateMobile(@RequestParam String newMobile,
-                                     @LoginUser UserDto user) {
-        customerService.updateMobile(newMobile, user);
+    public ReturnObject changeMyselfInfo(@RequestBody CustomerDto customerDto,
+                                         @LoginUser UserDto user) {
+        Customer newCustomer=CloneFactory.copy(new Customer(),customerDto);
+        customerService.changeMyselfInfo(newCustomer, user);
         return new ReturnObject(ReturnNo.OK);
     }
 }

@@ -38,7 +38,6 @@ public class AddressPo {
     private LocalDateTime gmtCreate;
     private LocalDateTime gmtModified;
 
-    // Getter and Setter methods
     public Long getId() {return id;}public void setId(Long id) {this.id = id;}
     public String getConsignee() {return consignee;}public void setConsignee(String consignee) {this.consignee = consignee;}
     public Long getRegionId() {return regionId;}public void setRegionId(Long regionId) {this.regionId = regionId;}

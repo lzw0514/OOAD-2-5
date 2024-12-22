@@ -13,7 +13,7 @@ import java.util.*;
 
 /**
  * 优惠券活动bo对象
- * @author Shuyang Xing
+ * @author Liuzhiwen
  */
 @NoArgsConstructor
 @AllArgsConstructor
@@ -28,15 +28,15 @@ public abstract class CouponAct extends OOMallObject implements Serializable {
 
     protected String description;
 
-    protected Byte constraintType; // 1-限制领取总数 2-限制顾客领取数
+    protected Byte constraintType;     // 1-限制领取总数,限制顾客两次领取时间间隔 2-限制顾客领取数，不限制领取总数
 
     protected Long creatorId;
 
-    protected LocalDateTime gmtBegin; // 优惠券活动开始时间
+    protected LocalDateTime gmtBegin;  // 优惠券活动开始时间
 
-    protected LocalDateTime gmtEnd; // 优惠券活动结束时间
+    protected LocalDateTime gmtEnd;    // 优惠券活动结束时间
 
-    protected Byte status; // 0-活动失效 1-活动有效
+    protected Byte status;             // 0-活动失效 1-活动有效
 
     @JsonIgnore
     @ToString.Exclude
@@ -68,7 +68,7 @@ public abstract class CouponAct extends OOMallObject implements Serializable {
         }
     };
 
-    @JsonIgnore
+/*    @JsonIgnore
     public String getStatusName(){
         return STATUS_NAMES.get(this.status);
     }
@@ -77,12 +77,21 @@ public abstract class CouponAct extends OOMallObject implements Serializable {
     @JsonIgnore
     public List<Coupon> getActivityCoupon(){
         return null;
-    }
+    }*/
 
-    // 抽象方法 判断优惠券是否可领
-    public abstract Coupon judgeClaimable(UserDto user);
+    /**
+     * 判断优惠券是否可领
+     * @param user
+     * @return
+     */
+    public abstract Coupon isClaimable(UserDto user);
 
-    // 顾客领取一张某一活动的优惠券
+
+    /**
+     * 顾客领取一张某一活动的优惠券
+     * @param user
+     * @return
+     */
     protected Coupon issueCoupon(UserDto user) {
         Coupon newCoupon = new Coupon();
         newCoupon.setActId(id);
@@ -94,7 +103,7 @@ public abstract class CouponAct extends OOMallObject implements Serializable {
         return couponDao.insert(newCoupon,user);
     }
 
-    // Getter and Setter methods
+
     public Long getId() { return id; } public void setId(Long id) { this.id = id; }
     public String getName() { return name; } public void setName(String name) { this.name = name; }
     public String getDescription() { return description; } public void setDescription(String description) { this.description = description; }

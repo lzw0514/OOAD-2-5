@@ -111,7 +111,6 @@ public class CommentDao {
     private Comment build(Comment bo){
         bo.setCommentDao(this);
         bo.setOrderItemDao(orderitemDao);
-   /*     bo.setShopDao(shopDao);*/
         return bo;
     }
 
@@ -153,12 +152,8 @@ public class CommentDao {
             ReplyComment obj = (ReplyComment) bo;
             po = CloneFactory.copy(new CommentPo(), obj);
         }
-        CommentPo updatePosave = commentPoMapper.save(po);
-        if(IDNOTEXIST.equals(updatePosave.getId())) {
-            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "评论", bo.getId()));
-        }
-
-        return String.format(KEY, bo.getId());
+        CommentPo save = commentPoMapper.save(po);
+        return String.format(KEY, save.getId());
     }
 
     /**

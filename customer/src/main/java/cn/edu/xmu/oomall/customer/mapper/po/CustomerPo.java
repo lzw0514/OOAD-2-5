@@ -1,14 +1,11 @@
 package cn.edu.xmu.oomall.customer.mapper.po;
 
 import cn.edu.xmu.javaee.core.aop.CopyFrom;
-import cn.edu.xmu.oomall.customer.dao.CouponDao;
-import cn.edu.xmu.oomall.customer.dao.CustomerDao;
 import cn.edu.xmu.oomall.customer.dao.bo.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "customer")
@@ -18,7 +15,7 @@ import java.util.List;
 public class CustomerPo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
 
     private String userName;
 
@@ -39,8 +36,8 @@ public class CustomerPo {
     private LocalDateTime gmtCreate;
     private LocalDateTime gmtModified;
 
-    // Getter and Setter methods
-    public Long getId() {return Id;}public void setId(Long id) {Id = id;}
+    public Long getId() {return id;}public void setId(Long id) {
+        this.id = id;}
     public String getUserName() {return userName;}public void setUserName(String userName) {this.userName = userName;}
     public String getPassword() {return password;}public void setPassword(String password) {this.password = password;}
     public String getMobile() {return mobile;}public void setMobile(String mobile) {this.mobile = mobile;}

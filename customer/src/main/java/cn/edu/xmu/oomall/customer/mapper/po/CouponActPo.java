@@ -38,6 +38,8 @@ public class CouponActPo {
 
     private Long remainCount; // 优惠券剩余数量
 
+    private Long minInterval; //两次领取最小时间间隔
+
     protected Long creatorId;
     private String creatorName;
     private Long modifierId;
@@ -45,7 +47,7 @@ public class CouponActPo {
     private LocalDateTime gmtCreate;
     private LocalDateTime gmtModified;
 
-    // Getter and Setter methods
+
     public Long getId() { return id; } public void setId(Long id) { this.id = id; }
     public String getName() { return name; } public void setName(String name) { this.name = name; }
     public String getDescription() { return description; } public void setDescription(String description) { this.description = description; }
@@ -62,4 +64,6 @@ public class CouponActPo {
     public LocalDateTime getGmtModified() {return gmtModified;}public void setGmtModified(LocalDateTime gmtModified) {this.gmtModified = gmtModified;}
     public Long getCreatorId() {return creatorId;}public void setCreatorId(Long creatorId) {this.creatorId = creatorId;}
     public Long getRemainCount() {return remainCount;}public void setRemainCount(Long remainCount) {this.remainCount = remainCount;}
+    public Long getMinInterval() {return minInterval;}public void setMinInterval(Long minInterval) {this.minInterval = minInterval;}
+
 }

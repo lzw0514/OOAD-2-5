@@ -7,10 +7,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface CouponPoMapper extends JpaRepository<CouponPo, Long> {
 
     Page<CouponPo> findCouponByCustomerId(Long customerId, Pageable pageable);
-
+    Optional<CouponPo> findTopByCustomerIdAndActIdOrderByGmtReceiveDesc(Long customerId,Long ActId);
     Long countByActIdAndCustomerId(Long actId, Long customerId);
 }

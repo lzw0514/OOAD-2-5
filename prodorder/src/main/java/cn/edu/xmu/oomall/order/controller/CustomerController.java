@@ -28,14 +28,6 @@ public class CustomerController {
     private final SearchMapper searchMapper;
 
 
-//    @PostMapping("/orders")
-//    public ReturnObject createOrder(@RequestBody @Validated OrderVo orderVo, @LoginUser UserDto user) {
-//        orderService.createOrder(orderVo.getItems().stream().map(item -> OrderItemDto.builder().onsaleId(item.getOnsaleId()).quantity(item.getQuantity()).actId(item.getActId()).couponId(item.getCouponId()).build()).collect(Collectors.toList()),
-//                ConsigneeDto.builder().consignee(orderVo.getConsignee()).address(orderVo.getAddress()).regionId(orderVo.getRegionId()).mobile(orderVo.getMobile()).build(),
-//                orderVo.getMessage(), user);
-//        return new ReturnObject(ReturnNo.CREATED);
-//    }
-
     @GetMapping("/orders")
     public ReturnObject testFeignSearch(
             @RequestParam(value = "itemName") String itemName,
@@ -80,7 +72,7 @@ public class CustomerController {
     }
 
     /**
-     *"顾客修改本人名下订单。"
+     * 顾客修改本人名下订单。
      * 现在仅允许用户调用本 API 更改未发货订单的收货地址
      * @param id
      * @param dto

@@ -37,9 +37,11 @@ public class CouponPo {
     private Long modifierId;
     private String modifierName;
     private LocalDateTime gmtCreate;
+
     private LocalDateTime gmtModified;
 
-    // Getter and Setter methods
+    protected LocalDateTime gmtReceive; //最近一次领取时间
+
     public Long getId() {return id;}public void setId(Long id) {this.id = id;}
     public String getName() {return name;}public void setName(String name) {this.name = name;}
     public LocalDateTime getGmtBegin() {return gmtBegin;}public void setGmtBegin(LocalDateTime gmtBegin) {this.gmtBegin = gmtBegin;}
@@ -53,4 +55,5 @@ public class CouponPo {
     public LocalDateTime getGmtCreate() {return gmtCreate;}public void setGmtCreate(LocalDateTime gmtCreate) {this.gmtCreate = gmtCreate;}
     public LocalDateTime getGmtModified() {return gmtModified;}public void setGmtModified(LocalDateTime gmtModified) {this.gmtModified = gmtModified;}
     public Long getCreatorId() {return creatorId;}public void setCreatorId(Long creatorId) {this.creatorId = creatorId;}
+    public LocalDateTime getGmtReceive() {return gmtReceive;}public void setGmtReceiven(LocalDateTime gmtReceive) {this.gmtReceive = gmtReceive;}
 }

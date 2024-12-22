@@ -18,8 +18,8 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
- * 优惠券活动-限制每人领取数
- * @author Shuyang Xing
+ * 优惠券活动-不限制优惠券总数，限制每人领取数量
+ * @author Liuzhiwen
  */
 @NoArgsConstructor
 @AllArgsConstructor
@@ -29,26 +29,29 @@ import java.util.Objects;
 @CopyFrom({CouponActPo.class})
 public class CouponActConstraintUser extends CouponAct {
 
-    private static final Logger logger = LoggerFactory.getLogger(CouponActConstraintUser.class);
 
     private Long maxUser; // 优惠券每人领取最大数量
 
+    /**
+     * 判断优惠券是否可领
+     * @param user
+     * @return
+     */
     @Override
-    // 判断优惠券是否可领
-    public Coupon judgeClaimable(UserDto user)
+    public Coupon isClaimable(UserDto user)
     {
         if(!Objects.equals(getStatus(), AVAILABLE)) {
-            throw new BusinessException(ReturnNo.STATENOTALLOW, String.format(ReturnNo.STATENOTALLOW.getMessage(), "活动不可用", STATUS_NAMES.get(this.status)));
+            throw new BusinessException(ReturnNo.STATENOTALLOW, String.format(ReturnNo.STATENOTALLOW.getMessage(), "优惠活动", id,STATUS_NAMES.get(this.status)));
         }
         Long curCnt = couponDao.countCouponByActAndCustomer(id, user.getId());
         if(curCnt >= maxUser) {
-            throw new BusinessException(ReturnNo.FIELD_NOTVALID, "请求超过限制");
+            throw new BusinessException(ReturnNo.COUPON_UPPER_LIMIT, String.format(ReturnNo. COUPON_UPPER_LIMIT.getMessage()));
         }else {
             return issueCoupon(user);
         }
     }
 
-    // Getter and Setter methods
+
     public Long getId() { return id; } public void setId(Long id) { this.id = id; }
     public String getName() { return name; } public void setName(String name) { this.name = name; }
     public String getDescription() { return description; } public void setDescription(String description) { this.description = description; }

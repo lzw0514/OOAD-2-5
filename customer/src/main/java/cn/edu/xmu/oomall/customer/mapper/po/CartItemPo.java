@@ -31,8 +31,11 @@ public class CartItemPo {
     private String modifierName;
     private LocalDateTime gmtCreate;
     private LocalDateTime gmtModified;
+    private String spec;   //商品规格
+    private String productName;
 
-    // Getter and Setter methods
+
+
     public Long getId() {return id;}public void setId(Long id) {this.id = id;}
     public Long getCustomerId() {return customerId;}public void setCustomerId(Long customerId) {this.customerId = customerId;}
     public Long getProductId() {return productId;}public void setProductId(Long productId) {this.productId = productId;}
@@ -43,4 +46,6 @@ public class CartItemPo {
     public LocalDateTime getGmtCreate() {return gmtCreate;}public void setGmtCreate(LocalDateTime gmtCreate) {this.gmtCreate = gmtCreate;}
     public LocalDateTime getGmtModified() {return gmtModified;}public void setGmtModified(LocalDateTime gmtModified) {this.gmtModified = gmtModified;}
     public Long getCreatorId() {return creatorId;}public void setCreatorId(Long creatorId) {this.creatorId = creatorId;}
+    public String getSpec() {return spec;}public void setSpec(String spec) {this.spec = spec;}
+    public String getProductName() {return productName;}public void setProductName(String productName) {this.productName = productName;}
 }

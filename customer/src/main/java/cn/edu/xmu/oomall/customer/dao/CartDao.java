@@ -8,8 +8,7 @@ import cn.edu.xmu.javaee.core.util.CloneFactory;
 import cn.edu.xmu.oomall.customer.mapper.CartItemPoMapper;
 import cn.edu.xmu.oomall.customer.mapper.po.*;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,15 +19,23 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * author Liuzhiwen
+ */
 @Repository
 @RefreshScope
 @RequiredArgsConstructor
+@Slf4j
 public class CartDao {
-    private final static Logger logger = LoggerFactory.getLogger(CartDao.class);
+
     private final CartItemPoMapper cartItemPoMapper;
     private final static String KEY = "CI%d";
 
-    // 根据Id找购物车项
+
+    /**
+     * 根据Id找购物车项
+     * @param cartItemId
+     */
     public CartItem findCartItemById(Long cartItemId) throws RuntimeException {
         Optional<CartItemPo> ret = this.cartItemPoMapper.findById(cartItemId);
         if (ret.isPresent()) {
@@ -41,10 +48,32 @@ public class CartDao {
         }
     }
 
-    // 查找顾客购物车列表
+
+    /**
+     * 根据商品名称找购物车项
+     * @param productName
+     */
+    public CartItem findCartItemByProdName(String productName) throws RuntimeException {
+        Optional<CartItemPo> ret = this.cartItemPoMapper.findByProductName(productName);
+        if (ret.isPresent()) {
+            CartItemPo po = ret.get();
+            CartItem res = CloneFactory.copy(new CartItem(), po);
+            res.setCartDao(this);
+            return res;
+        } else {
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, "购物车中无此商品");
+
+        }
+    }
+
+
+    /**
+     * 查找顾客购物车列表
+     * @param customerId
+     */
     public List<CartItem> retrieveCartItemByCustomer(Long customerId, Integer page, Integer pageSize) throws RuntimeException {
         List<CartItem> cartItemList;
-        Pageable pageable = PageRequest.of(page, pageSize);
+        Pageable pageable = PageRequest.of(page-1, pageSize);
         Page<CartItemPo> poPage = cartItemPoMapper.findByCustomerId(customerId, pageable);
         if (!poPage.isEmpty()) {
             cartItemList = poPage.stream()
@@ -54,11 +83,16 @@ public class CartDao {
         else {
             throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, "顾客购物车为空");
         }
-        logger.debug("retrieveCartItemsByProduct: cartItemList size = {}", cartItemList.size());
+        log.debug("retrieveCartItemsByProduct: cartItemList size = {}", cartItemList.size());
         return cartItemList;
     }
 
-    // 查找顾客购物车中某商品的购物车项
+
+    /**
+     * 查找顾客购物车中某商品的购物车项
+     * @param productId
+     * @param customerId
+     */
     public CartItem findCartItemByProductAndCustomer(Long productId, Long customerId) {
         Optional<CartItemPo> ret = cartItemPoMapper.findByProductIdAndCustomerId(productId, customerId);
         if (ret.isPresent()) {
@@ -71,28 +105,41 @@ public class CartDao {
         }
     }
 
-    // 保存购物车项
+
+    /**
+     * 保存购物车项
+     * @param cartItem
+     * @param user
+     */
+
     public String save(CartItem cartItem, UserDto user) throws RuntimeException {
         cartItem.setGmtModified(LocalDateTime.now());
         cartItem.setModifier(user);
         CartItemPo po = CloneFactory.copy(new CartItemPo(), cartItem);
-        cartItemPoMapper.save(po);
-        return String.format(KEY, cartItem.getId());
+        CartItemPo save=this.cartItemPoMapper.save(po);
+        return String.format(KEY, save.getId());
     }
 
-    // 插入购物车项
-    public CartItem insert(CartItem cartItem, UserDto user) throws RuntimeException {
-        cartItem.setCustomerId(user.getId());
-        cartItem.setGmtCreate(LocalDateTime.now());
-        cartItem.setCreator(user);
-        CartItemPo CartItemPo = CloneFactory.copy(new CartItemPo(), cartItem);
-        CartItemPo.setId(null);
-        CartItemPo save = this.cartItemPoMapper.save(CartItemPo);
-        cartItem.setId(save.getId());
-        return cartItem;
+    /**
+     * 插入购物车项
+     * @param bo
+     * @param user
+     */
+    public CartItem insert(CartItem bo, UserDto user) throws RuntimeException {
+        bo.setId(null);
+        bo.setGmtCreate(LocalDateTime.now());
+        bo.setCreator(user);
+        CartItemPo Po = CloneFactory.copy(new CartItemPo(), bo);
+        CartItemPo save = this.cartItemPoMapper.save(Po);
+        bo.setId(save.getId());
+        return bo;
     }
 
-    // 根据Id物理删除
+
+    /**
+     * 根据Id物理删除
+     * @param id
+     */
     public String delete(Long id) {
         this.cartItemPoMapper.deleteById(id);
         return String.format(KEY, id);

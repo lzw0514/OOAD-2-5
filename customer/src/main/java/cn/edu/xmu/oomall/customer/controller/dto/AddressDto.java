@@ -17,7 +17,6 @@ public class AddressDto {
     private String detailAddress;
 
 
-    // Getter and Setter methods
     public Long getRegionId() {
         return regionId;
     }
