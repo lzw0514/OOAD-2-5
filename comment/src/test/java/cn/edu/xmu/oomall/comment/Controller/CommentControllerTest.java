@@ -1,25 +1,19 @@
 package cn.edu.xmu.oomall.comment.Controller;
 
-import cn.edu.xmu.javaee.core.mapper.RedisUtil;
 import cn.edu.xmu.javaee.core.model.ReturnNo;
 import cn.edu.xmu.javaee.core.util.JacksonUtil;
 import cn.edu.xmu.javaee.core.util.JwtHelper;
 import cn.edu.xmu.oomall.comment.CommentTestApplication;
 import cn.edu.xmu.oomall.comment.controller.dto.CommentDto;
 import cn.edu.xmu.oomall.comment.controller.dto.ReportCommentDto;
-import com.alibaba.fastjson.JSONObject;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +23,10 @@ import java.util.Objects;
 
 import static org.hamcrest.CoreMatchers.is;
 
+
+/**
+ * @author Liuzhiwen
+ */
 @SpringBootTest(classes = CommentTestApplication.class)
 @AutoConfigureMockMvc
 @Transactional(propagation = Propagation.REQUIRES_NEW)

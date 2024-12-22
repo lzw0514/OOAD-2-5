@@ -5,10 +5,8 @@ import cn.edu.xmu.javaee.core.util.JacksonUtil;
 import cn.edu.xmu.javaee.core.util.JwtHelper;
 import cn.edu.xmu.oomall.comment.CommentTestApplication;
 import cn.edu.xmu.oomall.comment.controller.dto.AuditCommentDto;
-import cn.edu.xmu.oomall.comment.controller.dto.CommentDto;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,10 +21,14 @@ import java.util.Objects;
 
 import static org.hamcrest.CoreMatchers.is;
 
+/**
+ * @author Liuzhiwen
+ */
 
 @SpringBootTest(classes = CommentTestApplication.class)
 @AutoConfigureMockMvc
 @Transactional(propagation = Propagation.REQUIRES_NEW)
+
 public class AdminControllerTest {
 
     @Autowired

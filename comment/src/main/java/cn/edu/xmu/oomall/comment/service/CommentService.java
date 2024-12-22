@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
-import static cn.edu.xmu.javaee.core.model.Constants.IDNOTEXIST;
 import static cn.edu.xmu.oomall.comment.dao.bo.Comment.INVISIBLE;
 import static cn.edu.xmu.oomall.comment.dao.bo.Comment.REPORTED_FOR_REVIEW;
 

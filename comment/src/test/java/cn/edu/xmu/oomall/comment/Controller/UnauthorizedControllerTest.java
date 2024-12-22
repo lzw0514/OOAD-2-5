@@ -3,7 +3,6 @@ package cn.edu.xmu.oomall.comment.Controller;
 import cn.edu.xmu.javaee.core.model.ReturnNo;
 import cn.edu.xmu.oomall.comment.CommentTestApplication;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,6 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 
+/**
+ * @author Liuzhiwen
+ */
 @SpringBootTest(classes = CommentTestApplication.class)
 @AutoConfigureMockMvc
 @Transactional(propagation = Propagation.REQUIRES_NEW)

@@ -25,6 +25,7 @@ import static cn.edu.xmu.javaee.core.model.Constants.PLATFORM;
 public class AdminController {
 
     private final CommentService commentService;
+
     /**
      * 查询评论详情，所有状态的评论都可查询
      * @param commentId

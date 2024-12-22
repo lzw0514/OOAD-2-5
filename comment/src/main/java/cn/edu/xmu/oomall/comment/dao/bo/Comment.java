@@ -64,29 +64,20 @@ public abstract class Comment extends OOMallObject implements Serializable {
     protected Comment ReplyComment;
 
 
-    @JsonIgnore
-    @ToString.Exclude
-    protected Shop shop; // 导航向相关商家
 
     @JsonIgnore
     @ToString.Exclude
-    protected OrderItem orderItem; // 导航向相关订单项
+    protected OrderItem orderItem;
 
     @JsonIgnore
     @ToString.Exclude
     protected CommentDao commentDao;
 
-    @JsonIgnore
-    @ToString.Exclude
-    protected ShopDao shopDao;
 
     @JsonIgnore
     @ToString.Exclude
     protected OrderItemDao orderitemDao ;
 
-    // 无回复评论
-    @JsonIgnore
-    public static final Long NO_REPLY_COMMENT =0L;
 
     // 共4种状态 0-待审核 1-通过审核 2-驳回 3-评论不可见 4-被举报待审核
     // 待审核
@@ -180,10 +171,10 @@ public abstract class Comment extends OOMallObject implements Serializable {
     public abstract void setReplyable(boolean replyable);
 
     public abstract void setReplyComment(Comment replyComment);
-    public abstract void setShop(Shop shop);
+
     public abstract void setOrderItem(OrderItem orderItem);
     public abstract void setCommentDao(CommentDao commentDao);
-    public abstract void setShopDao(ShopDao shopDao);
+
     public abstract void setOrderItemDao(OrderItemDao orderItemDao);
     public abstract void setGmtCreate(LocalDateTime gmtCreate);
 

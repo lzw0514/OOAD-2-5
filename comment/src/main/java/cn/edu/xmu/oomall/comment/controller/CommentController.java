@@ -81,7 +81,6 @@ public class CommentController{
                                     @RequestBody CommentDto commentDto) {
         ReplyComment replyComment = CloneFactory.copy(new ReplyComment(), commentDto);
         ReplyComment newComment = commentService.createReply(shopId, commentId, replyComment, user);
-        log.debug("createnewReply:newReply={}",newComment);
         return new ReturnObject(ReturnNo.CREATED,new CommentVo(newComment));
     }
 

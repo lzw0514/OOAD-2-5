@@ -7,7 +7,6 @@ import cn.edu.xmu.javaee.core.model.dto.UserDto;
 import cn.edu.xmu.oomall.comment.controller.dto.CommentDto;
 import cn.edu.xmu.oomall.comment.dao.CommentDao;
 import cn.edu.xmu.oomall.comment.dao.openfeign.OrderItemDao;
-import cn.edu.xmu.oomall.comment.dao.openfeign.ShopDao;
 import cn.edu.xmu.oomall.comment.mapper.po.CommentPo;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -100,10 +99,8 @@ public class ReplyComment extends Comment {
     public LocalDateTime getGmtPublish() { return gmtPublish; } public void setGmtPublish(LocalDateTime gmtPublish) { this.gmtPublish = gmtPublish; }
     public Byte getStatus() { return status; } public void setStatus(Byte status) { this.status = status; }
     public void setReplyComment(Comment replyComment) { ReplyComment = replyComment; }
-    public void setShop(Shop shop) { this.shop = shop; }
     public void setOrderItem(OrderItem orderItem) { this.orderItem = orderItem; }
     public void setCommentDao(CommentDao commentDao) { this.commentDao = commentDao; }
-    public void setShopDao(ShopDao shopDao) { this.shopDao = shopDao; }
     public void setOrderItemDao(OrderItemDao orderItemDao) { this.orderitemDao = orderItemDao; }
     public Long getParentId() {return parentId;}public void setParentId(Long addPId) {this.parentId = addPId;}
     public Long getAddId() {return addId;}
