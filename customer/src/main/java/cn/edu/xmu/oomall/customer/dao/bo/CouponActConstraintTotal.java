@@ -5,6 +5,7 @@ import cn.edu.xmu.javaee.core.aop.CopyFrom;
 import cn.edu.xmu.javaee.core.model.ReturnNo;
 import cn.edu.xmu.javaee.core.model.dto.UserDto;
 import cn.edu.xmu.oomall.customer.dao.CartDao;
+import cn.edu.xmu.oomall.customer.dao.CouponActDao;
 import cn.edu.xmu.oomall.customer.dao.CouponDao;
 import cn.edu.xmu.oomall.customer.mapper.po.CouponActPo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -64,7 +65,7 @@ public class CouponActConstraintTotal extends CouponAct {
             } catch (BusinessException e) {   //没有查到顾客在此优惠活动下的优惠券时，直接领取
                remainCount -= 1;
                couponActDao.save(this, user);
-               return issueCoupon(user);
+               return allocateCoupon(user);
             }
             log.debug("lastestReceiveCoupon={}",lastestReceiveCoupon);
             Duration duration = Duration.between(lastestReceiveCoupon.getGmtReceive(),LocalDateTime.now());
@@ -78,7 +79,7 @@ public class CouponActConstraintTotal extends CouponAct {
             else{
                 remainCount -= 1;
                 couponActDao.save(this, user);
-                return issueCoupon(user);
+                return allocateCoupon(user);
             }
 
         }
@@ -102,5 +103,5 @@ public class CouponActConstraintTotal extends CouponAct {
     public Long getCreatorId() {return creatorId;}public void setCreatorId(Long creatorId) {this.creatorId = creatorId;}
     public Long getMinInterval() {return minInterval;}public void setMinInterval(Long minInterval) {this.minInterval = minInterval;}
     public Long getRemainCount() {return remainCount;}public void setRemainCount(Long remainCount) {this.remainCount = remainCount;}
-
+    public CouponActDao getCouponActDao() {return couponActDao;}public void setCouponActDao(CouponActDao couponActDao) {this.couponActDao = couponActDao;}
 }

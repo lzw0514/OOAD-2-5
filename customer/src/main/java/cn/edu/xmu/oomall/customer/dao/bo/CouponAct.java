@@ -92,7 +92,7 @@ public abstract class CouponAct extends OOMallObject implements Serializable {
      * @param user
      * @return
      */
-     Coupon issueCoupon(UserDto user) {
+     Coupon allocateCoupon(UserDto user) {
         Coupon newCoupon = new Coupon();
         newCoupon.setActId(id);
         newCoupon.setName(name);
@@ -100,19 +100,37 @@ public abstract class CouponAct extends OOMallObject implements Serializable {
         newCoupon.setGmtEnd(gmtEnd);
         newCoupon.setStatus(AVAILABLE);
         newCoupon.setCustomerId(user.getId());
-        log.debug("AAAAAa");
         return couponDao.insert(newCoupon,user);
     }
 
 
-    public Long getId() { return id; } public void setId(Long id) { this.id = id; }
-    public String getName() { return name; } public void setName(String name) { this.name = name; }
-    public String getDescription() { return description; } public void setDescription(String description) { this.description = description; }
-    public Byte getConstraintType() { return constraintType; } public void setConstraintType(Byte constraintType) { this.constraintType = constraintType; }
-    public Long getCreatorId() { return creatorId; } public void setCreatorId(Long creatorId) { this.creatorId = creatorId; }
-    public LocalDateTime getGmtBegin() { return gmtBegin; } public void setGmtBegin(LocalDateTime gmtBegin) { this.gmtBegin = gmtBegin; }
-    public LocalDateTime getGmtEnd() { return gmtEnd; } public void setGmtEnd(LocalDateTime gmtEnd) { this.gmtEnd = gmtEnd; }
-    public Byte getStatus() { return status; } public void setStatus(Byte status) { this.status = status; }
-    public CouponDao getCouponDao() {return couponDao;}public void setCouponDao(CouponDao couponDao) {this.couponDao = couponDao;}
-    public CouponActDao getCouponActDao() {return couponActDao;}public void setCouponActDao(CouponActDao couponActDao) {this.couponActDao = couponActDao;}
+    public abstract Long getId();
+    public abstract void setId(Long id);
+
+    public abstract String getName();
+    public abstract void setName(String name);
+
+    public abstract String getDescription();
+    public abstract void setDescription(String description);
+
+    public abstract Byte getConstraintType();
+    public abstract void setConstraintType(Byte constraintType);
+
+    public abstract Long getCreatorId();
+    public abstract void setCreatorId(Long creatorId);
+
+    public abstract LocalDateTime getGmtBegin();
+    public abstract void setGmtBegin(LocalDateTime gmtBegin);
+
+    public abstract LocalDateTime getGmtEnd();
+    public abstract void setGmtEnd(LocalDateTime gmtEnd);
+
+    public abstract Byte getStatus();
+    public abstract void setStatus(Byte status);
+
+    public abstract CouponDao getCouponDao();
+    public abstract void setCouponDao(CouponDao couponDao);
+
+    public abstract CouponActDao getCouponActDao();
+    public abstract void setCouponActDao(CouponActDao couponActDao);
 }

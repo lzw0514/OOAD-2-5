@@ -79,10 +79,6 @@ public class Customer extends OOMallObject implements Serializable{
         }
     };
 
-    @JsonIgnore
-    public String getStatusName(){
-        return STATUS_NAMES.get(this.status);
-    }
 
     /**
      * 顾客修改密码
