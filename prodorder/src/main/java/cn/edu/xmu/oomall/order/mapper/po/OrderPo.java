@@ -210,16 +210,6 @@ public class OrderPo {
         this.message = message;
     }
 
-
-    public Long getPackageId() {
-        return packageId;
-    }
-
-    public void setPackageId(Long packageId) {
-        this.packageId = packageId;
-    }
-
-
     public Long getExpressFee() {
         return expressFee;
     }
