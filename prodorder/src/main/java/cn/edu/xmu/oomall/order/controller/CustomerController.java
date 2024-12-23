@@ -2,10 +2,12 @@
 
 package cn.edu.xmu.oomall.order.controller;
 
+import cn.edu.xmu.javaee.core.aop.LoginUser;
 import cn.edu.xmu.javaee.core.exception.BusinessException;
 import cn.edu.xmu.javaee.core.model.InternalReturnObject;
 import cn.edu.xmu.javaee.core.model.ReturnNo;
 import cn.edu.xmu.javaee.core.model.ReturnObject;
+import cn.edu.xmu.javaee.core.model.dto.UserDto;
 import cn.edu.xmu.javaee.core.model.vo.IdNameTypeVo;
 import cn.edu.xmu.javaee.core.util.CloneFactory;
 import cn.edu.xmu.oomall.order.controller.dto.OrderDto;
@@ -18,7 +20,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController /*Restful的Controller对象*/
+/**
+ * author Fengjianhao 订单控制器
+ */
+@RestController
 @RequiredArgsConstructor
 @RequestMapping(produces = "application/json;charset=UTF-8")
 public class CustomerController {
@@ -28,6 +33,14 @@ public class CustomerController {
     private final SearchMapper searchMapper;
 
 
+    /**
+     *
+     * @param itemName
+     * @param customerId
+     * @param page
+     * @param size
+     * @return
+     */
     @GetMapping("/orders")
     public ReturnObject testFeignSearch(
             @RequestParam(value = "itemName") String itemName,
@@ -35,7 +48,6 @@ public class CustomerController {
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size) {
         try {
-            // 使用 Feign Client 调用
             InternalReturnObject<List<Long>> response = searchMapper.searchOrders(itemName, customerId, page, size);
 
             if (response.getErrno() == ReturnNo.OK.getErrNo()) {
@@ -50,10 +62,11 @@ public class CustomerController {
 
     /**
      * 获得订单的所有状态
-     * @
+     * @param orderId
+     * @return
      */
-    @GetMapping("/orders/states")
-    public ReturnObject getOrderState(@RequestParam(value = "orderId") Long orderId) {
+    @GetMapping("/orders/{orderId}/states")
+    public ReturnObject getOrderState(@PathVariable Long orderId) {
         Order order = orderService.getOrderState(orderId);
         IdNameTypeVo vo = IdNameTypeVo.builder().type(order.getStatus()).name(order.getStatus().toString()).build();
         return new ReturnObject(ReturnNo.OK, vo);
@@ -80,19 +93,22 @@ public class CustomerController {
      * @return
      */
     @PutMapping("/orders/{id}")
-    public ReturnObject changeCustomerOrder(@PathVariable Long id, @RequestBody OrderDto dto){
-        orderService.changeCustomerOrder(id,dto);
+    public ReturnObject changeCustomerOrder(@PathVariable Long id,
+                                            @RequestBody OrderDto dto,
+                                            @LoginUser UserDto user){
+        orderService.changeCustomerOrder(id,dto,user);
         return new ReturnObject(ReturnNo.OK);
     }
 
     /**
-     * "顾客取消本人名下订单。"
+     * 顾客取消本人名下订单。
      * @param id
      * @return
      */
     @DeleteMapping("/orders/{id}")
-    public ReturnObject deleteCustomerOrder(@PathVariable Long id){
-        orderService.deleteCustomerOrder(id);
+    public ReturnObject deleteCustomerOrder(@PathVariable Long id,
+                                            @LoginUser UserDto user){
+        orderService.deleteCustomerOrder(id,user);
         return new ReturnObject(ReturnNo.OK);
     }
 
