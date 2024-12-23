@@ -23,6 +23,38 @@ public class OrderItemVo {
 
     private Long actId;
 
+    public @NotNull(message = "商品销售不能为空") Long getOnsaleId() {
+        return onsaleId;
+    }
+
+    public void setOnsaleId(@NotNull(message = "商品销售不能为空") Long onsaleId) {
+        this.onsaleId = onsaleId;
+    }
+
+    public Long getCouponId() {
+        return couponId;
+    }
+
+    public void setCouponId(Long couponId) {
+        this.couponId = couponId;
+    }
+
+    public Long getActId() {
+        return actId;
+    }
+
+    public void setActId(Long actId) {
+        this.actId = actId;
+    }
+
+    public @Min(value = 1, message = "至少购买一个") Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(@Min(value = 1, message = "至少购买一个") Integer quantity) {
+        this.quantity = quantity;
+    }
+
     private Long couponId;
 }
 

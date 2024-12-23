@@ -37,10 +37,19 @@ public class Order extends OOMallObject {
         this.status = status;
     }
 
+    private Long id;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     private Long customerId;
 
-    @Setter
-    @Getter
+
     private Long shopId;
     public static final Byte PENDING_PAYMENT = 0;
     public static final Byte PAID = 1;
@@ -48,45 +57,140 @@ public class Order extends OOMallObject {
     public static final Byte COMPLETED = 3;
 
 
-    @Setter
-    @Getter
+
     private String orderSn;
 
-    @Setter
-    @Getter
+
     private Long pid;
 
-    @Setter
-    @Getter
+
     private String consignee;
 
-    @Setter
+
     private Long regionId;
 
-    @Setter
-    @Getter
+
     private String address;
 
-    @Setter
-    @Getter
+
     private String mobile;
 
-    @Setter
-    @Getter
+
     private String message;
 
-    @Setter
+
     private Long activityId;
 
-    @Setter
+
     private Long packageId;
 
-    @Setter
-    @Getter
+
     private List<OrderItem> orderItems;
 
-    @Getter
-    @Setter
+    public Long getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(Long customerId) {
+        this.customerId = customerId;
+    }
+
+    public Long getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(Long shopId) {
+        this.shopId = shopId;
+    }
+
+    public String getOrderSn() {
+        return orderSn;
+    }
+
+    public void setOrderSn(String orderSn) {
+        this.orderSn = orderSn;
+    }
+
+    public Long getPid() {
+        return pid;
+    }
+
+    public void setPid(Long pid) {
+        this.pid = pid;
+    }
+
+    public String getConsignee() {
+        return consignee;
+    }
+
+    public void setConsignee(String consignee) {
+        this.consignee = consignee;
+    }
+
+    public Long getRegionId() {
+        return regionId;
+    }
+
+    public void setRegionId(Long regionId) {
+        this.regionId = regionId;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public Long getActivityId() {
+        return activityId;
+    }
+
+    public void setActivityId(Long activityId) {
+        this.activityId = activityId;
+    }
+
+    public Long getPackageId() {
+        return packageId;
+    }
+
+    public void setPackageId(Long packageId) {
+        this.packageId = packageId;
+    }
+
+    public List<OrderItem> getOrderItems() {
+        return orderItems;
+    }
+
+    public void setOrderItems(List<OrderItem> orderItems) {
+        this.orderItems = orderItems;
+    }
+
+    public Byte getStatus() {
+        return status;
+    }
+
+    public void setStatus(Byte status) {
+        this.status = status;
+    }
+
     private Byte status;
 
 

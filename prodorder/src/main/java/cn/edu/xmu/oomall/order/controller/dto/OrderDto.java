@@ -14,46 +14,115 @@ import java.util.List;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class OrderDto {
-    @Setter
-    @Getter
+
     private String orderSn;
 
-    @Setter
-    @Getter
+
     private Long pid;
 
-    @Setter
-    @Getter
+
     private ConsigneeDto consignee;
 
-    @Setter
-    @Getter
+
     private Long regionId;
 
-    @Setter
-    @Getter
+
     private String address;
 
-    @Setter
-    @Getter
+
     private String mobile;
 
-    @Setter
-    @Getter
+
     private String message;
 
-    @Setter
+
     private Long activityId;
 
-    @Setter
     private Long packageId;
 
-    @Setter
-    @Getter
+
     private List<OrderItemDto> orderItems;
 
-    @Getter
-    @Setter
+    public Long getPid() {
+        return pid;
+    }
+
+    public void setPid(Long pid) {
+        this.pid = pid;
+    }
+
+    public String getOrderSn() {
+        return orderSn;
+    }
+
+    public void setOrderSn(String orderSn) {
+        this.orderSn = orderSn;
+    }
+
+    public String getConsignee() {
+        return consignee.getConsignee();
+    }
+
+
+
+    public Long getRegionId() {
+        return regionId;
+    }
+
+    public void setRegionId(Long regionId) {
+        this.regionId = regionId;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public Long getActivityId() {
+        return activityId;
+    }
+
+    public void setActivityId(Long activityId) {
+        this.activityId = activityId;
+    }
+
+    public Long getPackageId() {
+        return packageId;
+    }
+
+    public void setPackageId(Long packageId) {
+        this.packageId = packageId;
+    }
+
+
+
+    public Byte getStatus() {
+        return status;
+    }
+
+    public void setStatus(Byte status) {
+        this.status = status;
+    }
+
     private Byte status;
 
 

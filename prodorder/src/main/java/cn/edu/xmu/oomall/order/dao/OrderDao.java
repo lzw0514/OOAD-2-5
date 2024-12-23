@@ -7,6 +7,7 @@ import cn.edu.xmu.javaee.core.model.ReturnNo;
 import cn.edu.xmu.javaee.core.util.CloneFactory;
 import cn.edu.xmu.javaee.core.util.JacksonUtil;
 import cn.edu.xmu.oomall.order.dao.bo.Order;
+import cn.edu.xmu.oomall.order.dao.bo.OrderItem;
 import cn.edu.xmu.oomall.order.mapper.OrderItemPoMapper;
 import cn.edu.xmu.oomall.order.mapper.OrderPoMapper;
 import cn.edu.xmu.oomall.order.mapper.po.OrderItemPo;
@@ -17,6 +18,7 @@ import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,12 +37,14 @@ public class OrderDao {
     }
 
     public Order findById(Long id) {
-        Optional<OrderPo> po = orderPoMapper.findById(id);
-        if (po.isEmpty()) {
+        OrderPo po = orderPoMapper.findOrderById(id);
+        if (null == po) {
             throw new BusinessException(ReturnNo.ORDER_NOT_FOUND, String.format(ReturnNo.ORDER_NOT_FOUND.getMessage()));
         }
-        else
-            return CloneFactory.copy(new Order(), po);
+        Order bo = CloneFactory.copy(new Order(), po);
+        List<OrderItem> OrderItemList = orderPoMapper.findItemByOrderId(id).stream().map(entity->CloneFactory.copy(new OrderItem(), entity)).toList();
+        bo.setOrderItems(OrderItemList);
+        return bo;
     }
 
     public void update(Order order){
@@ -55,7 +59,13 @@ public class OrderDao {
 
     public List<Order> findByShopId(Long shopId) {
         List<OrderPo> poList = orderPoMapper.findByShopId(shopId);
-        List<Order> orderList = poList.stream().map(obj->CloneFactory.copy(new Order(),obj)).toList();
+        List<Order> orderList = new ArrayList<>();
+        poList.forEach(po->{
+            Order order = CloneFactory.copy(new Order(), po);
+            List<OrderItem> OrderItemList = orderPoMapper.findItemByOrderId(order.getId()).stream().map(entity->CloneFactory.copy(new OrderItem(), entity)).toList();
+            order.setOrderItems(OrderItemList);
+            orderList.add(order);
+        });
         return orderList;
     }
 

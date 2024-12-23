@@ -40,6 +40,11 @@ public class ShopController {
                                     @RequestParam(required = false,defaultValue = "10") Integer pageSize){
         List<Order> orderlist = orderService.getShopOrder(shopId);
         List<OrderVo> orderVoList = orderlist.stream().map(obj->CloneFactory.copy(new OrderVo(),obj)).toList();
+        for(int i = 0;i < orderlist.size();i++ ){
+            Order order = orderlist.get(i);
+            OrderVo orderVo = orderVoList.get(i);
+            orderVo.setItems(order.getOrderItems());
+        }
         return new ReturnObject(ReturnNo.OK, new PageVo<>(orderVoList, page, pageSize));
     }
 
