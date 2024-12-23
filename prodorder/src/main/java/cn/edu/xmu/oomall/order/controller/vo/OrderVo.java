@@ -20,6 +20,16 @@ public class OrderVo {
 
     private List<OrderItemVo> items;
 
+    private Long id;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     @NotBlank(message = "联系人不能为空")
     private String consignee;
 

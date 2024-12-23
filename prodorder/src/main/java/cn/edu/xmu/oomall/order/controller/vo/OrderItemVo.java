@@ -15,6 +15,16 @@ import jakarta.validation.constraints.NotNull;
 @CopyFrom(OrderItem.class)
 public class OrderItemVo {
 
+    private Long id;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     @NotNull(message = "商品销售不能为空")
     private Long onsaleId;
 

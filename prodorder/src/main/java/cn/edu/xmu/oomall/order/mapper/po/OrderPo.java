@@ -6,7 +6,6 @@ import cn.edu.xmu.javaee.core.aop.CopyFrom;
 import cn.edu.xmu.oomall.order.dao.bo.Order;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
@@ -90,7 +89,7 @@ public class OrderPo {
         this.id = id;
     }
 
-    public Long getCreatorId() {
+/*    public Long getCreatorId() {
         return creatorId;
     }
 
@@ -120,23 +119,23 @@ public class OrderPo {
 
     public void setModifierId(Long modifierId) {
         this.modifierId = modifierId;
-    }
+    }*/
 
     public LocalDateTime getGmtCreate() {
         return gmtCreate;
     }
 
-    public void setGmtCreate(LocalDateTime gmtCreate) {
+/*    public void setGmtCreate(LocalDateTime gmtCreate) {
         this.gmtCreate = gmtCreate;
-    }
+    }*/
 
     public LocalDateTime getGmtModified() {
         return gmtModified;
     }
 
-    public void setGmtModified(LocalDateTime gmtModified) {
+/*    public void setGmtModified(LocalDateTime gmtModified) {
         this.gmtModified = gmtModified;
-    }
+    }*/
 
     public Long getCustomerId() {
         return customerId;
@@ -210,6 +209,13 @@ public class OrderPo {
         this.message = message;
     }
 
+//    public Long getExpressFee() {
+//        return expressFee;
+//    }
+//
+//    public void setExpressFee(Long expressFee) {
+//        this.expressFee = expressFee;
+//    }
 
     public Long getPackageId() {
         return packageId;
@@ -219,24 +225,7 @@ public class OrderPo {
         this.packageId = packageId;
     }
 
-
-    public Long getExpressFee() {
-        return expressFee;
-    }
-
-    public void setExpressFee(Long expressFee) {
-        this.expressFee = expressFee;
-    }
-
-    public Long getPackageId() {
-        return packageId;
-    }
-
-    public void setPackageId(Long packageId) {
-        this.packageId = packageId;
-    }
-
-    public Long getDiscountPrice() {
+    /*public Long getDiscountPrice() {
         return discountPrice;
     }
 
@@ -250,7 +239,7 @@ public class OrderPo {
 
     public void setOriginPrice(Long originPrice) {
         this.originPrice = originPrice;
-    }
+    }*/
 
     public Long getPoint() {
         return point;
