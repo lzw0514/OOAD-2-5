@@ -68,6 +68,7 @@ public class CustomerController {
     public ReturnObject getCustomerOrderById(@PathVariable Long id){
         Order order = orderService.getCustomerOrderById(id);
         OrderVo vo = CloneFactory.copy(new OrderVo(), order);
+        vo.setItems(order.getOrderItems());
         return new ReturnObject(ReturnNo.OK, vo);
     }
 

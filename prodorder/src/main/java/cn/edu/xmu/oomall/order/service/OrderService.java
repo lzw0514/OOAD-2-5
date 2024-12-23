@@ -49,7 +49,7 @@ public class OrderService {
         Order order = orderDao.findById(id);
         if (Objects.equals(order.getStatus(), SHIPPED))
             throw new BusinessException(ReturnNo.ORDER_SHIPPED, String.format(ReturnNo.ORDER_SHIPPED.getMessage()));
-        order.setConsignee(dto.getConsignee().getConsignee());
+        order.setConsignee(dto.getConsignee());
         order.setAddress(dto.getAddress());
         order.setRegionId(dto.getRegionId());
         order.setMobile(dto.getMobile());

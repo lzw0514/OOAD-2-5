@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @Table(name = "order_order")
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @CopyFrom(Order.class)
 public class OrderPo {
     @Id
@@ -105,20 +106,20 @@ public class OrderPo {
         this.creatorName = creatorName;
     }
 
-    public Long getModifierId() {
-        return modifierId;
-    }
-
-    public void setModifierId(Long modifierId) {
-        this.modifierId = modifierId;
-    }
-
     public String getModifierName() {
         return modifierName;
     }
 
     public void setModifierName(String modifierName) {
         this.modifierName = modifierName;
+    }
+
+    public Long getModifierId() {
+        return modifierId;
+    }
+
+    public void setModifierId(Long modifierId) {
+        this.modifierId = modifierId;
     }
 
     public LocalDateTime getGmtCreate() {
@@ -208,6 +209,16 @@ public class OrderPo {
     public void setMessage(String message) {
         this.message = message;
     }
+
+
+    public Long getPackageId() {
+        return packageId;
+    }
+
+    public void setPackageId(Long packageId) {
+        this.packageId = packageId;
+    }
+
 
     public Long getExpressFee() {
         return expressFee;
