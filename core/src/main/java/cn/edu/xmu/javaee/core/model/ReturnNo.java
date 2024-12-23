@@ -92,9 +92,11 @@ public enum ReturnNo {
      **************************************************/
     COMMENT_NOT_RETURNABLE(301, "商家回复不可被回复"),
     COMMENT_NOT_ADDTIONAL(302, "评论不可追评"),
+
     COMMENT_NOT_PUBLISHED(303, "评论未发布"),
     COMMENT_NOT_FIND(304, "评论未找到"),
     COMMENT_NOT_TYPE(305,"评论对象类型错误"),
+
     COMMENT_UPPER_LIMIT(306,"评论数达到上限"),
 
 
@@ -113,6 +115,9 @@ public enum ReturnNo {
     CUSTOMER_MOBILEDIFF(614,"与系统预留的电话不一致"),
     CUSTOMER_CARTNOTALLOW(615,"商品(id = %d)不能加入购物车"),
 
+    COUPON_UPPER_LIMIT(693,"优惠券领取达到上限"),
+    COUPON_RECLAIM_INTERVAL(694, "两次领取间隔时间太短"),
+    COUPONACT_NOT_TYPE(695,"优惠券活动对象类型错误"),
     COUPON_NOTBEGIN(696,"未到优惠卷领取时间"),
     COUPON_FINISH(697,"优惠卷领罄"),
     COUPON_END(698,"优惠卷活动终止"),

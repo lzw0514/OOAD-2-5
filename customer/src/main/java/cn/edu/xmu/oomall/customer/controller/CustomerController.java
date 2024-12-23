@@ -1,11 +1,13 @@
 package cn.edu.xmu.oomall.customer.controller;
 
+import cn.edu.xmu.javaee.core.aop.Audit;
 import cn.edu.xmu.javaee.core.aop.LoginUser;
 import cn.edu.xmu.javaee.core.model.ReturnNo;
 import cn.edu.xmu.javaee.core.model.ReturnObject;
 import cn.edu.xmu.javaee.core.model.dto.UserDto;
 import cn.edu.xmu.javaee.core.util.CloneFactory;
 import cn.edu.xmu.javaee.core.model.vo.PageVo;
+import cn.edu.xmu.oomall.customer.controller.dto.AddressDto;
 import cn.edu.xmu.oomall.customer.controller.dto.CustomerDto;
 import cn.edu.xmu.oomall.customer.controller.vo.CustomerVo;
 import cn.edu.xmu.oomall.customer.dao.bo.*;
@@ -21,7 +23,7 @@ import java.util.stream.Collectors;
 
 /**
  * 顾客控制器
- * @author Shuyang Xing
+ * @author Liuzhiwen
  */
 @RestController
 @RequestMapping(produces = "application/json;charset=UTF-8")
@@ -31,58 +33,44 @@ public class CustomerController {
 
     private final CustomerService customerService;
 
-    // 顾客查看自己信息
+    /**
+     * 顾客查看自己信息
+     * @param user
+     * @return
+     */
+
     @GetMapping("/customer")
+    @Audit(departName = "customers")
     public ReturnObject getCustomerInfo(@LoginUser UserDto user) {
         Customer customer = customerService.findCustomerById(user.getId());
         return new ReturnObject(new CustomerVo(customer));
     }
 
-    // 注册顾客
-    @PostMapping("/customer")
-    public ReturnObject customerRegister(@RequestBody CustomerDto customerDto) {
-        Customer customer = CloneFactory.copy(new Customer(), customerDto);
-        Customer res = customerService.Register(customer);
-        return new ReturnObject(new CustomerVo(res));
-    }
-
-    // 顾客修改密码
+    /**
+     * 顾客修改密码
+     * @param newPwd
+     * @param user
+     * @return
+     */
     @PutMapping("/customer/password")
+    @Audit(departName = "customers")
     public ReturnObject updatePwd(@RequestParam String newPwd,
                                   @LoginUser UserDto user) {
         customerService.updatePwd(newPwd, user);
         return new ReturnObject(ReturnNo.OK);
     }
 
-    // 顾客修改电话号码
-    @PutMapping("/customer/mobile")
-    public ReturnObject updateMobile(@RequestParam String newMobile,
-                                     @LoginUser UserDto user) {
-        customerService.updateMobile(newMobile, user);
-        return new ReturnObject(ReturnNo.OK);
-    }
-
-    // 管理员封禁顾客
-    @PutMapping("/customers/{customerId}/ban")
-    public ReturnObject banCustomer(@PathVariable Long customerId,
-                                    @LoginUser UserDto user) {
-        customerService.banCustomer(customerId, user);
-        return new ReturnObject(ReturnNo.OK);
-    }
-
-    // 管理员解封顾客
-    @PutMapping("/customers/{customerId}/release")
-    public ReturnObject releaseCustomer(@PathVariable Long customerId,
-                                        @LoginUser UserDto user) {
-        customerService.releaseCustomer(customerId, user);
-        return new ReturnObject(ReturnNo.OK);
-    }
-
-    // 管理员注销顾客
-    @PutMapping("/customers/{customerId}/delete")
-    public ReturnObject deleteCustomer(@PathVariable Long customerId,
-                                        @LoginUser UserDto user) {
-        customerService.deleteCustomer(customerId, user);
+    /**
+     * 顾客修改个人信息
+     * @param user
+     * @return
+     */
+    @PutMapping("/customer")
+    @Audit(departName = "customers")
+    public ReturnObject changeMyselfInfo(@RequestBody CustomerDto customerDto,
+                                         @LoginUser UserDto user) {
+        Customer newCustomer=CloneFactory.copy(new Customer(),customerDto);
+        customerService.changeMyselfInfo(newCustomer, user);
         return new ReturnObject(ReturnNo.OK);
     }
 }

@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "order_order")
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -55,7 +54,6 @@ public class OrderPo {
 
     private Long customerId;
 
-    @Column(name = "shop_id")
     private Long shopId;
 
     private String orderSn;
@@ -72,18 +70,17 @@ public class OrderPo {
 
     private String message;
 
+    private Long expressFee;
 
     private Long packageId;
 
+    private Long discountPrice;
+
+    private Long originPrice;
+
+    private Long point;
+
     private Byte status;
-
-    private Double expressFee;
-
-    private Double discountPrice;
-
-    private Double originPrice;
-
-    private Double point;
 
     public Long getId() {
         return id;
@@ -222,6 +219,47 @@ public class OrderPo {
         this.packageId = packageId;
     }
 
+
+    public Long getExpressFee() {
+        return expressFee;
+    }
+
+    public void setExpressFee(Long expressFee) {
+        this.expressFee = expressFee;
+    }
+
+    public Long getPackageId() {
+        return packageId;
+    }
+
+    public void setPackageId(Long packageId) {
+        this.packageId = packageId;
+    }
+
+    public Long getDiscountPrice() {
+        return discountPrice;
+    }
+
+    public void setDiscountPrice(Long discountPrice) {
+        this.discountPrice = discountPrice;
+    }
+
+    public Long getOriginPrice() {
+        return originPrice;
+    }
+
+    public void setOriginPrice(Long originPrice) {
+        this.originPrice = originPrice;
+    }
+
+    public Long getPoint() {
+        return point;
+    }
+
+    public void setPoint(Long point) {
+        this.point = point;
+    }
+
     public Byte getStatus() {
         return status;
     }
@@ -230,35 +268,4 @@ public class OrderPo {
         this.status = status;
     }
 
-    public Double getExpressFee() {
-        return expressFee;
-    }
-
-    public void setExpressFee(Double expressFee) {
-        this.expressFee = expressFee;
-    }
-
-    public Double getDiscountPrice() {
-        return discountPrice;
-    }
-
-    public void setDiscountPrice(Double discountPrice) {
-        this.discountPrice = discountPrice;
-    }
-
-    public Double getOriginPrice() {
-        return originPrice;
-    }
-
-    public void setOriginPrice(Double originPrice) {
-        this.originPrice = originPrice;
-    }
-
-    public Double getPoint() {
-        return point;
-    }
-
-    public void setPoint(Double point) {
-        this.point = point;
-    }
 }

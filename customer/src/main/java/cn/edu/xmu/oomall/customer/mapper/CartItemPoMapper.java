@@ -10,9 +10,9 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface CartPoMapper extends JpaRepository<CartItemPo, Long> {
+public interface CartItemPoMapper extends JpaRepository<CartItemPo, Long> {
 
-    Page<CartItemPo> findCartListByCustomerId(Long customerId, Pageable pageable);
+    Page<CartItemPo> findByCustomerId(Long customerId, Pageable pageable);
 
-    Optional<CartItemPo> findItemByProductIdAndCustomerId(Long productId, Long customerId);
+    Optional<CartItemPo> findByProductIdAndCustomerId(Long productId, Long customerId);
 }

@@ -24,6 +24,7 @@ import static cn.edu.xmu.javaee.core.model.Constants.PLATFORM;
 @Slf4j
 public class AdminController {
 
+    private final CommentService commentService;
 
     /**
      * 查询评论详情，所有状态的评论都可查询
@@ -33,7 +34,7 @@ public class AdminController {
      */
     @GetMapping("/comment/{commentId}")
     @Transactional(propagation = Propagation.REQUIRED)
-    @Audit(departName = "shops")
+    @Audit(departName = "platforms")
     public ReturnObject getCommentById(@PathVariable Long did,@PathVariable("commentId") Long commentId) {
         if (!PLATFORM.equals(did)) {
             throw new BusinessException(ReturnNo.RESOURCE_ID_OUTSCOPE, String.format(ReturnNo.RESOURCE_ID_OUTSCOPE.getMessage(), "评论", commentId, did));
@@ -41,7 +42,7 @@ public class AdminController {
         Comment comment = this.commentService.findCommentById(commentId);
         return new ReturnObject(new CommentVo(comment));
     }
-    private final CommentService commentService;
+
 
     /**
      * 管理员审核评论
@@ -50,7 +51,7 @@ public class AdminController {
      * @return
      */
     @PutMapping("/comments/{commentId}/reviews")
-    @Audit(departName = "shops")
+    @Audit(departName = "platforms")
     public ReturnObject auditComment(@PathVariable Long did,@PathVariable("commentId") Long commentId,
                                      @LoginUser UserDto user,
                                      @RequestBody AuditCommentDto auditCommentDto) {
@@ -70,7 +71,7 @@ public class AdminController {
      * @return
      */
     @PutMapping("/comments/{commentId}/reports")
-    @Audit(departName = "shops")
+    @Audit(departName = "platforms")
     public ReturnObject auditReport(@PathVariable Long did,@PathVariable("commentId") Long commentId,
                                      @LoginUser UserDto user,
                                      @RequestBody AuditCommentDto auditCommentDto) {

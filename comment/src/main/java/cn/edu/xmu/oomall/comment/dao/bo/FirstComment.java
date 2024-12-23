@@ -7,7 +7,6 @@ import cn.edu.xmu.javaee.core.model.dto.UserDto;
 import cn.edu.xmu.oomall.comment.controller.dto.CommentDto;
 import cn.edu.xmu.oomall.comment.dao.CommentDao;
 import cn.edu.xmu.oomall.comment.dao.openfeign.OrderItemDao;
-import cn.edu.xmu.oomall.comment.dao.openfeign.ShopDao;
 import cn.edu.xmu.oomall.comment.mapper.po.CommentPo;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +32,6 @@ public class FirstComment extends Comment {
 
     /**
      * 审核评论
-     * 评论可以被举报，举报驳回时要同时驳回该首评下的追评和回复
      * @param approve 审核状态
      * @param rejectReason   驳回原因
      * @return
@@ -44,12 +42,12 @@ public class FirstComment extends Comment {
         if(approve) {
             setStatus(PUBLISHED);
             setGmtPublish(LocalDateTime.now());
-            this.setReplyable(true);// 审核通过的评论设为可回复
+            setReplyable(true);// 审核通过的评论设为可回复
             setAddtionable(true);// 审核通过的评论设为可追评
         }
         else {
             setStatus(REJECTED);
-            this.setReplyable(false);
+            setReplyable(false);
             setAddtionable(false);
             setRejectReason(rejectReason.orElse(""));
         }
@@ -95,8 +93,7 @@ public class FirstComment extends Comment {
     {
         if(Objects.equals(status, PUBLISHED))
         {
-            if (replyable)
-                    {
+            if (replyable) {
                         newReplyComment.setParentId(id); // 该回复的parentId为首评id
                         newReplyComment.setType((byte) 2);
                         this.setReplyable(false);
@@ -157,6 +154,8 @@ public class FirstComment extends Comment {
     public Long getId() { return id; } public void setId(Long id) { this.id = id; }
     public String getContent() { return content; } public void setContent(String content) { this.content = content; }
     public String getRejectReason() { return rejectReason; } public void setRejectReason(String rejectReason) { this.rejectReason = rejectReason; }
+
+    public String getReportReason() { return reportReason; } public void setReportReason(String reportReason) { this.reportReason = reportReason; }
     public Byte getType() { return type; } public void setType(Byte type) { this.type = type; }
     public Long getCreatorId() { return creatorId; } public void setCreatorId(Long creatorId) { this.creatorId = creatorId; }
     public Long getOrderitemId() { return orderitemId; } public void setOrderitemId(Long orderitemId) { this.orderitemId = orderitemId; }
@@ -169,10 +168,8 @@ public class FirstComment extends Comment {
     public boolean getReplyable () { return replyable; } public void setReplyable (boolean Replyable ) { this.replyable = Replyable ; }
     public boolean getAddtionable() { return addtionable; } public void setAddtionable(boolean Addtionable ) { this.addtionable = Addtionable ; }
     public void setReplyComment(Comment replyComment) { ReplyComment = replyComment; }
-    public void setShop(Shop shop) { this.shop = shop; }
     public void setOrderItem(OrderItem orderItem) { this.orderItem = orderItem; }
     public void setCommentDao(CommentDao commentDao) { this.commentDao = commentDao; }
-    public void setShopDao(ShopDao shopDao) { this.shopDao = shopDao; }
     public void setOrderItemDao(OrderItemDao orderItemDao) { this.orderitemDao = orderItemDao; }
     public Long getParentId() {return parentId;}public void setParentId(Long addPId) {this.parentId = addPId;}
     public Long getAddId() {return addId;}public void setAddId(Long addId) {this.addId = addId;}

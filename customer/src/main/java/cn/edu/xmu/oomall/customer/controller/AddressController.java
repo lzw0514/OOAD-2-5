@@ -1,5 +1,6 @@
 package cn.edu.xmu.oomall.customer.controller;
 
+import cn.edu.xmu.javaee.core.aop.Audit;
 import cn.edu.xmu.javaee.core.aop.LoginUser;
 import cn.edu.xmu.javaee.core.model.ReturnNo;
 import cn.edu.xmu.javaee.core.model.ReturnObject;
@@ -27,26 +28,45 @@ public class AddressController {
 
     private final AddressService addressService;
 
-    // 查看顾客地址列表
+
+    /**
+     *查看顾客地址列表
+     * author Linqihang
+     * @return
+     */
     @GetMapping("/address")
     @Transactional(propagation = Propagation.REQUIRED)
-    public ReturnObject getAddressByCustomer(@LoginUser UserDto user,
+    @Audit(departName = "customers")
+    public ReturnObject getCustomerAddress(@LoginUser UserDto user,
                                              @RequestParam(defaultValue = "1") Integer page,
-                                             @RequestParam(defaultValue = "5") Integer pageSize) {
-        List<Address> addressList = this.addressService.retrieveAddressByCustomer(user.getId(), page, pageSize);
-        return new ReturnObject(new PageVo<>(addressList.stream().map(bo -> AddressVo.builder().id(bo.getId()).regionId(bo.getRegionId()).detailAddress(bo.getDetailAddress()).consignee(bo.getConsignee()).mobile(bo.getMobile()).build()).collect(Collectors.toList()), page, pageSize));
+                                             @RequestParam(defaultValue = "10") Integer pageSize) {
+        List<Address> addressList = this.addressService.retrieveAddressByCustomerId(user.getId(), page, pageSize);
+        List<AddressVo> vos = addressList.stream().map(o -> CloneFactory.copy(new AddressVo(), o)).collect(Collectors.toList());
+        return new ReturnObject(new PageVo<>(vos, page, pageSize));
     }
 
-    // 顾客添加新地址
+
+    /**
+     * 顾客添加新地址
+     * author Linqihang
+     * @return
+     */
     @PostMapping("/address")
+    @Audit(departName = "customers")
     public ReturnObject addaddress(@LoginUser UserDto user,
                                    @RequestBody AddressDto addressDto) {
         Address newAddress = addressService.addAddress(CloneFactory.copy(new Address(), addressDto), user);
-        return new ReturnObject(new AddressVo(newAddress));
+        return new ReturnObject(ReturnNo.CREATED,new AddressVo(newAddress));
     }
 
-    // 顾客修改地址信息
+    /**
+     * 顾客修改地址信息
+     * author Linqihang
+     * @param addressId
+     * @return
+     */
     @PutMapping("/address/{addressId}")
+    @Audit(departName = "customers")
     public ReturnObject updateAddress(@PathVariable Long addressId,
                                       @LoginUser UserDto user,
                                       @RequestBody AddressDto addressDto) {
@@ -54,16 +74,31 @@ public class AddressController {
         return new ReturnObject(ReturnNo.OK);
     }
 
-    // 顾客设置默认地址
+
+    /**
+     * 顾客设置默认地址
+     * author Linqihang
+     * @param addressId
+     * @return
+     */
     @PutMapping("/address/{addressId}/default")
-    public ReturnObject changeDefaultAddress(@PathVariable Long addressId,
+    @Audit(departName = "customers")
+    public ReturnObject setDefaultAddress(@PathVariable Long addressId,
                                              @LoginUser UserDto user) {
-        addressService.changeDefaultAddress(addressId, user);
+        addressService.setDefaultAddress(addressId, user);
         return new ReturnObject(ReturnNo.OK);
     }
 
-    // 顾客删除地址
+
+
+    /**
+     * 顾客删除地址
+     * author Linqihang
+     * @param addressId
+     * @return
+     */
     @DeleteMapping("/address/{addressId}")
+    @Audit(departName = "customers")
     public ReturnObject deleteAddress(@PathVariable Long addressId,
                                       @LoginUser UserDto user) {
         addressService.deleteAddress(addressId, user);

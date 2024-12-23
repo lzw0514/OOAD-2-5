@@ -30,11 +30,11 @@ public class CustomerDto {
 
     public void setPassword(@NotBlank(message = "密码不能为空", groups = {NewGroup.class}) String password) {this.password = password;}
 
-    public @NotBlank(message = "邮箱不能为空", groups = {NewGroup.class}) String getMobile() {
+    public @NotBlank(message = "联系方式不能为空", groups = {NewGroup.class}) String getMobile() {
         return mobile;
     }
 
-    public void setMobile(@NotBlank(message = "邮箱不能为空", groups = {NewGroup.class}) String mobile) {this.mobile = mobile;}
+    public void setMobile(@NotBlank(message = "联系方式不能为空", groups = {NewGroup.class}) String mobile) {this.mobile = mobile;}
 
     public @NotBlank(message = "姓名不能为空", groups = {NewGroup.class}) String getName() {
         return name;

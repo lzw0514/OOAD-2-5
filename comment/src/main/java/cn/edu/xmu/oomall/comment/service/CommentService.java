@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
+import static cn.edu.xmu.oomall.comment.dao.bo.Comment.INVISIBLE;
+import static cn.edu.xmu.oomall.comment.dao.bo.Comment.REPORTED_FOR_REVIEW;
 
 
 @Slf4j
@@ -43,7 +45,7 @@ public class CommentService {
     }
 
     /**
-     * 根据Id查找评论
+     * 根据Id查找评论,所有状态评论都可查到
      * author Wuyuzhu
      * @param id
      * @return
@@ -54,9 +56,14 @@ public class CommentService {
         return this.commentDao.findById(id);
     }
 
-
+    /**
+     * 根据Id查找评论,PUBILISHED状态和REPORTED_FOR_REVIEW评论才可被查到
+     * author Wuyuzhu
+     * @param id
+     * @return
+     */
     public Comment findValidCommentById(Long id) throws BusinessException {
-        log.debug("findCommentById: id = {}", id);
+        log.debug("findValidCommentById: id = {}", id);
         return this.commentDao.findValidCommenntById(id);
     }
 
@@ -105,13 +112,27 @@ public class CommentService {
      */
     public ReplyComment createReply(Long shopId, Long commentId, ReplyComment replyComment, UserDto user) {
         Comment comment = commentDao.findById(commentId);
-        log.debug("createreply:user{}",user);
         if(!Objects.equals(shopId, comment.getShopId())){
             throw new BusinessException(ReturnNo.AUTH_NO_RIGHT, String.format(ReturnNo.AUTH_NO_RIGHT.getMessage()));
         }
         return comment.createReply(shopId, replyComment, user);
     }
 
+
+    /**
+     * 顾客提交举报评论
+     * author Liuzhiwen
+     * @param commentId
+     * @param reportReason
+     * @return
+     */
+
+    public void reportComment(Long commentId, String reportReason, UserDto user) {
+        Comment comment = commentDao.findById(commentId);
+        comment.setReportReason(reportReason);
+        comment.setStatus(INVISIBLE);
+        commentDao.save(comment, user);
+    }
 
     /**
      * 管理员审核评论
@@ -137,8 +158,12 @@ public class CommentService {
 
     public String auditReport(Long commentId, boolean isApproved,  UserDto user) {
         Comment comment = commentDao.findById(commentId);
+        if(!REPORTED_FOR_REVIEW.equals(comment.getStatus())) {
+            throw new BusinessException(ReturnNo.STATENOTALLOW, String.format(ReturnNo.STATENOTALLOW.getMessage(), "评论", comment.getStatus()));
+        }
         return comment.auditReport(isApproved, user);
     }
+
 
 
 

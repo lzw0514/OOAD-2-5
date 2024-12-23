@@ -36,15 +36,7 @@ public class UnauthorizedController {
                                               @RequestParam(required = false,defaultValue = "1") Integer page,
                                               @RequestParam(required = false,defaultValue = "10") Integer pageSize) {
         List<Comment> comments = this.commentService.retrieveProductComments(productId, page, pageSize);
-        List<CommentVo> commentVoList=comments.stream()
-                .map(bo -> CommentVo.builder()
-                        .id(bo.getId())
-                        .content(bo.getContent())
-                        .GmtPublish(bo.getGmtPublish())
-                        .type(bo.getType())
-                        .build()).
-                collect(Collectors.toList());
-
+        List<CommentVo> commentVoList=comments.stream().map(bo -> CommentVo.builder().id(bo.getId()).content(bo.getContent()).GmtPublish(bo.getGmtPublish()).build()).collect(Collectors.toList());
         return new ReturnObject(new PageVo<>(commentVoList, page, pageSize));
     }
 

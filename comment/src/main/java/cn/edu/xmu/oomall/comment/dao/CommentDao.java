@@ -6,13 +6,13 @@ import cn.edu.xmu.javaee.core.model.ReturnNo;
 import cn.edu.xmu.javaee.core.model.dto.UserDto;
 import cn.edu.xmu.oomall.comment.dao.bo.*;
 import cn.edu.xmu.oomall.comment.dao.openfeign.OrderItemDao;
-import cn.edu.xmu.oomall.comment.dao.openfeign.ShopDao;
 import cn.edu.xmu.oomall.comment.mapper.CommentPoMapper;
 import cn.edu.xmu.oomall.comment.mapper.po.CommentPo;
 import cn.edu.xmu.javaee.core.util.CloneFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -35,7 +35,6 @@ public class CommentDao {
 
     private final static String KEY = "C%d";
     private final CommentPoMapper commentPoMapper;
-    private final ShopDao shopDao;
     private final OrderItemDao orderitemDao;
 
 
@@ -74,13 +73,11 @@ public class CommentDao {
      * @param orderItemId
      */
     public  Optional<CommentPo> findByOrderItemId(Long orderItemId) {
-
         Optional<CommentPo> ret = this.commentPoMapper.findByOrderitemId(orderItemId);
         return ret;
     }
     /**
      * 获得bo对象
-     * @author Liuzhiwen
      * @param po
      * @return
      */
@@ -106,27 +103,28 @@ public class CommentDao {
 
 
     /**
-     * 把bo中设置dao
-     * @author Liuzhiwen
+     * 赋予bo对象权限
      * @param bo
      */
     private Comment build(Comment bo){
         bo.setCommentDao(this);
         bo.setOrderItemDao(orderitemDao);
-        bo.setShopDao(shopDao);
         return bo;
     }
 
 
     /**
      * 通过productId查询商品的全部评论
+     * @param productId
      */
     public List<Comment> retrieveProductComments(Long productId, Integer page, Integer pageSize) throws RuntimeException {
-        log.debug("retrieveProductComments: productId={}",productId);
         Pageable pageable = PageRequest.of(page-1, pageSize);
-        List<CommentPo> pos = commentPoMapper.findCommentByProductId(productId, pageable);
-        return pos.stream().map(po -> this.build(po)).collect(Collectors.toList());
-
+        Page<CommentPo> pos = commentPoMapper.findCommentByProductId(productId, pageable);
+        if (!pos.isEmpty())
+            return pos.stream().map(po -> this.build(po)).collect(Collectors.toList());
+        else {
+            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, "该商品暂无评论");
+        }
     }
 
 
@@ -152,12 +150,8 @@ public class CommentDao {
             ReplyComment obj = (ReplyComment) bo;
             po = CloneFactory.copy(new CommentPo(), obj);
         }
-        CommentPo updatePosave = commentPoMapper.save(po);
-        if(IDNOTEXIST.equals(updatePosave.getId())) {
-            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "评论", bo.getId()));
-        }
-
-        return String.format(KEY, bo.getId());
+        CommentPo save = commentPoMapper.save(po);
+        return String.format(KEY, save.getId());
     }
 
     /**
@@ -186,8 +180,8 @@ public class CommentDao {
             throw new BusinessException(ReturnNo.COMMENT_NOT_TYPE, String.format(ReturnNo.COMMENT_NOT_TYPE.getMessage()));
         }
         log.debug("save: po = {}", po);
-        po = this.commentPoMapper.save(po);
-        bo.setId(po.getId());
+        CommentPo save = this.commentPoMapper.save(po);
+        bo.setId(save.getId());
         return bo;
     }
 }

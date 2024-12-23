@@ -3,7 +3,6 @@ package cn.edu.xmu.oomall.comment.Controller;
 import cn.edu.xmu.javaee.core.model.ReturnNo;
 import cn.edu.xmu.oomall.comment.CommentTestApplication;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,6 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 
+/**
+ * @author Liuzhiwen
+ */
 @SpringBootTest(classes = CommentTestApplication.class)
 @AutoConfigureMockMvc
 @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -34,7 +36,7 @@ public class UnauthorizedControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errno", is(ReturnNo.OK.getErrNo())))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.list.length()", is(4)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[?(@.id == '1')].content", hasItem("这款商品很好，质量不错！")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[?(@.id == '1')].content", hasItem("东西很好")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[?(@.id == '3')].content", hasItem("客服态度很好，但商品质量差。")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[?(@.id == '6')].content", hasItem("感谢您的支持。")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.list[?(@.id == '7')].content", hasItem("抱歉给您带来不好的体验。")));
@@ -48,7 +50,7 @@ public class UnauthorizedControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errno", is(ReturnNo.OK.getErrNo())))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.id", is(1)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.content", is("这款商品很好，质量不错！")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.content", is("东西很好")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.type", is(0)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.creatorId", is(514)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.productId", is(1559)))

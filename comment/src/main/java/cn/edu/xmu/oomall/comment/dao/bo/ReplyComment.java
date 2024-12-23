@@ -7,7 +7,6 @@ import cn.edu.xmu.javaee.core.model.dto.UserDto;
 import cn.edu.xmu.oomall.comment.controller.dto.CommentDto;
 import cn.edu.xmu.oomall.comment.dao.CommentDao;
 import cn.edu.xmu.oomall.comment.dao.openfeign.OrderItemDao;
-import cn.edu.xmu.oomall.comment.dao.openfeign.ShopDao;
 import cn.edu.xmu.oomall.comment.mapper.po.CommentPo;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -89,6 +88,7 @@ public class ReplyComment extends Comment {
     public Long getId() { return id; } public void setId(Long id) { this.id = id; }
     public String getContent() { return content; } public void setContent(String content) { this.content = content; }
     public String getRejectReason() { return rejectReason; } public void setRejectReason(String rejectReason) { this.rejectReason = rejectReason; }
+    public String getReportReason() { return reportReason; } public void setReportReason(String reportReason) { this.reportReason = reportReason; }
     public Byte getType() { return type; } public void setType(Byte type) { this.type = type; }
     public Long getCreatorId() { return creatorId; } public void setCreatorId(Long creatorId) { this.creatorId = creatorId; }
     public Long getOrderitemId() { return orderitemId; } public void setOrderitemId(Long orderitemId) { this.orderitemId = orderitemId; }
@@ -99,10 +99,8 @@ public class ReplyComment extends Comment {
     public LocalDateTime getGmtPublish() { return gmtPublish; } public void setGmtPublish(LocalDateTime gmtPublish) { this.gmtPublish = gmtPublish; }
     public Byte getStatus() { return status; } public void setStatus(Byte status) { this.status = status; }
     public void setReplyComment(Comment replyComment) { ReplyComment = replyComment; }
-    public void setShop(Shop shop) { this.shop = shop; }
     public void setOrderItem(OrderItem orderItem) { this.orderItem = orderItem; }
     public void setCommentDao(CommentDao commentDao) { this.commentDao = commentDao; }
-    public void setShopDao(ShopDao shopDao) { this.shopDao = shopDao; }
     public void setOrderItemDao(OrderItemDao orderItemDao) { this.orderitemDao = orderItemDao; }
     public Long getParentId() {return parentId;}public void setParentId(Long addPId) {this.parentId = addPId;}
     public Long getAddId() {return addId;}

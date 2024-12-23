@@ -7,11 +7,13 @@ import cn.edu.xmu.javaee.core.aop.CopyFrom;
 import cn.edu.xmu.javaee.core.model.dto.UserDto;
 import cn.edu.xmu.oomall.customer.controller.dto.CustomerDto;
 import cn.edu.xmu.oomall.customer.dao.*;
+import cn.edu.xmu.oomall.customer.mapper.AddressPoMapper;
 import cn.edu.xmu.oomall.customer.mapper.po.CustomerPo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -21,9 +23,10 @@ import java.util.*;
 @ToString(callSuper = true, doNotUseGetters = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @CopyFrom({CustomerPo.class, CustomerDto.class})
+@Slf4j
 public class Customer extends OOMallObject implements Serializable{
 
-    private Long Id;
+    private Long id;
 
     private String userName;
 
@@ -35,7 +38,7 @@ public class Customer extends OOMallObject implements Serializable{
 
     private Byte status = 1; // 初始为正常状态
 
-    private Double point;
+    private Double point = 0d;
 
     @JsonIgnore
     @ToString.Exclude
@@ -81,9 +84,15 @@ public class Customer extends OOMallObject implements Serializable{
         return STATUS_NAMES.get(this.status);
     }
 
-    // 顾客修改密码
+    /**
+     * 顾客修改密码
+     * @param newPwd
+     * @param user
+     * @return
+     * @throws RuntimeException
+     */
     public String updatePwd(String newPwd, UserDto user) throws RuntimeException {
-        if (!Objects.equals(getStatus(), 1)){
+        if (!Objects.equals(getStatus(), (byte)1)){
             throw new BusinessException(ReturnNo.STATENOTALLOW, String.format(ReturnNo.STATENOTALLOW.getMessage(), "顾客", this.id, "账户无效"));
         }
         if(Objects.equals(newPwd, password)){
@@ -93,20 +102,134 @@ public class Customer extends OOMallObject implements Serializable{
         return customerDao.save(this, user);
     }
 
-    // 顾客修改电话号码
-    public String updateMobile(String newMobile, UserDto user) throws RuntimeException {
-        if (!Objects.equals(getStatus(), 1)){
+
+    /**
+     * 顾客修改个人信息
+     * @param newcustomer
+     * @param user
+     * @return
+     * @throws RuntimeException
+     */
+    public String changeMyselfInfo(Customer newcustomer, UserDto user) throws RuntimeException {
+        if (!Objects.equals(getStatus(), (byte)1)){
             throw new BusinessException(ReturnNo.STATENOTALLOW, String.format(ReturnNo.STATENOTALLOW.getMessage(), "顾客", this.id, "账户无效"));
         }
-        if(customerDao.existByMobile(newMobile)){
+        if(customerDao.existByMobile(newcustomer.getMobile())){
             throw new BusinessException(ReturnNo.CUSTOMER_MOBILEEXIST, String.format(ReturnNo.CUSTOMER_MOBILEEXIST.getMessage()));
         }
-        mobile = newMobile;
+        setMobile(newcustomer.getMobile());
+        setUserName(newcustomer.getUserName());
         return customerDao.save(this, user);
     }
 
-    // Getter and Setter methods
-    public Long getId() {return Id;}public void setId(Long id) {Id = id;}
+
+    @JsonIgnore
+    @Setter
+    @ToString.Exclude
+    private AddressDao addressDao;
+
+    /**
+     * 新增收货地址，地址簿上限为20
+     * author Fengjianhao
+     * @param newAddress
+     * @param user
+     * @return
+     */
+    public Address addAddress(Address newAddress, UserDto user)
+    {
+        Long cnt = addressDao.countAddressByCustomerId(id);
+        if (cnt >= 20) {
+            throw new BusinessException(ReturnNo.ADDRESS_OUTLIMIT, String.format(ReturnNo.ADDRESS_OUTLIMIT.getMessage()));
+        }
+        else{
+            newAddress.setCustomerId(id);
+            return addressDao.insert(newAddress,user);
+        }
+    }
+
+    /**
+     * 设为默认地址
+     * author Linqihang
+     * @param address
+     * @param user
+     * @return
+     */
+    public String setDefaultAddress(Address address,UserDto user){
+        Address defaultAddress;
+        try {
+            defaultAddress = addressDao.findDefaultAddressByCustomer(id);
+        } catch (BusinessException e) {
+            log.debug("用户之前未设置默认地址: customerId = {}", user.getId());
+            address.setBeDefault(true);
+            return addressDao.save(address, user);
+        }
+        address.setBeDefault(true);
+        defaultAddress.setBeDefault(false);
+        addressDao.save(defaultAddress, user);
+        return addressDao.save(address, user);
+    }
+
+    /**
+     * 管理员解封顾客
+     * author Linqihang
+     * @param customer
+     * @param user
+     */
+    public void releaseCustomer(Customer customer,UserDto user){
+        if(!Objects.equals(status, (byte)0)){
+            throw new BusinessException(ReturnNo.STATENOTALLOW, String.format(ReturnNo.STATENOTALLOW.getMessage(), "顾客", id, "账户无效"));
+        }
+        customer.setStatus((byte) 1);
+        customerDao.save(customer, user);
+    }
+
+    /**
+     * 管理员封禁顾客
+     * author Linqihang
+     * @param customer
+     * @param user
+     */
+    public void banCustomer(Customer customer,UserDto user){
+        log.debug("banCustomer1:customer={}",customer);
+        if(!Objects.equals(status, (byte)1)){
+            throw new BusinessException(ReturnNo.STATENOTALLOW, String.format(ReturnNo.STATENOTALLOW.getMessage(), "顾客", id, "账户无效"));
+        }
+        customer.setStatus((byte) 0);
+        customerDao.save(customer, user);
+    }
+
+    @JsonIgnore
+    @Setter
+    @ToString.Exclude
+    private CartDao cartDao;
+
+    /**
+     * 将商品加入购物车
+     * author Liuzhiwen
+     * @param newcartItem
+     * @param user
+     */
+    public CartItem addCartItemToCart(CartItem newcartItem, UserDto user){
+        CartItem cartitem=null;
+        try {
+            cartitem = cartDao.findCartItemByProductAndCustomer(newcartItem.getProductId(),id);
+        }catch (BusinessException e) {
+                newcartItem.setCustomerId(id);
+            return cartDao.insert(newcartItem, user);
+        }
+        if(!Objects.equals(cartitem.getSpec(),newcartItem.getSpec())){
+            newcartItem.setCustomerId(id);
+            return cartDao.insert(newcartItem, user);
+        }
+        else{
+            return cartitem.updateItemQuantity(newcartItem.getQuantity(), user);
+        }
+
+    }
+
+
+    public Long getId() {return id;}public void setId(Long id) {
+        this.id = id;}
     public String getUserName() {return userName;}public void setUserName(String userName) {this.userName = userName;}
     public String getPassword() {return password;}public void setPassword(String password) {this.password = password;}
     public String getMobile() {return mobile;}public void setMobile(String mobile) {this.mobile = mobile;}
@@ -123,4 +246,7 @@ public class Customer extends OOMallObject implements Serializable{
     public LocalDateTime getGmtCreate() {return gmtCreate;}public void setGmtCreate(LocalDateTime gmtCreate) {this.gmtCreate = gmtCreate;}
     public LocalDateTime getGmtModified() {return gmtModified;}public void setGmtModified(LocalDateTime gmtModified) {this.gmtModified = gmtModified;}
     public Long getCreatorId() { return creatorId; } public void setCreatorId(Long creatorId) { this.creatorId = creatorId; }
+
+    public void setCouponDao(CouponDao couponDao) {
+    }
 }

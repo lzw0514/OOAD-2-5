@@ -29,6 +29,8 @@ public abstract class Comment extends OOMallObject implements Serializable {
 
     protected String rejectReason;
 
+    protected String reportReason;
+
     protected Byte type; // 0-首评 1-追评 2-商家回复
 
     protected Long creatorId;
@@ -62,31 +64,22 @@ public abstract class Comment extends OOMallObject implements Serializable {
     protected Comment ReplyComment;
 
 
-    @JsonIgnore
-    @ToString.Exclude
-    protected Shop shop; // 导航向相关商家
 
     @JsonIgnore
     @ToString.Exclude
-    protected OrderItem orderItem; // 导航向相关订单项
+    protected OrderItem orderItem;
 
     @JsonIgnore
     @ToString.Exclude
     protected CommentDao commentDao;
 
-    @JsonIgnore
-    @ToString.Exclude
-    protected ShopDao shopDao;
 
     @JsonIgnore
     @ToString.Exclude
     protected OrderItemDao orderitemDao ;
 
-    // 无回复评论
-    @JsonIgnore
-    public static final Long NO_REPLY_COMMENT =0L;
 
-    // 共5种状态 0-待审核 1-通过审核 2-驳回 4-评论不可见 5-被举报待审核
+    // 共4种状态 0-待审核 1-通过审核 2-驳回 3-评论不可见 4-被举报待审核
     // 待审核
     @JsonIgnore
     public static final  Byte PENDING = 0;
@@ -119,41 +112,6 @@ public abstract class Comment extends OOMallObject implements Serializable {
         }
     };
 
-    @JsonIgnore
-    public String getStatusName(){
-        return STATUS_NAMES.get(this.status);
-    }
-
-    // 获取回复或被回复的评论
-    @JsonIgnore
-    public Comment getReplyComment(){
-        if (ReplyComment == null && commentDao != null)
-            ReplyComment = commentDao.findById(replyId);
-        return ReplyComment;
-    }
-
-    // 获取评论相关商家
-    @JsonIgnore
-    public Shop getShop(){
-        if (shopId == null)
-            throw new BusinessException(ReturnNo.INCONSISTENT_DATA, String.format(ReturnNo.INCONSISTENT_DATA.getMessage(), "评论", id, "shopId为空"));
-
-        if (shop == null && shopDao != null)
-            shop = shopDao.findById(shopId);
-        return shop;
-    }
-
-    // 获取评论所属订单项
-    @JsonIgnore
-    public OrderItem getOrderItem(){
-        if (orderitemId == null)
-            throw new BusinessException(ReturnNo.INCONSISTENT_DATA, String.format(ReturnNo.INCONSISTENT_DATA.getMessage(), "评论", id, "orderItemId为空"));
-
-        if (orderItem == null && orderitemDao != null)
-            orderItem = orderitemDao.findById(orderitemId);
-        return orderItem;
-    }
-
 
     public abstract String auditComment(boolean approve, Optional<String> rejectReason, UserDto user);
 
@@ -170,6 +128,9 @@ public abstract class Comment extends OOMallObject implements Serializable {
     public abstract String getRejectReason();
     public abstract void setRejectReason(String rejectReason);
 
+
+    public abstract String getReportReason();
+    public abstract void setReportReason(String reportReason);
     public abstract Byte getType();
     public abstract void setType(Byte type);
 
@@ -210,10 +171,10 @@ public abstract class Comment extends OOMallObject implements Serializable {
     public abstract void setReplyable(boolean replyable);
 
     public abstract void setReplyComment(Comment replyComment);
-    public abstract void setShop(Shop shop);
+
     public abstract void setOrderItem(OrderItem orderItem);
     public abstract void setCommentDao(CommentDao commentDao);
-    public abstract void setShopDao(ShopDao shopDao);
+
     public abstract void setOrderItemDao(OrderItemDao orderItemDao);
     public abstract void setGmtCreate(LocalDateTime gmtCreate);
 

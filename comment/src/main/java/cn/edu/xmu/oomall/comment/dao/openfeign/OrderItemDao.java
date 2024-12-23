@@ -15,6 +15,10 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+
+/**
+ * @author Liuzhiwen
+ */
 @Repository
 public class OrderItemDao {
 
@@ -29,7 +33,6 @@ public class OrderItemDao {
 
     /**
      * 根据orderItemId找到订单项
-     * @author Liuzhiwen
      * @param orderItemId
      */
     public OrderItem findById(Long orderItemId) {
@@ -45,8 +48,7 @@ public class OrderItemDao {
 
 
         /**
-         * 把bo中设置dao
-         * @author Liuzhiwen
+         * 赋予bo对象权限
          * @param bo
          */
         private OrderItem build(OrderItem bo)

@@ -1,24 +1,19 @@
 package cn.edu.xmu.oomall.comment.Controller;
 
-import cn.edu.xmu.javaee.core.mapper.RedisUtil;
 import cn.edu.xmu.javaee.core.model.ReturnNo;
 import cn.edu.xmu.javaee.core.util.JacksonUtil;
 import cn.edu.xmu.javaee.core.util.JwtHelper;
 import cn.edu.xmu.oomall.comment.CommentTestApplication;
 import cn.edu.xmu.oomall.comment.controller.dto.CommentDto;
-import com.alibaba.fastjson.JSONObject;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import cn.edu.xmu.oomall.comment.controller.dto.ReportCommentDto;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +23,10 @@ import java.util.Objects;
 
 import static org.hamcrest.CoreMatchers.is;
 
+
+/**
+ * @author Liuzhiwen
+ */
 @SpringBootTest(classes = CommentTestApplication.class)
 @AutoConfigureMockMvc
 @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -37,6 +36,7 @@ public class CommentControllerTest {
     private MockMvc mvc;
     JwtHelper jwtHelper = new JwtHelper();
     private static String customerToken;
+    private static String customerToken1;
     private static String shopToken;
 
 
@@ -44,6 +44,7 @@ public class CommentControllerTest {
     public static void setup(){
         JwtHelper jwtHelper = new JwtHelper();
         customerToken = jwtHelper.createToken(514L, "张三", 0L, 1, 3600);
+        customerToken1 = jwtHelper.createToken(515L, "李四", 0L, 1, 3600);
         shopToken = jwtHelper.createToken(11L, "MAYDAY商铺", 0L, 1, 3600);
 
     }
@@ -93,6 +94,20 @@ public class CommentControllerTest {
                         .content(Objects.requireNonNull(JacksonUtil.toJson(dto))))
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errno", is(ReturnNo.RESOURCE_ID_NOTEXIST.getErrNo())));
+    }
+
+    //创建首评失败，非本用户订单
+    @Test
+    public void testCreateFirstCommentWhenOrderItemGivenNotUser() throws Exception {
+        CommentDto dto = new CommentDto();
+        dto.setContent("商品质量很好，我很喜欢");
+        dto.setCreatorId(514l);
+        mvc.perform(MockMvcRequestBuilders.post("/orderItem/{orderitemId}/comment", 12344)
+                        .header("authorization",  customerToken)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(Objects.requireNonNull(JacksonUtil.toJson(dto))))
+                .andExpect(MockMvcResultMatchers.status().isForbidden())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errno").value(ReturnNo.AUTH_NO_RIGHT.getErrNo()));
     }
     //成功创建追评
     @Test
@@ -156,6 +171,20 @@ public class CommentControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errno", is(ReturnNo.RESOURCE_ID_NOTEXIST.getErrNo())));
     }
 
+    //创建追评失败，非本用户首评
+    @Test
+    public void testCreateFirstCommentWhenFirstCommentGivenNotUser() throws Exception {
+        CommentDto dto = new CommentDto();
+        dto.setContent("商品质量很好，我很喜欢");
+        dto.setCreatorId(514l);
+        mvc.perform(MockMvcRequestBuilders.post("/comment/{commentId}/Addcomment",18 )
+                        .header("authorization",  customerToken)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(Objects.requireNonNull(JacksonUtil.toJson(dto))))
+                .andExpect(MockMvcResultMatchers.status().isForbidden())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errno").value(ReturnNo.AUTH_NO_RIGHT.getErrNo()));
+    }
+
     //成功创建回复（首评的回复）
     @Test
     public void testCreateReplyCommentWhenSuccessByFirstComment() throws Exception {
@@ -182,7 +211,7 @@ public class CommentControllerTest {
         CommentDto dto = new CommentDto();
         dto.setContent("商品质量很好，我很喜欢");
         dto.setCreatorId(514l);
-        mvc.perform(MockMvcRequestBuilders.post("/shops/{shopId}/comments/{commentId}/replies", 12,5)
+        mvc.perform(MockMvcRequestBuilders.post("/shops/{shopId}/comments/{commentId}/replies", 11,5)
                         .header("authorization",  shopToken)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(Objects.requireNonNull(JacksonUtil.toJson(dto))))
@@ -264,5 +293,19 @@ public class CommentControllerTest {
                         .content(Objects.requireNonNull(JacksonUtil.toJson(dto))))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errno",  is(ReturnNo.COMMENT_UPPER_LIMIT.getErrNo())));
+    }
+
+    //成功提交举报
+    @Test
+    public void testCreateCommentReportWhenSuccess() throws Exception {
+        ReportCommentDto dto = new ReportCommentDto();
+        dto.setReportReason("评论传播不实信息，可能误导他人");
+        mvc.perform(MockMvcRequestBuilders.put("/comment/{commentId}/report", 1)
+                        .header("authorization",  customerToken1)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(Objects.requireNonNull(JacksonUtil.toJson(dto))))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errno", is(ReturnNo.OK.getErrNo())));
+
     }
 }

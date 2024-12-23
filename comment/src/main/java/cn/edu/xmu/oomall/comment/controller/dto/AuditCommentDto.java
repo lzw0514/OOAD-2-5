@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.NoArgsConstructor;
 
 /**
- * 评论DTO对象
+ * 审核DTO对象
  * @author Liuzhiwen
  **/
 @NoArgsConstructor
