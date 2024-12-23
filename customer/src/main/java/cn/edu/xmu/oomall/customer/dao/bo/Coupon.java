@@ -92,5 +92,5 @@ public class Coupon extends OOMallObject implements Serializable{
     public LocalDateTime getGmtCreate() {return gmtCreate;}public void setGmtCreate(LocalDateTime gmtCreate) {this.gmtCreate = gmtCreate;}
     public LocalDateTime getGmtModified() {return gmtModified;}public void setGmtModified(LocalDateTime gmtModified) {this.gmtModified = gmtModified;}
     public Long getCreatorId() {return creatorId;}public void setCreatorId(Long creatorId) {this.creatorId = creatorId;}
-    public LocalDateTime getGmtReceive() {return gmtReceive;}public void setGmtReceiven(LocalDateTime gmtReceive) {this.gmtReceive = gmtReceive;}
+    public LocalDateTime getGmtReceive() {return gmtReceive;}public void setGmtReceive(LocalDateTime gmtReceive) {this.gmtReceive = gmtReceive;}
 }

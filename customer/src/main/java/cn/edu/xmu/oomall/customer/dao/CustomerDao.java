@@ -3,16 +3,15 @@ package cn.edu.xmu.oomall.customer.dao;
 import cn.edu.xmu.javaee.core.exception.BusinessException;
 import cn.edu.xmu.javaee.core.model.ReturnNo;
 import cn.edu.xmu.javaee.core.model.dto.UserDto;
-import cn.edu.xmu.oomall.customer.dao.bo.*;
-import cn.edu.xmu.oomall.customer.mapper.*;
 import cn.edu.xmu.javaee.core.util.CloneFactory;
+import cn.edu.xmu.oomall.customer.dao.bo.Customer;
+import cn.edu.xmu.oomall.customer.mapper.CustomerPoMapper;
 import cn.edu.xmu.oomall.customer.mapper.po.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.units.qual.C;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Repository;
-
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -28,6 +27,8 @@ public class CustomerDao {
     private final CustomerPoMapper customerPoMapper;
     private final static String KEY = "Cu%d";
     private final AddressDao addressDao;
+    private final CouponDao couponDao;
+    private final CartDao cartDao;
 
 
     /**
@@ -104,6 +105,8 @@ public class CustomerDao {
     private Customer build(Customer bo){
         bo.setCustomerDao(this);
         bo.setAddressDao(addressDao);
+        bo.setCartDao(cartDao);
+        bo.setCouponDao(couponDao);
         return bo;
     }
 }

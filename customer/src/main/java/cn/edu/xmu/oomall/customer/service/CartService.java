@@ -21,16 +21,6 @@ public class CartService {
     private final CartDao cartDao;
     private final CustomerDao customerDao;
 
-    /**
-     * 根据id查找购物车项
-     * author Wangzening
-     * @param productName
-     */
-    public CartItem findCartItemByProdName(String productName) {
-        log.debug("findCartItemByProdName: productName = {}", productName);
-        return cartDao.findCartItemByProdName(productName);
-    }
-
 
     /**
      * 顾客查看自己的购物车列表

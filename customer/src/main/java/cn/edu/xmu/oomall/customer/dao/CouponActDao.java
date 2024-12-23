@@ -50,9 +50,7 @@ public class CouponActDao {
         if (ret.isPresent()) {
             CouponActPo po = ret.get();
             CouponActFactory factory=new CouponActFactory();
-            CouponAct res = factory.build(po);
-            res.setCouponActDao(this);
-            return res;
+            return factory.build(po);
         } else {
             throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "优惠券活动", couponActId));
         }
@@ -69,9 +67,7 @@ public class CouponActDao {
         if (ret.isPresent()) {
             CouponActPo po = ret.get();
             CouponActFactory factory=new CouponActFactory();
-            CouponAct res = factory.build(po);
-            res.setCouponActDao(this);
-            return res;
+            return factory.build(po);
         } else {
             throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "优惠券活动", couponActId));
         }

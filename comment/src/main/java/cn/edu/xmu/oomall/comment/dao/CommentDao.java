@@ -6,7 +6,6 @@ import cn.edu.xmu.javaee.core.model.ReturnNo;
 import cn.edu.xmu.javaee.core.model.dto.UserDto;
 import cn.edu.xmu.oomall.comment.dao.bo.*;
 import cn.edu.xmu.oomall.comment.dao.openfeign.OrderItemDao;
-/*import cn.edu.xmu.oomall.comment.dao.openfeign.ShopDao;*/
 import cn.edu.xmu.oomall.comment.mapper.CommentPoMapper;
 import cn.edu.xmu.oomall.comment.mapper.po.CommentPo;
 import cn.edu.xmu.javaee.core.util.CloneFactory;
@@ -36,7 +35,6 @@ public class CommentDao {
 
     private final static String KEY = "C%d";
     private final CommentPoMapper commentPoMapper;
-   /* private final ShopDao shopDao;*/
     private final OrderItemDao orderitemDao;
 
 

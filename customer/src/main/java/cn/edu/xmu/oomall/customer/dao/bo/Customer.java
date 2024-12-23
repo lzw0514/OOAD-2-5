@@ -92,7 +92,7 @@ public class Customer extends OOMallObject implements Serializable{
      * @throws RuntimeException
      */
     public String updatePwd(String newPwd, UserDto user) throws RuntimeException {
-        if (!Objects.equals(getStatus(), 1)){
+        if (!Objects.equals(getStatus(), (byte)1)){
             throw new BusinessException(ReturnNo.STATENOTALLOW, String.format(ReturnNo.STATENOTALLOW.getMessage(), "顾客", this.id, "账户无效"));
         }
         if(Objects.equals(newPwd, password)){
@@ -111,7 +111,7 @@ public class Customer extends OOMallObject implements Serializable{
      * @throws RuntimeException
      */
     public String changeMyselfInfo(Customer newcustomer, UserDto user) throws RuntimeException {
-        if (!Objects.equals(getStatus(), 1)){
+        if (!Objects.equals(getStatus(), (byte)1)){
             throw new BusinessException(ReturnNo.STATENOTALLOW, String.format(ReturnNo.STATENOTALLOW.getMessage(), "顾客", this.id, "账户无效"));
         }
         if(customerDao.existByMobile(newcustomer.getMobile())){
@@ -176,7 +176,7 @@ public class Customer extends OOMallObject implements Serializable{
      * @param user
      */
     public void releaseCustomer(Customer customer,UserDto user){
-        if(!Objects.equals(status, 0)){
+        if(!Objects.equals(status, (byte)0)){
             throw new BusinessException(ReturnNo.STATENOTALLOW, String.format(ReturnNo.STATENOTALLOW.getMessage(), "顾客", id, "账户无效"));
         }
         customer.setStatus((byte) 1);
@@ -190,7 +190,8 @@ public class Customer extends OOMallObject implements Serializable{
      * @param user
      */
     public void banCustomer(Customer customer,UserDto user){
-        if(!Objects.equals(status, 1)){
+        log.debug("banCustomer1:customer={}",customer);
+        if(!Objects.equals(status, (byte)1)){
             throw new BusinessException(ReturnNo.STATENOTALLOW, String.format(ReturnNo.STATENOTALLOW.getMessage(), "顾客", id, "账户无效"));
         }
         customer.setStatus((byte) 0);
@@ -205,17 +206,25 @@ public class Customer extends OOMallObject implements Serializable{
     /**
      * 将商品加入购物车
      * author Liuzhiwen
-     * @param cartItem
+     * @param newcartItem
      * @param user
      */
-    public CartItem addCartItemToCart(CartItem cartItem, UserDto user){
+    public CartItem addCartItemToCart(CartItem newcartItem, UserDto user){
+        CartItem cartitem=null;
         try {
-            cartItem = cartDao.findCartItemByProductAndCustomer(cartItem.getProductId(),id);
+            cartitem = cartDao.findCartItemByProductAndCustomer(newcartItem.getProductId(),id);
         }catch (BusinessException e) {
-            cartItem.setCustomerId(id);
-            return cartDao.insert(cartItem, user);
+                newcartItem.setCustomerId(id);
+            return cartDao.insert(newcartItem, user);
         }
-        return cartItem.updateItemQuantity(cartItem.getQuantity(), user);
+        if(!Objects.equals(cartitem.getSpec(),newcartItem.getSpec())){
+            newcartItem.setCustomerId(id);
+            return cartDao.insert(newcartItem, user);
+        }
+        else{
+            return cartitem.updateItemQuantity(newcartItem.getQuantity(), user);
+        }
+
     }
 
 
@@ -237,4 +246,7 @@ public class Customer extends OOMallObject implements Serializable{
     public LocalDateTime getGmtCreate() {return gmtCreate;}public void setGmtCreate(LocalDateTime gmtCreate) {this.gmtCreate = gmtCreate;}
     public LocalDateTime getGmtModified() {return gmtModified;}public void setGmtModified(LocalDateTime gmtModified) {this.gmtModified = gmtModified;}
     public Long getCreatorId() { return creatorId; } public void setCreatorId(Long creatorId) { this.creatorId = creatorId; }
+
+    public void setCouponDao(CouponDao couponDao) {
+    }
 }

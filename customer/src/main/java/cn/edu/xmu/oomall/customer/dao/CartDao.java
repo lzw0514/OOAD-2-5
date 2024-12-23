@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
  * author Liuzhiwen
  */
 @Repository
-@RefreshScope
 @RequiredArgsConstructor
 @Slf4j
 public class CartDao {
@@ -40,31 +39,12 @@ public class CartDao {
         Optional<CartItemPo> ret = this.cartItemPoMapper.findById(cartItemId);
         if (ret.isPresent()) {
             CartItemPo po = ret.get();
-            CartItem res = CloneFactory.copy(new CartItem(), po);
-            res.setCartDao(this);
-            return res;
+            return this.build(po);
         } else {
             throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "购物车项", cartItemId));
         }
     }
 
-
-    /**
-     * 根据商品名称找购物车项
-     * @param productName
-     */
-    public CartItem findCartItemByProdName(String productName) throws RuntimeException {
-        Optional<CartItemPo> ret = this.cartItemPoMapper.findByProductName(productName);
-        if (ret.isPresent()) {
-            CartItemPo po = ret.get();
-            CartItem res = CloneFactory.copy(new CartItem(), po);
-            res.setCartDao(this);
-            return res;
-        } else {
-            throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, "购物车中无此商品");
-
-        }
-    }
 
 
     /**
@@ -97,9 +77,7 @@ public class CartDao {
         Optional<CartItemPo> ret = cartItemPoMapper.findByProductIdAndCustomerId(productId, customerId);
         if (ret.isPresent()) {
             CartItemPo po = ret.get();
-            CartItem res = CloneFactory.copy(new CartItem(), po);
-            res.setCartDao(this);
-            return res;
+            return this.build(po);
         } else {
             throw new BusinessException(ReturnNo.RESOURCE_ID_NOTEXIST, String.format(ReturnNo.RESOURCE_ID_NOTEXIST.getMessage(), "用户购物车不包括产品", productId));
         }
@@ -144,5 +122,25 @@ public class CartDao {
         this.cartItemPoMapper.deleteById(id);
         return String.format(KEY, id);
     }
+    /**
+     * 获得bo对象
+     * @param po
+     * @return
+     */
+    private CartItem build(CartItemPo po){
+        CartItem ret = CloneFactory.copy(new CartItem(), po);
+        this.build(ret);
+        return ret;
+    }
+
+    /**
+     * 赋予bo对象权限
+     * @param bo
+     */
+    private CartItem build(CartItem bo){
+        bo.setCartDao(this);
+        return bo;
+    }
+
 }
 

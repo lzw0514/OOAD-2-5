@@ -14,6 +14,9 @@ public interface ShopMapper {
     @GetMapping("/shops/{id}")
     InternalReturnObject<Shop> getShopById(@PathVariable Long id);
 
+
+
+
     @GetMapping("/shops/{shopId}/templates/{id}")
     InternalReturnObject<Template> getTemplateById(@PathVariable Long shopId, @PathVariable Long id);
 

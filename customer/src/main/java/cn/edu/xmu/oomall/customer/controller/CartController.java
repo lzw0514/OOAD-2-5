@@ -29,22 +29,7 @@ public class CartController {
 
 
 
-    /**
-     * 根据商品名称查找购物车项
-     * author Wangzening
-     * @param user
-     */
-    @GetMapping("/product/{productName}/carts/")
-    @Transactional(propagation = Propagation.REQUIRED)
-    @Audit(departName = "customers")
-    public ReturnObject getCartItemByProdName(@PathVariable String productName,
-                                              @LoginUser UserDto user,
-                                              @RequestBody CartDto cartDto) {
-        CartItem cartitem = this.cartService.findCartItemByProdName(productName);
-        CartItemVo vos =CloneFactory.copy(new CartItemVo(), cartitem);
-        return new ReturnObject(vos);
 
-    }
     /**
      * 查看顾客购物车列表
      * author Wangzening

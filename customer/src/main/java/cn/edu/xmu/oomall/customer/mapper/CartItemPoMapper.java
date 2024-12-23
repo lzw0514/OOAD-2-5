@@ -14,7 +14,5 @@ public interface CartItemPoMapper extends JpaRepository<CartItemPo, Long> {
 
     Page<CartItemPo> findByCustomerId(Long customerId, Pageable pageable);
 
-    Optional<CartItemPo> findByProductName(String productName);
-
     Optional<CartItemPo> findByProductIdAndCustomerId(Long productId, Long customerId);
 }

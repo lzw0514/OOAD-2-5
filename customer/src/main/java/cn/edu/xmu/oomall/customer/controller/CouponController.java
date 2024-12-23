@@ -76,6 +76,6 @@ public class CouponController {
     public ReturnObject claimCoupons(@PathVariable Long actId,
                                               @LoginUser UserDto user) {
         Coupon res = this.couponService.claimCoupon(actId, user);
-        return new ReturnObject(new CouponVo(res));
+        return new ReturnObject(ReturnNo.CREATED,new CouponVo(res));
     }
 }

@@ -47,6 +47,7 @@ public class CouponActConstraintUser extends CouponAct {
         if(curCnt >= maxUser) {
             throw new BusinessException(ReturnNo.COUPON_UPPER_LIMIT, String.format(ReturnNo. COUPON_UPPER_LIMIT.getMessage()));
         }else {
+            log.debug("SSSSSS");
             return issueCoupon(user);
         }
     }

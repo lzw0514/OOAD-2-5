@@ -33,7 +33,6 @@ public class AddressVo {
     public AddressVo(Address address) {
         super();
         CloneFactory.copy(this, address);
-        log.debug("addressvo:addressvo:{}",this);
     }
 
     public Long getId() {return id;}public void setId(Long id) {this.id = id;}

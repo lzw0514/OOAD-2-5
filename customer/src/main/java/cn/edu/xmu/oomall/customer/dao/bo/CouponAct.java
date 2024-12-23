@@ -92,7 +92,7 @@ public abstract class CouponAct extends OOMallObject implements Serializable {
      * @param user
      * @return
      */
-    protected Coupon issueCoupon(UserDto user) {
+     Coupon issueCoupon(UserDto user) {
         Coupon newCoupon = new Coupon();
         newCoupon.setActId(id);
         newCoupon.setName(name);
@@ -100,6 +100,7 @@ public abstract class CouponAct extends OOMallObject implements Serializable {
         newCoupon.setGmtEnd(gmtEnd);
         newCoupon.setStatus(AVAILABLE);
         newCoupon.setCustomerId(user.getId());
+        log.debug("AAAAAa");
         return couponDao.insert(newCoupon,user);
     }
 

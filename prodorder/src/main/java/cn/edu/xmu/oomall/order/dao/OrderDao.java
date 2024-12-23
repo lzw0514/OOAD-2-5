@@ -60,15 +60,4 @@ public class OrderDao {
     }
 
 
-//    public void createOrder(Order order){
-//        OrderPo orderPo = OrderPo.builder().creatorId(order.getCreatorId()).creatorName(order.getCreatorName()).orderSn(order.getOrderSn()).build();
-//        orderPoMapper.save(orderPo);
-//
-//        order.getOrderItems().stream().forEach(orderItem -> {
-//            //TODO: 先要减去货品数量
-//
-//            OrderItemPo orderItemPo = OrderItemPo.builder().creatorId(orderItem.getCreatorId()).onsaleId(orderItem.getOnsaleId()).quantity(orderItem.getQuantity()).build();
-//            orderItemPoMapper.save(orderItemPo);
-//        });
-//    }
 }

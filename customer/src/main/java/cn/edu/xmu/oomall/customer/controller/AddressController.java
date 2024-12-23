@@ -31,7 +31,7 @@ public class AddressController {
 
     /**
      *查看顾客地址列表
-     * author Fengjianhao
+     * author Linqihang
      * @return
      */
     @GetMapping("/address")
@@ -48,7 +48,7 @@ public class AddressController {
 
     /**
      * 顾客添加新地址
-     * author Fengjianhao
+     * author Linqihang
      * @return
      */
     @PostMapping("/address")
@@ -61,7 +61,7 @@ public class AddressController {
 
     /**
      * 顾客修改地址信息
-     * author Fengjianhao
+     * author Linqihang
      * @param addressId
      * @return
      */
@@ -77,7 +77,7 @@ public class AddressController {
 
     /**
      * 顾客设置默认地址
-     * author Fengjianhao
+     * author Linqihang
      * @param addressId
      * @return
      */
@@ -93,7 +93,7 @@ public class AddressController {
 
     /**
      * 顾客删除地址
-     * author Fengjianhao
+     * author Linqihang
      * @param addressId
      * @return
      */

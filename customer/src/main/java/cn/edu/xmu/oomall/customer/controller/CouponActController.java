@@ -38,7 +38,7 @@ public class CouponActController {
      * @param pageSize
      * @return
      */
-    @GetMapping("/QueryOnlineCouponActs")
+    @GetMapping("/OnlineCouponActs")
     @Transactional(propagation = Propagation.REQUIRED)
     public ReturnObject findAllOnlineCouponActivities(@RequestParam(defaultValue = "1") Integer page,
                                                       @RequestParam(defaultValue = "10") Integer pageSize){
