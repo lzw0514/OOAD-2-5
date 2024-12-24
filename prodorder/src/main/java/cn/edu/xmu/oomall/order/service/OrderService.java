@@ -8,9 +8,8 @@ import cn.edu.xmu.javaee.core.model.dto.UserDto;
 import cn.edu.xmu.oomall.order.controller.dto.OrderDto;
 import cn.edu.xmu.oomall.order.dao.OrderDao;
 import cn.edu.xmu.oomall.order.dao.bo.Order;
-import cn.edu.xmu.oomall.order.dao.openfeign.GoodsDao;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -21,18 +20,13 @@ import static cn.edu.xmu.oomall.order.dao.bo.Order.SHIPPED;
 @Repository
 public class OrderService {
 
-    @Value("${oomall.order.server-num}")
-    private int serverNum;
-
-    private GoodsDao goodsDao;
 
     private final OrderDao orderDao;
 
     // private RocketMQTemplate rocketMQTemplate;
 
     @Autowired
-    public OrderService(GoodsDao goodsDao, OrderDao orderDao) {
-        this.goodsDao = goodsDao;
+    public OrderService(OrderDao orderDao) {
         this.orderDao = orderDao;
     }
 

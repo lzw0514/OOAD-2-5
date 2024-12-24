@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@CopyFrom(OrderItem.class)
 public class OrderItemPo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -75,21 +74,6 @@ public class OrderItemPo {
         return id;
     }
 
-    public Long getCreatorId() {
-        return creatorId;
-    }
-
-    public String getCreatorName() {
-        return creatorName;
-    }
-
-    public Long getModifierId() {
-        return modifierId;
-    }
-
-    public String getModifierName() {
-        return modifierName;
-    }
 
     public LocalDateTime getGmtCreate() {
         return gmtCreate;
@@ -141,33 +125,12 @@ public class OrderItemPo {
         this.id = id;
     }
 
-    public void setCreatorId(Long creatorId) {
-        this.creatorId = creatorId;
-    }
 
-    public void setCreatorName(String creatorName) {
-        this.creatorName = creatorName;
-    }
-
-    public void setModifierId(Long modifierId) {
-        this.modifierId = modifierId;
-    }
-
-    public void setModifierName(String modifierName) {
-        this.modifierName = modifierName;
-    }
-
-    public void setGmtCreate(LocalDateTime gmtCreate) {
-        this.gmtCreate = gmtCreate;
-    }
 
     public void setOrderId(Long orderId) {
         this.orderId = orderId;
     }
 
-    public void setGmtModified(LocalDateTime gmtModified) {
-        this.gmtModified = gmtModified;
-    }
 
     public void setOnsaleId(Long onsaleId) {
         this.onsaleId = onsaleId;

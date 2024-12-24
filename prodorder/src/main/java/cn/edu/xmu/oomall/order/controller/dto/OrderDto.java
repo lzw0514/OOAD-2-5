@@ -2,6 +2,8 @@ package cn.edu.xmu.oomall.order.controller.dto;
 
 import cn.edu.xmu.oomall.order.dao.bo.OrderItem;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +23,7 @@ public class OrderDto {
     private Long pid;
 
 
-    private ConsigneeDto consignee;
+    private String consignee;
 
 
     private Long regionId;
@@ -40,9 +42,6 @@ public class OrderDto {
 
     private Long packageId;
 
-
-    private List<OrderItemDto> orderItems;
-
     public Long getPid() {
         return pid;
     }
@@ -60,23 +59,23 @@ public class OrderDto {
     }
 
     public String getConsignee() {
-        return consignee.getConsignee();
+        return consignee;
     }
 
-
+    public void setConsignee(String consignee) {
+        this.consignee = consignee;
+    }
 
     public Long getRegionId() {
         return regionId;
     }
 
-    public void setRegionId(Long regionId) {
-        this.regionId = regionId;
-    }
 
     public String getAddress() {
         return address;
     }
 
+    @JsonSetter(nulls = Nulls.AS_EMPTY)
     public void setAddress(String address) {
         this.address = address;
     }
@@ -101,16 +100,9 @@ public class OrderDto {
         return activityId;
     }
 
-    public void setActivityId(Long activityId) {
-        this.activityId = activityId;
-    }
 
     public Long getPackageId() {
         return packageId;
-    }
-
-    public void setPackageId(Long packageId) {
-        this.packageId = packageId;
     }
 
 

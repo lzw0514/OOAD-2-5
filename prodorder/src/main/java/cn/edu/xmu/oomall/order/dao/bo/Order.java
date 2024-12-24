@@ -15,27 +15,8 @@ import java.util.Optional;
 
 @ToString(callSuper = true)
 @NoArgsConstructor
-@CopyFrom({Optional.class, OrderDto.class, OrderPo.class})
+@CopyFrom({OrderPo.class})
 public class Order extends OOMallObject {
-
-
-    @Builder
-    public Order(Long id, Long creatorId, String creatorName, Long modifierId, String modifierName, LocalDateTime gmtCreate, LocalDateTime gmtModified, Long customerId, Long shopId, String orderSn, Long pid, String consignee, Long regionId, String address, String mobile, String message, Long activityId, Long packageId, List<OrderItem> orderItems, Byte status) {
-        super(id, creatorId, creatorName, modifierId, modifierName, gmtCreate, gmtModified);
-        this.customerId = customerId;
-        this.shopId = shopId;
-        this.orderSn = orderSn;
-        this.pid = pid;
-        this.consignee = consignee;
-        this.regionId = regionId;
-        this.address = address;
-        this.mobile = mobile;
-        this.message = message;
-        this.activityId = activityId;
-        this.packageId = packageId;
-        this.orderItems = orderItems;
-        this.status = status;
-    }
 
     private Long id;
 
@@ -51,6 +32,7 @@ public class Order extends OOMallObject {
 
 
     private Long shopId;
+
     public static final Byte PENDING_PAYMENT = 0;
     public static final Byte PAID = 1;
     public static final Byte SHIPPED = 2;
@@ -159,13 +141,7 @@ public class Order extends OOMallObject {
         this.message = message;
     }
 
-    public Long getActivityId() {
-        return activityId;
-    }
 
-    public void setActivityId(Long activityId) {
-        this.activityId = activityId;
-    }
 
     public Long getPackageId() {
         return packageId;

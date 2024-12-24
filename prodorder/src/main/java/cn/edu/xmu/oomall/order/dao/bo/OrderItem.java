@@ -4,7 +4,6 @@ package cn.edu.xmu.oomall.order.dao.bo;
 
 import cn.edu.xmu.javaee.core.aop.CopyFrom;
 import cn.edu.xmu.javaee.core.model.bo.OOMallObject;
-import cn.edu.xmu.oomall.order.controller.dto.OrderItemDto;
 import cn.edu.xmu.oomall.order.mapper.po.OrderItemPo;
 import lombok.*;
 
@@ -13,24 +12,8 @@ import java.time.LocalDateTime;
 
 @ToString(callSuper = true)
 @NoArgsConstructor
-@CopyFrom({OrderItemDto.class, OrderItemPo.class})
+@CopyFrom({ OrderItemPo.class})
 public class OrderItem extends OOMallObject implements Serializable {
-
-    @Builder
-    public OrderItem(Long id, Long creatorId, String creatorName, Long modifierId, String modifierName, LocalDateTime gmtCreate, LocalDateTime gmtModified, Long orderId, Long onsaleId, Integer quantity, Long price, Long discountPrice, Long point, String name, Long actId, Long couponId, Byte commented) {
-        super(id, creatorId, creatorName, modifierId, modifierName, gmtCreate, gmtModified);
-        this.orderId = orderId;
-        this.onsaleId = onsaleId;
-        this.quantity = quantity;
-        this.price = price;
-        this.discountPrice = discountPrice;
-        this.point = point;
-        this.name = name;
-        this.actId = actId;
-        this.couponId = couponId;
-        this.commented = commented;
-    }
-
 
     private Long orderId;
 
