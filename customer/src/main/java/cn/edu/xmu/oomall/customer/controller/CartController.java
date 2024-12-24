@@ -83,7 +83,7 @@ public class CartController {
      */
     @DeleteMapping("/cartItems/{cartItemId}")
     @Audit(departName = "customers")
-    public ReturnObject deleteAddress(@PathVariable Long cartItemId,
+    public ReturnObject deleteCartItem(@PathVariable Long cartItemId,
                                       @LoginUser UserDto user) {
         cartService.deleteCartItem(cartItemId, user);
         return new ReturnObject(ReturnNo.OK);
