@@ -41,8 +41,7 @@ public class CustomerControllerTest {
     // 成功获取订单状态
     @Test
     public void testGetOrderStateWhenSuccess() throws Exception {
-        mvc.perform(MockMvcRequestBuilders.get("/orders/states")
-                        .param("orderId", "1")
+        mvc.perform(MockMvcRequestBuilders.get("/orders/{orderId}/states",1)
                         .header("authorization", customerToken)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(MockMvcResultMatchers.status().isOk())
