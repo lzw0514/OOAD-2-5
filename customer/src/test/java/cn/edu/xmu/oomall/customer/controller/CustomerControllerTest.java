@@ -354,9 +354,22 @@ public class CustomerControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.status", is(1)));
     }
 
-    // 顾客成功领取优惠券(1-限制领取总数,限制顾客两次领取时间间隔 )
+    // 顾客成功领取优惠券-未领取过(1-限制领取总数,限制顾客两次领取时间间隔 )
     @Test
     public void testClaimCouponConstraintTotalWhenSuccess() throws Exception {
+        this.mvc.perform(MockMvcRequestBuilders.post("/couponActs/{actId}/coupon",5)
+                        .header("authorization",  customerToken)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.errno", is(ReturnNo.CREATED.getErrNo())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.name", is("圣诞专享")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.gmtBegin", is("2024-11-01T00:00:00")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.gmtEnd", is("2024-11-30T23:59:59")));
+    }
+
+    // 顾客成功领取优惠券-两次时间间隔符合(1-限制领取总数,限制顾客两次领取时间间隔 )
+    @Test
+    public void testClaimCouponConstraintTotalWhenSuccess1() throws Exception {
         this.mvc.perform(MockMvcRequestBuilders.post("/couponActs/{actId}/coupon",2)
                         .header("authorization",  customerToken)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))

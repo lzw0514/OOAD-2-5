@@ -288,11 +288,11 @@
             <url>https://maven.aliyun.com/repository/central</url>
         </repository>
 
-        <repository>
+<!--        <repository>
             <id>oomall</id>
             <name>OOMALL private</name>
             <url>https://devrepo.devcloud.cn-north-4.huaweicloud.com/artgalaxy/cn-north-4_ffc8b371d4834a97a35ac516f10c7cf6_maven_2_0/</url>
-        </repository>
+        </repository>-->
 
         <repository>
             <id>public</id>

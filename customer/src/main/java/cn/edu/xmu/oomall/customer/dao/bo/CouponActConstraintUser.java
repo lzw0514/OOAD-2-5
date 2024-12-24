@@ -4,6 +4,7 @@ import cn.edu.xmu.javaee.core.aop.CopyFrom;
 import cn.edu.xmu.javaee.core.exception.BusinessException;
 import cn.edu.xmu.javaee.core.model.ReturnNo;
 import cn.edu.xmu.javaee.core.model.dto.UserDto;
+import cn.edu.xmu.oomall.customer.dao.CouponActDao;
 import cn.edu.xmu.oomall.customer.dao.CouponDao;
 import cn.edu.xmu.oomall.customer.mapper.po.CouponActPo;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -47,8 +48,7 @@ public class CouponActConstraintUser extends CouponAct {
         if(curCnt >= maxUser) {
             throw new BusinessException(ReturnNo.COUPON_UPPER_LIMIT, String.format(ReturnNo. COUPON_UPPER_LIMIT.getMessage()));
         }else {
-            log.debug("SSSSSS");
-            return issueCoupon(user);
+            return allocateCoupon(user);
         }
     }
 
@@ -61,7 +61,9 @@ public class CouponActConstraintUser extends CouponAct {
     public LocalDateTime getGmtBegin() { return gmtBegin; } public void setGmtBegin(LocalDateTime gmtBegin) { this.gmtBegin = gmtBegin; }
     public LocalDateTime getGmtEnd() { return gmtEnd; } public void setGmtEnd(LocalDateTime gmtEnd) { this.gmtEnd = gmtEnd; }
     public Byte getStatus() { return status; } public void setStatus(Byte status) { this.status = status; }
+    public CouponActDao getCouponActDao() {return couponActDao;}public void setCouponActDao(CouponActDao couponActDao) {this.couponActDao = couponActDao;}
     public CouponDao getCouponDao() {return couponDao;}public void setCouponDao(CouponDao couponDao) {this.couponDao = couponDao;}
+
     public Long getMaxUser() {return maxUser;}public void setMaxUser(Long maxUser) {this.maxUser = maxUser;}
     public String getCreatorName() {return creatorName;}public void setCreatorName(String creatorName) {this.creatorName = creatorName;}
     public Long getModifierId() {return modifierId;}public void setModifierId(Long modifierId) {this.modifierId = modifierId;}

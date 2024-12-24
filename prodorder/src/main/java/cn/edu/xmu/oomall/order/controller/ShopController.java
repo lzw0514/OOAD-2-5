@@ -1,8 +1,15 @@
 package cn.edu.xmu.oomall.order.controller;
 
 
+
+import cn.edu.xmu.javaee.core.aop.Audit;
+import cn.edu.xmu.javaee.core.aop.LoginUser;
+import cn.edu.xmu.javaee.core.exception.BusinessException;
+import cn.edu.xmu.javaee.core.model.InternalReturnObject;
 import cn.edu.xmu.javaee.core.model.ReturnNo;
 import cn.edu.xmu.javaee.core.model.ReturnObject;
+import cn.edu.xmu.javaee.core.model.dto.UserDto;
+import cn.edu.xmu.javaee.core.model.vo.IdNameTypeVo;
 import cn.edu.xmu.javaee.core.model.vo.PageVo;
 import cn.edu.xmu.javaee.core.util.CloneFactory;
 import cn.edu.xmu.oomall.order.controller.dto.OrderDto;
@@ -21,17 +28,19 @@ public class ShopController {
     private final OrderService orderService;
 
     /**
-     * "店家查询商户所有订单 (概要)。"
+     * 店家查询商户所有订单 (概要)。
      * @param shopId
      * @param page
      * @param pageSize
      * @return
      */
-    @GetMapping("shops/{shopId}/orders")
+    @GetMapping("/shops/{shopId}/orders")
+    @Audit(departName = "shop")
     public ReturnObject getShopOrder(@PathVariable Long shopId,
+                                     @LoginUser UserDto user,
                                     @RequestParam(required = false,defaultValue = "1") Integer page,
                                     @RequestParam(required = false,defaultValue = "10") Integer pageSize){
-        List<Order> orderlist = orderService.getShopOrder(shopId);
+        List<Order> orderlist = orderService.getShopOrder(shopId,user);
         List<OrderVo> orderVoList = orderlist.stream().map(obj->CloneFactory.copy(new OrderVo(),obj)).toList();
         for(int i = 0;i < orderlist.size();i++ ){
             Order order = orderlist.get(i);
@@ -48,9 +57,13 @@ public class ShopController {
      * @param dto
      * @return
      */
-    @PutMapping("shops/{shopId}/orders/{id}")
-    public ReturnObject changeShopOrder(@PathVariable Long shopId, @PathVariable Long id, @RequestBody OrderDto dto){
-        orderService.changeShopOrder(shopId,id,dto);
+    @PutMapping("/shops/{shopId}/orders/{id}")
+    @Audit(departName = "shop")
+    public ReturnObject changeShopOrder(@PathVariable Long shopId,
+                                        @LoginUser UserDto user,
+                                        @PathVariable Long id,
+                                        @RequestBody OrderDto dto){
+        orderService.changeShopOrder(shopId,id,dto,user);
         return new ReturnObject(ReturnNo.OK);
     }
 }
