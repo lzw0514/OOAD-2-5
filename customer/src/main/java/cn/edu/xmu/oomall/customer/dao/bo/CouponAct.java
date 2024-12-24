@@ -68,16 +68,6 @@ public abstract class CouponAct extends OOMallObject implements Serializable {
         }
     };
 
-/*    @JsonIgnore
-    public String getStatusName(){
-        return STATUS_NAMES.get(this.status);
-    }
-
-    // 获取所有属于此活动的优惠券
-    @JsonIgnore
-    public List<Coupon> getActivityCoupon(){
-        return null;
-    }*/
 
     /**
      * 判断优惠券是否可领

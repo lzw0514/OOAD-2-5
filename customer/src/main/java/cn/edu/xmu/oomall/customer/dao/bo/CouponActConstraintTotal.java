@@ -67,12 +67,9 @@ public class CouponActConstraintTotal extends CouponAct {
                couponActDao.save(this, user);
                return allocateCoupon(user);
             }
-            log.debug("lastestReceiveCoupon={}",lastestReceiveCoupon);
             Duration duration = Duration.between(lastestReceiveCoupon.getGmtReceive(),LocalDateTime.now());
 
             long intervalMinutes = duration.toMinutes();// 获取时间间隔的分钟数
-            log.debug("intervalMinutes={}",intervalMinutes);
-            log.debug("minInterval={}",minInterval);
             if(intervalMinutes<=minInterval){
                 throw new BusinessException(ReturnNo. COUPON_RECLAIM_INTERVAL, String.format(ReturnNo. COUPON_RECLAIM_INTERVAL.getMessage()));
             }
