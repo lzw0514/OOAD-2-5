@@ -27,7 +27,7 @@ public class CouponActService {
 
 
     /**
-     * 根据id查找优惠券活动
+     * 平台管理人员根据id查找优惠券活动
      * @param couponActId
      * @return
      */

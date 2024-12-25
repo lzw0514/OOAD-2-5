@@ -82,17 +82,7 @@ public abstract class CouponAct extends OOMallObject implements Serializable {
      * @param user
      * @return
      */
-     Coupon allocateCoupon(UserDto user) {
-        Coupon newCoupon = new Coupon();
-        newCoupon.setActId(id);
-        newCoupon.setName(name);
-        newCoupon.setGmtBegin(gmtBegin);
-        newCoupon.setGmtEnd(gmtEnd);
-        newCoupon.setStatus(AVAILABLE);
-        newCoupon.setCustomerId(user.getId());
-        return couponDao.insert(newCoupon,user);
-    }
-
+    public abstract Coupon allocateCoupon(UserDto user);
 
     public abstract Long getId();
     public abstract void setId(Long id);

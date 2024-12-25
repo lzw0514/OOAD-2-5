@@ -34,6 +34,7 @@ public class CouponActConstraintUser extends CouponAct {
     private Long maxUser; // 优惠券每人领取最大数量
 
     /**
+     * 不限制优惠券总数，限制用户领取数量
      * 判断优惠券是否可领
      * @param user
      * @return
@@ -51,7 +52,16 @@ public class CouponActConstraintUser extends CouponAct {
             return allocateCoupon(user);
         }
     }
-
+    public Coupon allocateCoupon(UserDto user) {
+        Coupon newCoupon = new Coupon();
+        newCoupon.setActId(id);
+        newCoupon.setName(name);
+        newCoupon.setGmtBegin(gmtBegin);
+        newCoupon.setGmtEnd(gmtEnd);
+        newCoupon.setStatus(AVAILABLE);
+        newCoupon.setCustomerId(user.getId());
+        return couponDao.insert(newCoupon,user);
+    }
 
     public Long getId() { return id; } public void setId(Long id) { this.id = id; }
     public String getName() { return name; } public void setName(String name) { this.name = name; }

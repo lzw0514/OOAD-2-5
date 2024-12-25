@@ -218,7 +218,7 @@ public class Customer extends OOMallObject implements Serializable{
             return cartDao.insert(newcartItem, user);
         }
         else{
-            return cartitem.updateItemQuantity(newcartItem.getQuantity(), user);
+            return cartitem.updateItemQuantity(1l, user);
         }
 
     }

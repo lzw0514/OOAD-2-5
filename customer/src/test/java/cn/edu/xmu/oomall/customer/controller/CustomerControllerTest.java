@@ -360,11 +360,11 @@ public class CustomerControllerTest {
         this.mvc.perform(MockMvcRequestBuilders.post("/couponActs/{actId}/coupon",5)
                         .header("authorization",  customerToken)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errno", is(ReturnNo.CREATED.getErrNo())))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.name", is("圣诞专享")))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.gmtBegin", is("2024-11-01T00:00:00")))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.gmtEnd", is("2024-11-30T23:59:59")));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.name", is("新用户专享")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.gmtBegin", is("2024-12-01T00:00:00")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.gmtEnd", is("2024-12-25T23:59:59")));
     }
 
     // 顾客成功领取优惠券-两次时间间隔符合(1-限制领取总数,限制顾客两次领取时间间隔 )
@@ -373,9 +373,9 @@ public class CustomerControllerTest {
         this.mvc.perform(MockMvcRequestBuilders.post("/couponActs/{actId}/coupon",2)
                         .header("authorization",  customerToken)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
-                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errno", is(ReturnNo.CREATED.getErrNo())))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.name", is("新年折扣")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.name", is("春季大促")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.gmtBegin", is("2024-02-01T00:00:00")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.gmtEnd", is("2024-02-28T23:59:59")));
     }

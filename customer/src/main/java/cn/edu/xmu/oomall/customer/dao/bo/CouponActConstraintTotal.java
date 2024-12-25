@@ -46,6 +46,7 @@ public class CouponActConstraintTotal extends CouponAct {
     @ToString.Exclude
     private CouponDao couponDao;
     /**
+     * 限制优惠券总数，不限制用户领取数量，但是限制用户两次领取时间间隔
      * 判断优惠券是否可领
      * @param user
      * @return
@@ -63,25 +64,30 @@ public class CouponActConstraintTotal extends CouponAct {
             try{
                lastestReceiveCoupon=couponDao.findLatestReceivedCouponByCustomerAndAct(user.getId(),id);
             } catch (BusinessException e) {   //没有查到顾客在此优惠活动下的优惠券时，直接领取
-               remainCount -= 1;
-               couponActDao.save(this, user);
                return allocateCoupon(user);
             }
-            Duration duration = Duration.between(lastestReceiveCoupon.getGmtReceive(),LocalDateTime.now());
-
+            Duration duration = Duration.between(lastestReceiveCoupon.getGmtReceive(),LocalDateTime.now()); //计算上次领取和当前时间的时间间隔
             long intervalMinutes = duration.toMinutes();// 获取时间间隔的分钟数
             if(intervalMinutes<=minInterval){
                 throw new BusinessException(ReturnNo. COUPON_RECLAIM_INTERVAL, String.format(ReturnNo. COUPON_RECLAIM_INTERVAL.getMessage()));
             }
-            else{
-                remainCount -= 1;
-                couponActDao.save(this, user);
-                return allocateCoupon(user);
-            }
+            else{return allocateCoupon(user);}
 
         }
     }
 
+    public Coupon allocateCoupon(UserDto user) {
+        remainCount -= 1;
+        couponActDao.save(this, user);
+        Coupon newCoupon = new Coupon();
+        newCoupon.setActId(id);
+        newCoupon.setName(name);
+        newCoupon.setGmtBegin(gmtBegin);
+        newCoupon.setGmtEnd(gmtEnd);
+        newCoupon.setStatus(AVAILABLE);
+        newCoupon.setCustomerId(user.getId());
+        return couponDao.insert(newCoupon,user);
+    }
 
     public Long getId() { return id; } public void setId(Long id) { this.id = id; }
     public String getName() { return name; } public void setName(String name) { this.name = name; }
